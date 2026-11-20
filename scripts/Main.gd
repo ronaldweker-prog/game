@@ -323,7 +323,10 @@ func _continue_game() -> void:
 func _notice(t: String) -> void:
 	alert.text = t
 	var timer := get_tree().create_timer(4.0)
-	timer.timeout.connect(func(): if is_instance_valid(alert) and alert.text == t: alert.text = "")
+	timer.timeout.connect(func():
+		if is_instance_valid(alert) and alert.text == t:
+			alert.text = ""
+	)
 
 func _change_quality() -> void:
 	quality = (quality + 1) % 3
