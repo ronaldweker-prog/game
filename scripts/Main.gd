@@ -23,6 +23,10 @@ var cam: Camera3D
 var hud: CanvasLayer
 var menu: Control
 var hud_panel: Control
+var action_buttons: Array[Button] = []
+var build_buttons: Array[Button] = []
+var action_backdrop: ColorRect
+var actions_open := false
 var joystick := Vector2.ZERO
 var joystick_control: Control
 var mobile_look := -1
@@ -272,10 +276,23 @@ func _make_interface() -> void:
 	status = _label(hud_panel,"SAÚDE 100   ÁGUA 100   FOME 100",Vector2(24,56),Vector2(1100,52),21)
 	alert = _label(hud_panel,"",Vector2(370,125),Vector2(860,52),24)
 	objective_label = _label(hud_panel,"",Vector2(22,178),Vector2(940,36),19)
-	var keys := [["COLETAR","collect"],["FERRAMENTA","craft"],["ABRIGO","shelter"],["JANGADA","raft"],["EMBARCAR","board"],["BAÚ","chest"],["CÂMERA","camera"],["COMER","eat"],["SALVAR","save"]]
+	action_backdrop = ColorRect.new()
+	action_backdrop.name = "PainelDeAcoes"
+	action_backdrop.position = Vector2(795,390)
+	action_backdrop.size = Vector2(476,230)
+	action_backdrop.color = Color(0.012,0.060,0.076,0.85)
+	action_backdrop.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	action_backdrop.visible = false
+	hud_panel.add_child(action_backdrop)
+	var keys := [["FERRAMENTA","craft"],["ABRIGO","shelter"],["JANGADA","raft"],["EMBARCAR","board"],["BAÚ","chest"],["COMER","eat"],["SALVAR","save"],["CAMERA","camera"],["COLETAR","collect"]]
 	for i in range(keys.size()):
 		var method := String(keys[i][1])
-		_btn(hud_panel,String(keys[i][0]),Vector2(812 + (i % 3) * 150,490 + int(i / 3) * 66),Vector2(140,58),func(): _action(method))
+		var item: Button = _btn(hud_panel,String(keys[i][0]),Vector2(804+(i%3)*154,399+int(i/3)*70),Vector2(145,60),func(): _action(method))
+		item.visible = false
+		action_buttons.append(item)
+	_btn(hud_panel,"COLETAR",Vector2(816,632),Vector2(139,56),func(): _action("collect"))
+	_btn(hud_panel,"CÂMERA",Vector2(963,632),Vector2(139,56),func(): _action("camera"))
+	_btn(hud_panel,"AÇÕES",Vector2(1111,632),Vector2(145,56),func(): _toggle_actions())
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
 	_btn(hud_panel,"PORTA",Vector2(140,118),Vector2(125,48),func(): _open_door())
 	swim_up_button = Button.new()
@@ -300,9 +317,9 @@ func _make_interface() -> void:
 	_btn(hud_panel,"PULAR",Vector2(296,616),Vector2(136,58),func(): _request_jump())
 	_btn(hud_panel,"INVESTIGAR",Vector2(445,616),Vector2(151,58),func(): _investigate_ruins())
 	_btn(hud_panel,"CONSTRUIR",Vector2(445,479),Vector2(162,54),func(): _toggle_build())
-	_btn(hud_panel,"PEÇA",Vector2(616,479),Vector2(162,54),func(): _cycle_build_piece())
-	_btn(hud_panel,"COLOCAR",Vector2(445,539),Vector2(162,54),func(): _place_modular_piece())
-	_btn(hud_panel,"GIRAR",Vector2(616,539),Vector2(162,54),func(): _rotate_build())
+	build_buttons.append(_btn(hud_panel,"PEÇA",Vector2(616,479),Vector2(162,54),func(): _cycle_build_piece()))
+	build_buttons.append(_btn(hud_panel,"COLOCAR",Vector2(445,539),Vector2(162,54),func(): _place_modular_piece()))
+	build_buttons.append(_btn(hud_panel,"GIRAR",Vector2(616,539),Vector2(162,54),func(): _rotate_build()))
 	build_label = _label(hud_panel,"",Vector2(448,597),Vector2(375,36),17)
 	var run_button := Button.new()
 	run_button.text = "CORRER"
@@ -398,6 +415,13 @@ func _investigate_ruins() -> void:
 		ruins_visited = true
 		_notice("REGISTRO ANTIGO RECUPERADO: fragmentos de uma civilização desaparecida.")
 
+func _toggle_actions() -> void:
+	actions_open = not actions_open
+	if is_instance_valid(action_backdrop):
+		action_backdrop.visible = actions_open
+	for b in action_buttons:
+		b.visible = actions_open
+
 func _build_cost() -> Dictionary:
 	match build_kind:
 		"piso": return recipe("floor",{"madeira":3,"fibra":1})
@@ -462,6 +486,8 @@ func _request_jump() -> void:
 func _show_menu(show: bool) -> void:
 	if show and playing:
 		_save(true)
+	if show and actions_open:
+		_toggle_actions()
 	menu.visible = show
 	hud_panel.visible = not show
 	if show and is_instance_valid(chest_panel):
@@ -752,7 +778,10 @@ func _process(delta: float) -> void:
 	if is_instance_valid(swim_up_button):
 		swim_up_button.visible = swimming
 		swim_down_button.visible = swimming
+	for b in build_buttons:
+		b.visible = build_mode
 	if is_instance_valid(build_label):
+		build_label.visible = build_mode
 		build_label.text = ("OBRA: %s  %s" % [build_kind.to_upper(),cost_text(_build_cost())]) if build_mode else "CONSTRUIR: montar base modular"
 	if is_instance_valid(building_system):
 		building_system.call("set_preview",build_kind,building_system.call("candidate",player),build_side,build_mode and not aboard)
