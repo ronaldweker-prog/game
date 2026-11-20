@@ -5,6 +5,7 @@ extends Node3D
 const SAVE := "user://save.json"
 const CONFIG_PATH := "res://config/gameplay.json"
 const VIRTUAL_STICK = preload("res://scripts/VirtualStick.gd")
+const WILDLIFE = preload("res://scripts/Wildlife.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
@@ -22,6 +23,7 @@ var first_person := false
 var items := {"madeira": 0, "pedra": 0, "fibra": 0, "comida": 0, "agua": 0}
 var gathered: Array = []
 var pickups: Array = []
+var animals: Array = []
 var huts: Array = []
 var has_tool := false
 var raft: Node3D
@@ -78,6 +80,8 @@ func _ready() -> void:
 	add_child(world_root)
 	_make_world()
 	_make_player()
+	for animal in animals:
+		animal.player = player
 	_make_interface()
 	_show_menu(true)
 
@@ -196,6 +200,18 @@ func _make_world() -> void:
 		for zz in [-3.0,3.0]:
 			_cube(ruins,Vector3(xx,2.2,zz),Vector3(0.5,4.4,0.5),Color("607882"))
 	_cube(ruins,Vector3(0,4.5,0),Vector3(8.5,0.45,8.5),Color("6c858c"))
+	_make_wildlife()
+
+func _make_wildlife() -> void:
+	var positions := [Vector2(-18,12),Vector2(21,18),Vector2(-25,-17),Vector2(24,-21),Vector2(10,35),Vector2(-32,5)]
+	for i in range(clampi(int(setting("world", "creature_count", 4)),0,6)):
+		var p: Vector2 = positions[i]
+		var creature: Node3D = WILDLIFE.new()
+		creature.name = "FaunaPacifica%d" % i
+		creature.position = Vector3(p.x,_height(p.x,p.y),p.y)
+		creature.height_at = Callable(self,"_height")
+		world_root.add_child(creature)
+		animals.append(creature)
 
 func _make_pickups() -> void:
 	var rng := RandomNumberGenerator.new()
@@ -376,6 +392,8 @@ func _new_game() -> void:
 		if is_instance_valid(h): h.queue_free()
 	huts.clear()
 	if is_instance_valid(raft): raft.queue_free()
+	for animal in animals:
+		animal.global_position = animal.home
 	raft = null
 	raft_chest = false
 	chest_items = {"madeira":0,"pedra":0,"fibra":0,"comida":0,"agua":0}
@@ -410,6 +428,11 @@ func _continue_game() -> void:
 			var p: Array = d.get("player",[0,2,24])
 			player.position = Vector3(float(p[0]),float(p[1]),float(p[2]))
 			gathered = d.get("gathered",[])
+			var wildlife_positions: Array = d.get("wildlife_positions",[])
+			for i in range(mini(wildlife_positions.size(),animals.size())):
+				var wp: Array = wildlife_positions[i]
+				if wp.size() >= 3:
+					animals[i].position = Vector3(float(wp[0]),float(wp[1]),float(wp[2]))
 			for entry in pickups.duplicate():
 				if gathered.has(entry["id"]):
 					entry["node"].queue_free()
@@ -579,7 +602,10 @@ func _save(silent: bool = false) -> void:
 	var boat_pos := [0.0,-1.0,70.0]
 	if is_instance_valid(raft):
 		boat_pos = [raft.position.x,raft.position.y,raft.position.z]
-	var data := {"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"first_person":first_person,"time":time_of_day}
+	var wildlife_positions := []
+	for animal in animals:
+		wildlife_positions.append([animal.position.x,animal.position.y,animal.position.z])
+	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"first_person":first_person,"time":time_of_day}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
