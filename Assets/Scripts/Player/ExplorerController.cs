@@ -1,4 +1,5 @@
 using UnityEngine;
+using Renascer.Core;
 
 namespace Renascer.Player
 {
@@ -29,20 +30,21 @@ namespace Renascer.Player
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape)) Cursor.lockState = CursorLockMode.None;
-            if (Input.GetMouseButtonDown(0)) Cursor.lockState = CursorLockMode.Locked;
+            if (InputBridge.Down(KeyCode.Escape)) Cursor.lockState = CursorLockMode.None;
+            if (InputBridge.MouseClick) Cursor.lockState = CursorLockMode.Locked;
             if (Cursor.lockState == CursorLockMode.Locked)
             {
-                transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * mouseSensitivity);
-                pitch = Mathf.Clamp(pitch - Input.GetAxis("Mouse Y") * mouseSensitivity, -85f, 85f);
+                transform.Rotate(Vector3.up * InputBridge.Look.x * mouseSensitivity);
+                pitch = Mathf.Clamp(pitch - InputBridge.Look.y * mouseSensitivity, -85f, 85f);
                 cameraPivot.localRotation = Quaternion.Euler(pitch, 0, 0);
             }
-            var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
+            var movement = InputBridge.Movement;
+            var input = new Vector3(movement.x, 0, movement.y);
             input = Vector3.ClampMagnitude(input, 1);
-            float speed = Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed;
+            float speed = InputBridge.Held(KeyCode.LeftShift) ? sprintSpeed : walkSpeed;
             var move = transform.TransformDirection(input) * speed;
             if (controller.isGrounded && verticalVelocity < 0) verticalVelocity = -2f;
-            if (controller.isGrounded && Input.GetKeyDown(KeyCode.Space)) verticalVelocity = 6.5f;
+            if (controller.isGrounded && InputBridge.Down(KeyCode.Space)) verticalVelocity = 6.5f;
             verticalVelocity += Physics.gravity.y * Time.deltaTime;
             move.y = verticalVelocity;
             controller.Move(move * Time.deltaTime);
