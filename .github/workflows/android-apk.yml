@@ -46,6 +46,24 @@ jobs:
           set -euo pipefail
           godot --headless --path . --script res://scripts/tools/BuildIcon.gd
           test -s assets/app_icon.png
+      - name: Adicionar texturas fotografadas CC0 para o mundo 3D
+        run: |
+          set -euo pipefail
+          mkdir -p assets/materials
+          if command -v curl >/dev/null; then
+            for asset in sand_03 grass_ground rock_ground; do
+              target="assets/materials/${asset}_diff_1k.jpg"
+              url="https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/${asset}/${asset}_diff_1k.jpg"
+              if curl --fail --location --silent --show-error --retry 1 --connect-timeout 12 --max-time 60 --user-agent "RenascerNovoMundo/0.3" "${url}" --output "${target}" && test "$(wc -c < "${target}")" -gt 35000; then
+                echo "MATERIAL_FOTOGRAFICO_OK=${asset} bytes=$(wc -c < "${target}")"
+              else
+                rm -f "${target}"
+                echo "MATERIAL_FOTOGRAFICO_FALLBACK=${asset}"
+              fi
+            done
+          else
+            echo "curl ausente: usaremos materiais procedurais locais como alternativa."
+          fi
       - name: Definir versao incremental do APK
         run: |
           set -euo pipefail
