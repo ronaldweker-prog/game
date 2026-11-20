@@ -25,6 +25,7 @@ func _ready() -> void:
 	_rocks()
 	_grass()
 	_relic_station()
+	_scanned_environment_props()
 
 func _height(x: float, z: float) -> float:
 	if height_at.is_valid():
@@ -322,6 +323,32 @@ func _grass() -> void:
 	field.multimesh = mm
 	field.name = "CapimInstanciado"
 	add_child(field)
+
+func _scanned_environment_props() -> void:
+	# Objetos de terreno com geometria escaneada, mas com densidade limitada.
+	# Modelos ausentes não impedem que o jogo abra ou seja jogável.
+	var catalog := [
+		{"id":"rock_09","places":[Vector2(-10,27),Vector2(14,32),Vector2(20,-24),Vector2(-30,-13)]},
+		{"id":"tree_stump_01","places":[Vector2(-14,19),Vector2(28,-22)]}
+	]
+	for entry in catalog:
+		var id: String = entry["id"]
+		var asset_path := "res://assets/models/%s/%s_1k.gltf" % [id,id]
+		if not ResourceLoader.exists(asset_path):
+			continue
+		var imported: Resource = load(asset_path)
+		if not imported is PackedScene:
+			continue
+		var scene: PackedScene = imported
+		for i in range(entry["places"].size()):
+			var xy: Vector2 = entry["places"][i]
+			var anchor := Node3D.new()
+			anchor.name = "ModeloReal_%s_%d" % [id,i]
+			anchor.position = Vector3(xy.x,_height(xy.x,xy.y),xy.y)
+			anchor.rotation.y = float(i)*1.3
+			anchor.scale = Vector3.ONE * (1.0 if id == "rock_09" else 0.85)
+			add_child(anchor)
+			anchor.add_child(scene.instantiate())
 
 func _relic_station() -> void:
 	var station := Node3D.new()
