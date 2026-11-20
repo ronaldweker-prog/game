@@ -997,7 +997,8 @@ Descobertas.
 Exploração.
 Pesquisa.
 Construção.
-Aprendizado.Uso de equipamentos.
+Aprendizado.
+Uso de equipamentos.
 Desenvolvimento das Essências.
 Preservar as evoluções já aprovadas em conversas anteriores.
 Não inventar uma lista definitiva de novas Essências e atribuí-la ao cânone sem validação.
@@ -1996,7 +1997,8 @@ O RECOMEÇO: o mundo mudou. Agora cabe ao jogador decidir o que será construíd
 
 PARTE III — EXPANSÃO DOS SISTEMAS
 EXPANSÃO DEFINITIVA DE SISTEMAS, BASES, VEÍCULOS, IA, SEGURANÇA, CIVILIZAÇÕES, MULTIPLAYER E EXPERIÊNCIA
-DOCUMENTO COMPLEMENTAR AOS PROMPTS MESTRE E COMPLEMENTAR ANTERIORES.Este documento adiciona sistemas que ainda não estavam suficientemente detalhados. Todas as funcionalidades devem ser integradas aos sistemas existentes de O RECOMEÇO.
+DOCUMENTO COMPLEMENTAR AOS PROMPTS MESTRE E COMPLEMENTAR ANTERIORES.
+Este documento adiciona sistemas que ainda não estavam suficientemente detalhados. Todas as funcionalidades devem ser integradas aos sistemas existentes de O RECOMEÇO.
 A IA desenvolvedora deve considerar os três documentos como partes de um único projeto.
 Não remover, simplificar ou substituir funcionalidades anteriormente aprovadas sem autorização do criador.
 As propostas novas deste documento estão aprovadas para entrar no planejamento do jogo. Detalhes antigos que não estejam confirmados devem continuar identificados como pendentes de recuperação do cânone.
