@@ -7,6 +7,21 @@
 - **Multiplayer real:** NÃO IMPLEMENTADO.
 - **Fidelidade visual das imagens de referência:** NÃO ALCANÇADA.
 
+## Atualização recente — RENASCER: NOVO MUNDO
+**Marca:** o aplicativo agora se chama RENASCER: NOVO MUNDO. O nome O RECOMEÇO continua nos documentos históricos do universo. Um símbolo vetorial inspirado na arte aprovada foi integrado ao projeto; a imagem promocional completa ainda não foi importada ao jogo como textura binária.
+
+**Implementado em código:**
+- Animações procedurais de caminhada, repouso e navegação; mãos visíveis em primeira pessoa.
+- Corrida com gasto/regeneração de energia, pulo por botão de toque/teclado e persistência do valor no save.
+- Recursos com pequenos modelos de madeira, pedra, fibra, comida e água, além de rotação/oscilações visuais.
+- Primeira missão com etapas de exploração, investigação de ruínas, feedback e progresso persistente.
+- Arquivo de ícone SVG e conversão automática para PNG no GitHub Actions.
+- Código de versão Android atualizado pela automação em cada exportação.
+
+**Teste automatizado:** compilação e teste da versão 50 foram aprovados; os testes incluem o ícone, animações, novos recursos, corrida, salto, construção, armazenamento, câmera e missão. Os testes são headless, não demonstram qualidade gráfica real, desempenho ou ausência de bugs no celular.
+
+**Ainda ausente:** captura comprovada do novo jogo rodando no POCO M7 Pro 5G, animações artísticas com rig profissional, ambiente fotorrealista e os grandes sistemas avançados do plano.
+
 ## Definição de pronto (não negociável)
 Marcar uma tarefa concluída somente quando compilou, funciona por toque e/ou teclado, possui testes de jogo e persistência aplicável, não causa regressão e foi medida no dispositivo quando afetar desempenho.
 
