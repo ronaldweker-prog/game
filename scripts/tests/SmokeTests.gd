@@ -54,6 +54,33 @@ func _run() -> void:
 	game.items["fibra"] = 25
 	game._craft()
 	_check(game.has_tool, "Fabricar ferramenta")
+	game.items["madeira"] = 70
+	game.items["fibra"] = 70
+	game.player.position = Vector3(6.0,game._height(6.0,24.0)+2.0,24.0)
+	var construction_cell: Vector3 = game.building_system.call("candidate",game.player)
+	_check(bool(game.building_system.call("can_place","piso",construction_cell,0)), "Piso modular aceito em terreno valido")
+	var budget_before: int = int(game.items["madeira"])
+	game.build_mode = true
+	game.build_kind = "piso"
+	game._place_modular_piece()
+	_check(game.building_system.records.size() == 1,"Construir piso modular")
+	_check(int(game.items["madeira"]) == budget_before-3,"Construção consome materiais do inventario")
+	game.build_kind = "parede"
+	game._place_modular_piece()
+	_check(game.building_system.records.size() == 2,"Construir parede sobre fundacao")
+	_check(not bool(game.building_system.call("can_place","parede",construction_cell,0)),"Impedir parede duplicada")
+	game.build_kind = "porta"
+	game.build_side = 1
+	game._place_modular_piece()
+	_check(game.building_system.records.size() == 3,"Instalar porta modular")
+	game.build_kind = "teto"
+	game._place_modular_piece()
+	_check(game.building_system.records.size() == 4,"Instalar teto modular")
+	game.player.global_position = construction_cell + Vector3(0,1.5,0)
+	game._open_door()
+	var saved_buildings: Array = game.building_system.call("serialize")
+	_check(bool(saved_buildings[2]["opened"]), "Porta modular abre quando jogador aproxima")
+	game.build_mode = false
 	game._shelter()
 	_check(game.huts.size() == 1, "Construir abrigo")
 	game._build_raft()
@@ -110,6 +137,8 @@ func _run() -> void:
 	_check(game.first_person, "Camera restaurada do save")
 	_check(game.outfit_style == 1, "Aparencia restaurada do save")
 	_check(game.ruins_visited, "Registro da missao preservado no save")
+	_check(game.building_system.records.size() == 4,"Construções modulares restauradas do save")
+	_check(bool(game.building_system.records[2]["opened"]),"Estado da porta persistido no save")
 	_check(absf(energy_just_loaded-energy_before_save) < 0.01,"Energia restaurada do save")
 	print("RESUMO DOS TESTES: ", failures, " falhas")
 	quit(1 if failures > 0 else 0)
