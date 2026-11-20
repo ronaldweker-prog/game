@@ -46,6 +46,10 @@ func _run() -> void:
 	_check(game.world_root.get_node_or_null("IlhaVisual/TroncosInstanciados") != null, "Vegetacao instanciada criada")
 	_check(game.world_root.get_node_or_null("IlhaVisual/PalmeirasCosteiras/FolhasPalmeiras") != null, "Palmeiras costeiras carregadas")
 	_check(game.world_root.get_node_or_null("IlhaVisual/InstalacaoAntigaExploravel") != null, "Estacao antiga criada")
+	if ResourceLoader.exists("res://assets/models/rock_09/rock_09_1k.gltf"):
+		_check(game.world_root.get_node_or_null("IlhaVisual/ModeloReal_rock_09_0") != null, "Rocha fotogrametrica importada e posicionada")
+	if ResourceLoader.exists("res://assets/models/tree_stump_01/tree_stump_01_1k.gltf"):
+		_check(game.world_root.get_node_or_null("IlhaVisual/ModeloReal_tree_stump_01_0") != null, "Tronco fotogrametrico importado e posicionado")
 	_check(game.animals.size() >= 1, "Fauna terrestre criada")
 	_check(game.animals[0].height_at.is_valid(), "Fauna com terreno associado")
 	_check(int(game.setting("visuals", "mobile_fps", 0)) >= 24, "Config de FPS carregada")
