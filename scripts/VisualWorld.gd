@@ -1,5 +1,6 @@
 extends Node3D
 const COASTAL_PALMS = preload("res://scripts/CoastalPalms.gd")
+const SURFACE_TEXTURES = preload("res://scripts/SurfaceTextures.gd")
 ## Direcao visual da ilha: terreno sombreado, ceu, ondas, rochas, vegetacao
 ## instanciada e instalacao antiga. Substitui a geometria de cubos/bolas da v0.1.
 ## Um estilo naturalista procedural inicial; NAO equivale a modelos AAA/PBR fotorrealistas.
@@ -117,22 +118,33 @@ func _terrain() -> void:
 	shader.code = """
 shader_type spatial;
 render_mode cull_back, diffuse_burley, specular_schlick_ggx;
-float hash21(vec2 p) { return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453123); }
-float noise21(vec2 p) {
-	vec2 i=floor(p), f=fract(p);
-	f=f*f*(3.0-2.0*f);
-	return mix(mix(hash21(i),hash21(i+vec2(1.0,0.0)),f.x),mix(hash21(i+vec2(0.0,1.0)),hash21(i+vec2(1.0,1.0)),f.x),f.y);
+uniform sampler2D sand_map : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
+uniform sampler2D grass_map : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
+uniform sampler2D rock_map : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
+varying float terrain_height;
+void vertex() {
+	terrain_height = VERTEX.y;
 }
 void fragment() {
-	float n=noise21(UV*5.2);
-	float fine=noise21(UV*27.0);
-	vec3 base=COLOR.rgb;
-	ALBEDO=base*(0.76+0.36*n+0.13*fine);
-	ROUGHNESS=0.94;
+	vec2 coord = UV;
+	vec3 sand = texture(sand_map,coord).rgb;
+	vec3 grass = texture(grass_map,coord).rgb;
+	vec3 rock = texture(rock_map,coord).rgb;
+	float vegetation = smoothstep(-0.25,2.25,terrain_height);
+	float crags = smoothstep(7.0,11.3,terrain_height);
+	float grass_patch = sin(UV.x*3.2)*sin(UV.y*2.6)*0.10;
+	vegetation = clamp(vegetation+grass_patch,0.0,1.0);
+	vec3 ground = mix(sand,grass,vegetation);
+	ground = mix(ground,rock,crags*0.73);
+	ALBEDO=ground;
+	ROUGHNESS=0.96;
 	METALLIC=0.0;
 }
 """
 	mat.shader = shader
+	mat.set_shader_parameter("sand_map",SURFACE_TEXTURES.surface("sand"))
+	mat.set_shader_parameter("grass_map",SURFACE_TEXTURES.surface("grass"))
+	mat.set_shader_parameter("rock_map",SURFACE_TEXTURES.surface("rock"))
 	var ground := MeshInstance3D.new()
 	ground.name = "TerrenoNatural"
 	ground.mesh = mesh
@@ -246,6 +258,7 @@ func _rocks() -> void:
 	rock_mesh.radial_segments = 9
 	rock_mesh.rings = 6
 	var rock_mat := _surface(Color.WHITE,1.0)
+	rock_mat.albedo_texture = SURFACE_TEXTURES.surface("rock")
 	rock_mat.vertex_color_use_as_albedo = true
 	rock_mesh.material = rock_mat
 	var count := 190
