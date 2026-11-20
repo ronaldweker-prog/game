@@ -96,6 +96,7 @@ func _run() -> void:
 	game._save(true)
 	_check(FileAccess.file_exists(game.SAVE), "Arquivo de salvamento criado")
 	game._continue_game()
+	var energy_just_loaded: float = game.stamina
 	await process_frame
 	_check(int(game.items["madeira"]) == original_wood, "Recursos restaurados do save")
 	_check(game.raft_chest, "Bau restaurado do save")
@@ -104,6 +105,6 @@ func _run() -> void:
 	_check(game.raft.position.distance_to(boat_pos) < 0.1, "Posicao da jangada restaurada")
 	_check(game.first_person, "Camera restaurada do save")
 	_check(game.outfit_style == 1, "Aparencia restaurada do save")
-	_check(absf(game.stamina-energy_before_save) < 0.01,"Energia restaurada do save")
+	_check(absf(energy_just_loaded-energy_before_save) < 0.01,"Energia restaurada do save")
 	print("RESUMO DOS TESTES: ", failures, " falhas")
 	quit(1 if failures > 0 else 0)
