@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using Renascer.Core;
 
 namespace Renascer.Gameplay
 {
@@ -54,9 +55,9 @@ namespace Renascer.Gameplay
         }
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.F)) CraftShelterKit();
-            if (Input.GetKeyDown(KeyCode.F5)) Save();
-            if (Input.GetKeyDown(KeyCode.F9)) Load();
+            if (InputBridge.Down(KeyCode.F)) CraftShelterKit();
+            if (InputBridge.Down(KeyCode.F5)) Save();
+            if (InputBridge.Down(KeyCode.F9)) Load();
         }
     }
 }
