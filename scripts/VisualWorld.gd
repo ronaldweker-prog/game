@@ -236,7 +236,7 @@ func _trees() -> void:
 func _palms() -> void:
 	var trees: Node3D = COASTAL_PALMS.new()
 	trees.name = "PalmeirasCosteiras"
-	trees.configure(Callable(self,"_height"),palm_count)
+	trees.call("configure",Callable(self,"_height"),palm_count)
 	add_child(trees)
 
 func _rocks() -> void:
