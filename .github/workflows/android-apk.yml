@@ -66,6 +66,14 @@ jobs:
           else
             echo "SEM_DOWNLOAD: materiais procedurais locais permanecem disponíveis."
           fi
+      - name: Baixar modelos fotogrametricos CC0
+        run: |
+          set -euo pipefail
+          if command -v python3 >/dev/null; then
+            python3 scripts/tools/fetch_models.py
+          else
+            echo "SEM_MODELOS_EXTRAS: cenário procedural será utilizado."
+          fi
       - name: Definir versao incremental do APK
         run: |
           set -euo pipefail
