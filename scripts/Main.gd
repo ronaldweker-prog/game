@@ -6,6 +6,7 @@ const SAVE := "user://save.json"
 var playing := false
 var player: CharacterBody3D
 var body: MeshInstance3D
+var player_visuals: Node3D
 var pivot: Node3D
 var cam: Camera3D
 var hud: CanvasLayer
@@ -199,9 +200,12 @@ func _make_player() -> void:
 	col.shape = cap
 	col.position.y = 0.95
 	player.add_child(col)
-	body = _cube(player,Vector3(0,1.0,0),Vector3(0.72,1.7,0.44),Color("54635b"))
-	_ball(player,Vector3(0,1.92,0),0.28,Color("af8b72"))
-	_cube(player,Vector3(0,1.1,0.36),Vector3(0.8,0.95,0.25),Color("47584b"))
+	player_visuals = Node3D.new()
+	player_visuals.name = "VisualDoPersonagem"
+	player.add_child(player_visuals)
+	body = _cube(player_visuals,Vector3(0,1.0,0),Vector3(0.72,1.7,0.44),Color("54635b"))
+	_ball(player_visuals,Vector3(0,1.92,0),0.28,Color("af8b72"))
+	_cube(player_visuals,Vector3(0,1.1,0.36),Vector3(0.8,0.95,0.25),Color("47584b"))
 	pivot = Node3D.new()
 	pivot.position.y = 1.55
 	player.add_child(pivot)
@@ -249,6 +253,7 @@ func _make_interface() -> void:
 	_label(menu,"PROTÓTIPO 0.1 • Expansões futuras: bases, céu, oceano e cavernas",Vector2(85,590),Vector2(1100,60),20)
 	hud_panel = Control.new()
 	hud_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	hud_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(hud_panel)
 	info = _label(hud_panel,"O RECOMEÇO",Vector2(18,15),Vector2(710,46),28)
 	status = _label(hud_panel,"SAÚDE 100   ÁGUA 100   FOME 100",Vector2(18,64),Vector2(800,52),23)
@@ -271,6 +276,8 @@ func _make_interface() -> void:
 	hud_panel.visible = false
 
 func _show_menu(show: bool) -> void:
+	if show and playing:
+		_save(true)
 	menu.visible = show
 	hud_panel.visible = not show
 	playing = not show
@@ -284,6 +291,10 @@ func _new_game() -> void:
 	gathered.clear()
 	has_tool = false
 	stats = Vector3(100,100,100)
+	time_of_day = 0.0
+	first_person = false
+	cam.position = Vector3(0,0,4.8)
+	player_visuals.visible = true
 	for h in huts:
 		if is_instance_valid(h): h.queue_free()
 	huts.clear()
@@ -306,6 +317,16 @@ func _continue_game() -> void:
 		if d is Dictionary:
 			items = d.get("items",items)
 			has_tool = bool(d.get("tool",false))
+			var bars: Array = d.get("stats", [100,100,100])
+			if bars.size() >= 3:
+				stats = Vector3(float(bars[0]),float(bars[1]),float(bars[2]))
+			time_of_day = float(d.get("time",0.0))
+			quality = int(d.get("quality",0))
+			get_viewport().scaling_3d_scale = [0.70,0.83,1.0][clampi(quality,0,2)]
+			Engine.max_fps = 30 if quality == 0 else 45
+			first_person = bool(d.get("first_person",false))
+			cam.position = Vector3.ZERO if first_person else Vector3(0,0,4.8)
+			player_visuals.visible = not first_person
 			var p: Array = d.get("player",[0,2,24])
 			player.position = Vector3(float(p[0]),float(p[1]),float(p[2]))
 			gathered = d.get("gathered",[])
@@ -317,7 +338,14 @@ func _continue_game() -> void:
 				_place_hut(Vector3(float(pos[0]),float(pos[1]),float(pos[2])))
 			if bool(d.get("raft",false)):
 				_place_raft()
-				raft_chest = bool(d.get("chest",false))
+				var boat_pos: Array = d.get("raft_position",[0.0,-1.0,70.0])
+				if boat_pos.size() >= 3:
+					raft.position = Vector3(float(boat_pos[0]),-1.0,float(boat_pos[2]))
+				if bool(d.get("chest",false)):
+					_install_chest()
+				aboard = bool(d.get("aboard",false))
+				if aboard:
+					player.position = raft.position + Vector3(0,1.4,0)
 			_notice("Salvamento carregado.")
 
 func _notice(t: String) -> void:
@@ -346,7 +374,7 @@ func _action(kind: String) -> void:
 		"camera":
 			first_person = not first_person
 			cam.position = Vector3.ZERO if first_person else Vector3(0,0,4.8)
-			body.visible = not first_person
+			player_visuals.visible = not first_person
 		"eat":
 			if items["comida"] > 0:
 				items["comida"] -= 1
@@ -445,29 +473,36 @@ func _board() -> void:
 	else:
 		_notice("Aproxime-se da jangada.")
 
+func _install_chest() -> void:
+	raft_chest = true
+	_cube(raft,Vector3(-1.1,0.6,0.7),Vector3(0.9,0.7,0.65),Color("705139"))
+
 func _chest() -> void:
 	if not is_instance_valid(raft):
 		_notice("Construa a jangada primeiro.")
 	elif raft_chest:
 		_notice("Baú já instalado.")
 	elif _pay({"madeira":2,"fibra":1}):
-		raft_chest = true
-		_cube(raft,Vector3(-1.1,0.6,0.7),Vector3(0.9,0.7,0.65),Color("705139"))
+		_install_chest()
 		_notice("Baú instalado!")
 	else:
 		_notice("Baú: 2 madeiras + 1 fibra.")
 
-func _save() -> void:
+func _save(silent: bool = false) -> void:
 	if not playing:
 		return
-	var data := {"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"chest":raft_chest}
+	var boat_pos := [0.0,-1.0,70.0]
+	if is_instance_valid(raft):
+		boat_pos = [raft.position.x,raft.position.y,raft.position.z]
+	var data := {"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"stats":[stats.x,stats.y,stats.z],"quality":quality,"first_person":first_person,"time":time_of_day}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
 	if f != null:
 		f.store_string(JSON.stringify(data))
 		f.close()
-		_notice("Jogo salvo!")
+		if not silent:
+			_notice("Jogo salvo!")
 
 func _process(delta: float) -> void:
 	if not playing:
@@ -476,6 +511,8 @@ func _process(delta: float) -> void:
 	sun.rotation.x = -0.7 + sin(time_of_day * 0.025) * 0.38
 	stats.y = maxf(0,stats.y - delta * 0.027)
 	stats.z = maxf(0,stats.z - delta * 0.020)
+	if stats.y <= 0 or stats.z <= 0:
+		stats.x = maxf(1.0,stats.x - delta * 0.1)
 	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   FPS %d" % [stats.x,stats.y,stats.z,Engine.get_frames_per_second()]
 	info.text = "O RECOMEÇO  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
 	autosave += delta
@@ -487,10 +524,10 @@ func _physics_process(delta: float) -> void:
 	if not playing:
 		return
 	var move := Vector2.ZERO
-	if held["left"] or Input.is_key_pressed(KEY_A): move.x -= 1
-	if held["right"] or Input.is_key_pressed(KEY_D): move.x += 1
-	if held["forward"] or Input.is_key_pressed(KEY_W): move.y += 1
-	if held["back"] or Input.is_key_pressed(KEY_S): move.y -= 1
+	if held["left"] or Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT): move.x -= 1
+	if held["right"] or Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT): move.x += 1
+	if held["forward"] or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP): move.y += 1
+	if held["back"] or Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): move.y -= 1
 	var dir := (player.transform.basis * Vector3(move.x,0,-move.y)).normalized()
 	if aboard and is_instance_valid(raft):
 		raft.position += dir * delta * 4
@@ -501,7 +538,7 @@ func _physics_process(delta: float) -> void:
 	player.velocity.x = dir.x * 5.0
 	player.velocity.z = dir.z * 5.0
 	if player.is_on_floor():
-		player.velocity.y = -0.3
+		player.velocity.y = 5.0 if Input.is_key_pressed(KEY_SPACE) else -0.3
 	else:
 		player.velocity.y -= 18.0 * delta
 	player.move_and_slide()
