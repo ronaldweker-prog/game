@@ -29,6 +29,8 @@ func _run() -> void:
 	_check(FileAccess.file_exists("res://assets/app_icon.png"), "Icone PNG gerado e incluido no projeto")
 	_check(str(game.game_config.get("game_title","")) == "RENASCER: NOVO MUNDO", "Novo nome configurado")
 	_check(game.pickups.size() > 0, "Recursos criados na ilha")
+	_check(game.pickups[0]["node"].get("kind") == "madeira", "Recursos possuem identidade visual própria")
+	_check(game.pickups[0]["node"].get_node_or_null("ModeloDeRecurso") != null, "Modelos 3D dos recursos carregados")
 	_check(game.world_root.get_node_or_null("IlhaVisual/TerrenoNatural") != null, "Novo terreno visual criado")
 	_check(game.world_root.get_node_or_null("IlhaVisual/MarComOndas") != null, "Oceano animado criado")
 	_check(game.world_root.get_node_or_null("IlhaVisual/TroncosInstanciados") != null, "Vegetacao instanciada criada")
