@@ -55,6 +55,21 @@ func _run() -> void:
 	game.items["fibra"] = 25
 	game._craft()
 	_check(game.has_tool, "Fabricar ferramenta")
+	game.player.global_position = Vector3(85.0,-2.6,0.0)
+	game.swim_down_held = true
+	game._physics_process(0.1)
+	_check(game.swimming, "Entrar em modo natação quando jogador está no mar")
+	_check(game.player.velocity.y < 0.0,"Mergulho por botão de toque")
+	game.swim_down_held = false
+	game.swim_up_held = true
+	game._physics_process(0.1)
+	_check(game.player.velocity.y > 0.0,"Subir à superfície por botão de toque")
+	game.swim_up_held = false
+	game.player.position = Vector3(85.0,-3.0,0.0)
+	game._physics_process(0.01)
+	var oxygen_before: float = game.oxygen
+	game._process(0.5)
+	_check(game.oxygen < oxygen_before,"Oxigênio diminui enquanto submerso")
 	game.items["madeira"] = 70
 	game.items["fibra"] = 70
 	game.player.position = Vector3(6.0,game._height(6.0,24.0)+2.0,24.0)
@@ -124,11 +139,13 @@ func _run() -> void:
 	_check(game._mission_text().begins_with("OBJETIVO CONCLUÍDO"), "Objetivo de exploracao atualizado")
 	var original_wood: int = int(game.items["madeira"])
 	var energy_before_save: float = game.stamina
+	var oxygen_before_save: float = game.oxygen
 	var boat_pos: Vector3 = game.raft.position
 	game._save(true)
 	_check(FileAccess.file_exists(game.SAVE), "Arquivo de salvamento criado")
 	game._continue_game()
 	var energy_just_loaded: float = game.stamina
+	var oxygen_just_loaded: float = game.oxygen
 	await process_frame
 	_check(int(game.items["madeira"]) == original_wood, "Recursos restaurados do save")
 	_check(game.raft_chest, "Bau restaurado do save")
@@ -141,5 +158,6 @@ func _run() -> void:
 	_check(game.building_system.records.size() == 4,"Construções modulares restauradas do save")
 	_check(bool(game.building_system.records[2]["opened"]),"Estado da porta persistido no save")
 	_check(absf(energy_just_loaded-energy_before_save) < 0.01,"Energia restaurada do save")
+	_check(absf(oxygen_just_loaded-oxygen_before_save) < 0.01,"Oxigênio restaurado do save")
 	print("RESUMO DOS TESTES: ", failures, " falhas")
 	quit(1 if failures > 0 else 0)
