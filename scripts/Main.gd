@@ -4,6 +4,7 @@ extends Node3D
 # Expansões (bases, criaturas, NPCs, céu e subterrâneo) ainda não implementadas.
 const SAVE := "user://save.json"
 const CONFIG_PATH := "res://config/gameplay.json"
+const VIRTUAL_STICK = preload("res://scripts/VirtualStick.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
@@ -15,6 +16,7 @@ var hud: CanvasLayer
 var menu: Control
 var hud_panel: Control
 var joystick := Vector2.ZERO
+var joystick_control: Control
 var mobile_look := -1
 var first_person := false
 var items := {"madeira": 0, "pedra": 0, "fibra": 0, "comida": 0, "agua": 0}
@@ -293,16 +295,11 @@ func _make_interface() -> void:
 		var method := String(keys[i][1])
 		_btn(hud_panel,String(keys[i][0]),Vector2(812 + (i % 3) * 150,490 + int(i / 3) * 66),Vector2(140,58),func(): _action(method))
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
-	var directions := [["▲","forward",Vector2(115,495)],["◀","left",Vector2(25,573)],["▼","back",Vector2(115,573)],["▶","right",Vector2(205,573)]]
-	for spec in directions:
-		var b := Button.new()
-		b.text = String(spec[0])
-		b.position = spec[2]
-		b.size = Vector2(81,67)
-		hud_panel.add_child(b)
-		var k := String(spec[1])
-		b.button_down.connect(func(): held[k] = true)
-		b.button_up.connect(func(): held[k] = false)
+	joystick_control = VIRTUAL_STICK.new()
+	joystick_control.name = "JoystickMobile"
+	joystick_control.position = Vector2(45,490)
+	joystick_control.size = Vector2(210,210)
+	hud_panel.add_child(joystick_control)
 	hud_panel.visible = false
 
 func _show_menu(show: bool) -> void:
@@ -558,6 +555,10 @@ func _physics_process(delta: float) -> void:
 	if held["right"] or Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT): move.x += 1
 	if held["forward"] or Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP): move.y += 1
 	if held["back"] or Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): move.y -= 1
+	if is_instance_valid(joystick_control):
+		move.x += joystick_control.amount.x
+		move.y -= joystick_control.amount.y
+	move = move.limit_length(1.0)
 	var dir := (player.transform.basis * Vector3(move.x,0,-move.y)).normalized()
 	if aboard and is_instance_valid(raft):
 		raft.position += dir * delta * float(setting("balance", "raft_speed", 4.0))
