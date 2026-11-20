@@ -214,7 +214,7 @@ func _make_player() -> void:
 	pivot.position.y = 1.55
 	player.add_child(pivot)
 	cam = Camera3D.new()
-	cam.fov = 75
+	cam.fov = 72
 	cam.far = float(setting("visuals", "camera_far", 175))
 	cam.position = Vector3(0,0,4.8)
 	pivot.add_child(cam)
@@ -757,9 +757,23 @@ func _save(silent: bool = false) -> void:
 		if not silent:
 			_notice("Jogo salvo!")
 
+func _camera_collision(delta: float) -> void:
+	if first_person:
+		return
+	var start: Vector3 = pivot.global_position
+	var far_position: Vector3 = pivot.to_global(Vector3(0,0,4.8))
+	var ray := PhysicsRayQueryParameters3D.create(start,far_position)
+	ray.exclude = [player.get_rid()]
+	var hit: Dictionary = get_world_3d().direct_space_state.intersect_ray(ray)
+	var desired := 4.8
+	if not hit.is_empty():
+		desired = clampf(start.distance_to(hit["position"])-0.26,0.55,4.8)
+	cam.position.z = lerpf(cam.position.z,desired,clampf(delta*12.0,0.0,1.0))
+
 func _process(delta: float) -> void:
 	if not playing:
 		return
+	_camera_collision(delta)
 	time_of_day += delta
 	if is_instance_valid(character_motion):
 		character_motion.call("animate_character",delta,player.velocity,aboard,first_person)
