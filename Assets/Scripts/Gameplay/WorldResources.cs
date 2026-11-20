@@ -1,4 +1,5 @@
 using UnityEngine;
+using Renascer.Core;
 using Renascer.World;
 
 namespace Renascer.Gameplay
@@ -31,7 +32,7 @@ namespace Renascer.Gameplay
         }
         private void Update()
         {
-            if (!Input.GetKeyDown(KeyCode.E) || viewCamera == null) return;
+            if (!InputBridge.Down(KeyCode.E) || viewCamera == null) return;
             var ray = new Ray(viewCamera.transform.position, viewCamera.transform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, 3.5f, ~0, QueryTriggerInteraction.Collide))
             {
