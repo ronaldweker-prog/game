@@ -209,7 +209,7 @@ func _make_wildlife() -> void:
 		var creature: Node3D = WILDLIFE.new()
 		creature.name = "FaunaPacifica%d" % i
 		creature.position = Vector3(p.x,_height(p.x,p.y),p.y)
-		creature.height_at = Callable(self,"_height")
+		creature.set("height_at", Callable(self,"_height"))
 		world_root.add_child(creature)
 		animals.append(creature)
 
