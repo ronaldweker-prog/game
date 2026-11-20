@@ -1,4 +1,4 @@
-name: O RECOMECO - APK Android de teste
+name: RENASCER - APK Android de teste
 
 on:
   push:
@@ -41,6 +41,11 @@ jobs:
           test -d /usr/lib/android-sdk
           test -f "$HOME/.config/godot/editor_settings-4.4.tres"
           echo "Ferramentas e templates configurados."
+      - name: Criar icone do Android a partir da marca aprovada
+        run: |
+          set -euo pipefail
+          godot --headless --path . --script res://scripts/tools/BuildIcon.gd
+          test -s assets/app_icon.png
       - name: Importar e validar projeto
         run: |
           set -euo pipefail
@@ -63,15 +68,15 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build/android
-          godot --headless --path . --export-debug "Android Debug" build/android/O_RECOMECO.apk 2>&1 | tee /tmp/export.log
-          test -s build/android/O_RECOMECO.apk
-          unzip -tq build/android/O_RECOMECO.apk
-          echo "APK gerado: $(du -h build/android/O_RECOMECO.apk)"
+          godot --headless --path . --export-debug "Android Debug" build/android/RENASCER_NOVO_MUNDO.apk 2>&1 | tee /tmp/export.log
+          test -s build/android/RENASCER_NOVO_MUNDO.apk
+          unzip -tq build/android/RENASCER_NOVO_MUNDO.apk
+          echo "APK gerado: $(du -h build/android/RENASCER_NOVO_MUNDO.apk)"
       - name: Disponibilizar APK para download
         uses: actions/upload-artifact@v4
         with:
-          name: O-RECOMECO-APK-Android
-          path: build/android/O_RECOMECO.apk
+          name: RENASCER-NOVO-MUNDO-APK-Android
+          path: build/android/RENASCER_NOVO_MUNDO.apk
           if-no-files-found: error
           retention-days: 30
       - name: Publicar versao experimental para download direto
@@ -79,7 +84,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: android-teste-${{ github.run_number }}
-          name: O RECOMEÇO — teste Android ${{ github.run_number }}
+          name: RENASCER: NOVO MUNDO — teste Android ${{ github.run_number }}
           prerelease: true
           make_latest: false
           generate_release_notes: false
@@ -87,4 +92,4 @@ jobs:
             APK experimental gerado automaticamente. Não representa o jogo completo.
             Ainda precisa ser testado em aparelho Android físico (POCO M7 Pro 5G).
             Mecanicas avançadas e gráficos finais permanecem em desenvolvimento.
-          files: build/android/O_RECOMECO.apk
+          files: build/android/RENASCER_NOVO_MUNDO.apk
