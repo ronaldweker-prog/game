@@ -10,6 +10,7 @@ const VISUAL_WORLD = preload("res://scripts/VisualWorld.gd")
 const UI_SKIN = preload("res://scripts/UISkin.gd")
 const CHARACTER_MOTION = preload("res://scripts/CharacterMotion.gd")
 const RESOURCE_VISUAL = preload("res://scripts/ResourceVisual.gd")
+const BUILDING_SYSTEM = preload("res://scripts/BuildingSystem.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
@@ -54,6 +55,11 @@ var quality := 0
 var autosave := 0.0
 var held := {"left": false, "right": false, "forward": false, "back": false}
 var key_map := {}
+var building_system: Node3D
+var build_mode := false
+var build_kind := "piso"
+var build_side := 0
+var build_label: Label
 var world_root: Node3D
 var icon_materials := {}
 
@@ -91,6 +97,10 @@ func _ready() -> void:
 	world_root.name = "Mundo"
 	add_child(world_root)
 	_make_world()
+	building_system = BUILDING_SYSTEM.new()
+	building_system.name = "ConstrucoesModulares"
+	building_system.call("configure",Callable(self,"_height"))
+	world_root.add_child(building_system)
 	_make_player()
 	for animal in animals:
 		animal.player = player
@@ -262,9 +272,15 @@ func _make_interface() -> void:
 		var method := String(keys[i][1])
 		_btn(hud_panel,String(keys[i][0]),Vector2(812 + (i % 3) * 150,490 + int(i / 3) * 66),Vector2(140,58),func(): _action(method))
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
+	_btn(hud_panel,"PORTA",Vector2(140,118),Vector2(125,48),func(): _open_door())
 	_make_chest_panel()
 	_btn(hud_panel,"PULAR",Vector2(296,616),Vector2(136,58),func(): _request_jump())
 	_btn(hud_panel,"INVESTIGAR",Vector2(445,616),Vector2(151,58),func(): _investigate_ruins())
+	_btn(hud_panel,"CONSTRUIR",Vector2(445,479),Vector2(162,54),func(): _toggle_build())
+	_btn(hud_panel,"PEÇA",Vector2(616,479),Vector2(162,54),func(): _cycle_build_piece())
+	_btn(hud_panel,"COLOCAR",Vector2(445,539),Vector2(162,54),func(): _place_modular_piece())
+	_btn(hud_panel,"GIRAR",Vector2(616,539),Vector2(162,54),func(): _rotate_build())
+	build_label = _label(hud_panel,"",Vector2(448,597),Vector2(375,36),17)
 	var run_button := Button.new()
 	run_button.text = "CORRER"
 	run_button.position = Vector2(296,545)
@@ -359,6 +375,63 @@ func _investigate_ruins() -> void:
 		ruins_visited = true
 		_notice("REGISTRO ANTIGO RECUPERADO: fragmentos de uma civilização desaparecida.")
 
+func _build_cost() -> Dictionary:
+	match build_kind:
+		"piso": return recipe("floor",{"madeira":3,"fibra":1})
+		"parede": return recipe("wall",{"madeira":3,"fibra":1})
+		"porta": return recipe("door",{"madeira":4,"fibra":1})
+		"teto": return recipe("roof",{"madeira":4,"fibra":2})
+	return {}
+
+func _toggle_build() -> void:
+	build_mode = not build_mode
+	if not build_mode and is_instance_valid(building_system):
+		building_system.call("set_preview",build_kind,Vector3.ZERO,build_side,false)
+	_notice("Modo construção ativo: escolha a peça e confirme." if build_mode else "Modo construção desativado.")
+
+func _cycle_build_piece() -> void:
+	build_mode = true
+	var types := ["piso","parede","porta","teto"]
+	build_kind = types[(types.find(build_kind)+1) % types.size()]
+	_notice("Peça selecionada: "+build_kind+". Custo: "+cost_text(_build_cost()))
+
+func _rotate_build() -> void:
+	if not build_mode:
+		build_mode = true
+	build_side = posmod(build_side+1,4)
+	_notice("Peça girada para orientação %d." % build_side)
+
+func _place_modular_piece() -> void:
+	if not build_mode:
+		_notice("Ative CONSTRUIR primeiro.")
+		return
+	if aboard:
+		_notice("Desembarque antes de construir.")
+		return
+	if not has_tool:
+		_notice("Fabrique uma ferramenta antes de construir.")
+		return
+	var cell: Vector3 = building_system.call("candidate",player)
+	if not bool(building_system.call("can_place",build_kind,cell,build_side)):
+		_notice(str(building_system.get("last_error")))
+		return
+	var cost: Dictionary = _build_cost()
+	if not _pay(cost):
+		_notice("Materiais insuficientes: "+cost_text(cost))
+		return
+	if bool(building_system.call("place_piece",build_kind,cell,build_side)):
+		_notice("Módulo construído: "+build_kind+".")
+	else:
+		for kind in cost:
+			items[kind] += int(cost[kind])
+		_notice("Não foi possível construir nessa posição.")
+
+func _open_door() -> void:
+	if bool(building_system.call("toggle_door_near",player.global_position)):
+		_notice("Porta acionada.")
+	else:
+		_notice("Não há uma porta próxima.")
+
 func _request_jump() -> void:
 	if playing and not aboard:
 		jump_queued = true
@@ -372,6 +445,9 @@ func _show_menu(show: bool) -> void:
 		chest_panel.visible = false
 	playing = not show
 	if show:
+		build_mode = false
+		if is_instance_valid(building_system):
+			building_system.call("set_preview",build_kind,Vector3.ZERO,build_side,false)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 	elif not OS.has_feature("mobile"):
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
@@ -380,6 +456,10 @@ func _new_game() -> void:
 	items = {"madeira":0,"pedra":0,"fibra":0,"comida":0,"agua":0}
 	gathered.clear()
 	has_tool = false
+	build_mode = false
+	build_kind = "piso"
+	build_side = 0
+	building_system.call("clear_pieces")
 	stats = Vector3(100,100,100)
 	stamina = 100.0
 	ruins_visited = false
@@ -422,6 +502,9 @@ func _continue_game() -> void:
 			time_of_day = float(d.get("time",0.0))
 			stamina = clampf(float(d.get("stamina",100.0)),0.0,100.0)
 			ruins_visited = bool(d.get("ruins_visited",false))
+			building_system.call("restore",d.get("modular_buildings",[]))
+			build_kind = str(d.get("build_kind","piso"))
+			build_side = posmod(int(d.get("build_side",0)),4)
 			quality = int(d.get("quality",0))
 			outfit_style = int(d.get("outfit_style",outfit_style))
 			_apply_outfit()
@@ -610,7 +693,7 @@ func _save(silent: bool = false) -> void:
 	var wildlife_positions := []
 	for animal in animals:
 		wildlife_positions.append([animal.position.x,animal.position.y,animal.position.z])
-	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"ruins_visited":ruins_visited,"time":time_of_day}
+	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"ruins_visited":ruins_visited,"time":time_of_day,"modular_buildings":building_system.call("serialize"),"build_kind":build_kind,"build_side":build_side}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
@@ -634,6 +717,10 @@ func _process(delta: float) -> void:
 	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   ENERGIA %.0f   FPS %d" % [stats.x,stats.y,stats.z,stamina,Engine.get_frames_per_second()]
 	if is_instance_valid(objective_label):
 		objective_label.text = _mission_text()
+	if is_instance_valid(build_label):
+		build_label.text = ("OBRA: %s  %s" % [build_kind.to_upper(),cost_text(_build_cost())]) if build_mode else "CONSTRUIR: montar base modular"
+	if is_instance_valid(building_system):
+		building_system.call("set_preview",build_kind,building_system.call("candidate",player),build_side,build_mode and not aboard)
 	info.text = "RENASCER  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
 	autosave += delta
 	if autosave > 90:
@@ -699,4 +786,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_V: _action("camera")
 			KEY_F5: _action("save")
 			KEY_I: _investigate_ruins()
+			KEY_G: _toggle_build()
+			KEY_C: _cycle_build_piece()
+			KEY_Q: _rotate_build()
+			KEY_ENTER: _place_modular_piece()
+			KEY_O: _open_door()
 			KEY_ESCAPE: Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
