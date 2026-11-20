@@ -90,6 +90,10 @@ func _run() -> void:
 	game._request_jump()
 	_check(game.jump_queued, "Pulo pode ser acionado pelo touch")
 	game.jump_queued = false
+	game.player.global_position = Vector3(23.0,game._height(23.0,-16.0)+1.0,-16.0)
+	game._investigate_ruins()
+	_check(game.ruins_visited, "Investigacao de ruinas completa")
+	_check(game._mission_text().begins_with("OBJETIVO CONCLUÍDO"), "Objetivo de exploracao atualizado")
 	var original_wood: int = int(game.items["madeira"])
 	var energy_before_save: float = game.stamina
 	var boat_pos: Vector3 = game.raft.position
@@ -105,6 +109,7 @@ func _run() -> void:
 	_check(game.raft.position.distance_to(boat_pos) < 0.1, "Posicao da jangada restaurada")
 	_check(game.first_person, "Camera restaurada do save")
 	_check(game.outfit_style == 1, "Aparencia restaurada do save")
+	_check(game.ruins_visited, "Registro da missao preservado no save")
 	_check(absf(energy_just_loaded-energy_before_save) < 0.01,"Energia restaurada do save")
 	print("RESUMO DOS TESTES: ", failures, " falhas")
 	quit(1 if failures > 0 else 0)
