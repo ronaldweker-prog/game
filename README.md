@@ -12,7 +12,7 @@ Abra a aba **Actions** deste repositório, escolha **O RECOMECO - Gerar APK Andr
 - [Prompt mestre unificado](docs/PROMPT_MESTRE_COMPLETO.txt).
 - [Prompt mestre antigo](docs/historico/PROMPT_MESTRE_ANTIGO.txt).
 - [Complemento antigo](docs/historico/COMPLEMENTO_HISTORIA_CRIATURAS_ECONOMIA.txt).
-- [Tarefas técnicas abertas](../../issues): 6 frentes de desenvolvimento para não perder mecânicas.
+- [Tarefas técnicas abertas](https://github.com/ronaldweker-prog/game/issues): 6 frentes de desenvolvimento para não perder mecânicas.
 
 ## Estado atual
 - Código-fonte do protótipo inicial: ilha 3D, ambiente, exploração, recursos, coleta, inventário simplificado, ferramenta, abrigo, jangada, controles por botões para celular, câmeras e salvamento.
