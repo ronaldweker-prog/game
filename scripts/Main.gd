@@ -9,6 +9,7 @@ const WILDLIFE = preload("res://scripts/Wildlife.gd")
 const VISUAL_WORLD = preload("res://scripts/VisualWorld.gd")
 const UI_SKIN = preload("res://scripts/UISkin.gd")
 const CHARACTER_MOTION = preload("res://scripts/CharacterMotion.gd")
+const RESOURCE_VISUAL = preload("res://scripts/ResourceVisual.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
@@ -162,16 +163,11 @@ func _make_pickups() -> void:
 			x = float((i % 5) * 2 - 4)
 			z = 22.0 + float(int(i / 5) * 3)
 		var kind: String = kinds[i % kinds.size()]
-		var n := Node3D.new()
+		var n: Node3D = RESOURCE_VISUAL.new()
 		n.name = "recurso_%d" % i
 		n.position = Vector3(x,_height(x,z),z)
+		n.call("configure",kind)
 		world_root.add_child(n)
-		match kind:
-			"madeira": _cube(n,Vector3(0,0.25,0),Vector3(0.9,0.35,0.3),Color("866344"))
-			"pedra": _ball(n,Vector3(0,0.25,0),0.35,Color("909a98"))
-			"fibra": _ball(n,Vector3(0,0.45,0),0.5,Color("55a360"))
-			"comida": _ball(n,Vector3(0,0.3,0),0.32,Color("c5a349"))
-			"agua": _cube(n,Vector3(0,0.3,0),Vector3(0.34,0.6,0.34),Color("69b8da"))
 		pickups.append({"id":i,"kind":kind,"node":n})
 
 func _make_player() -> void:
