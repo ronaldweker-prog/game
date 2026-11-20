@@ -8,11 +8,13 @@ const VIRTUAL_STICK = preload("res://scripts/VirtualStick.gd")
 const WILDLIFE = preload("res://scripts/Wildlife.gd")
 const VISUAL_WORLD = preload("res://scripts/VisualWorld.gd")
 const UI_SKIN = preload("res://scripts/UISkin.gd")
+const CHARACTER_MOTION = preload("res://scripts/CharacterMotion.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
 var body: MeshInstance3D
 var player_visuals: Node3D
+var character_motion: Node3D
 var pivot: Node3D
 var cam: Camera3D
 var hud: CanvasLayer
@@ -197,6 +199,9 @@ func _make_player() -> void:
 	cam.position = Vector3(0,0,4.8)
 	pivot.add_child(cam)
 	cam.current = true
+	character_motion = CHARACTER_MOTION.new()
+	player_visuals.add_child(character_motion)
+	character_motion.call("configure",cam)
 
 func _label(parent: Control,t: String,p: Vector2,s: Vector2,sz: int) -> Label:
 	var l := Label.new()
@@ -574,6 +579,8 @@ func _process(delta: float) -> void:
 	if not playing:
 		return
 	time_of_day += delta
+	if is_instance_valid(character_motion):
+		character_motion.call("animate_character",delta,player.velocity,aboard,first_person)
 	sun.rotation.x = -0.7 + sin(time_of_day * float(setting("world", "day_cycle_speed", 0.025))) * 0.38
 	stats.y = maxf(0,stats.y - delta * float(setting("balance", "hydration_loss_per_second", 0.027)))
 	stats.z = maxf(0,stats.z - delta * float(setting("balance", "hunger_loss_per_second", 0.020)))
