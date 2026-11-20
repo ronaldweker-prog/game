@@ -6,6 +6,7 @@ const SAVE := "user://save.json"
 const CONFIG_PATH := "res://config/gameplay.json"
 const VIRTUAL_STICK = preload("res://scripts/VirtualStick.gd")
 const WILDLIFE = preload("res://scripts/Wildlife.gd")
+const VISUAL_WORLD = preload("res://scripts/VisualWorld.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
@@ -123,86 +124,12 @@ func _height(x: float, z: float) -> float:
 	return -2.0 + 13.0 * pow(t, 1.7) + sin(x * 0.18) * cos(z * 0.19) * t
 
 func _make_world() -> void:
-	var env := WorldEnvironment.new()
-	var e := Environment.new()
-	e.background_mode = Environment.BG_COLOR
-	e.background_color = Color("78b6ce")
-	e.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	e.ambient_light_color = Color("b4d5d5")
-	env.environment = e
-	world_root.add_child(env)
-	sun = DirectionalLight3D.new()
-	sun.rotation_degrees = Vector3(-54,-42,0)
-	sun.light_energy = 1.25
-	sun.shadow_enabled = false
-	world_root.add_child(sun)
-	var verts := PackedVector3Array()
-	var indices := PackedInt32Array()
-	var colors := PackedColorArray()
-	var side := 62
-	for z in range(side + 1):
-		for x in range(side + 1):
-			var xx := -76.0 + 152.0 * float(x) / float(side)
-			var zz := -76.0 + 152.0 * float(z) / float(side)
-			var h := _height(xx,zz)
-			verts.append(Vector3(xx,h,zz))
-			colors.append(Color("c0af7d") if h < 0.5 else Color("3c7750"))
-	for z in range(side):
-		for x in range(side):
-			var a := z * (side + 1) + x
-			indices.append_array(PackedInt32Array([a,a+side+1,a+1,a+1,a+side+1,a+side+2]))
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = verts
-	arrays[Mesh.ARRAY_INDEX] = indices
-	arrays[Mesh.ARRAY_COLOR] = colors
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
-	var land := MeshInstance3D.new()
-	land.mesh = mesh
-	var landmat := _mat(Color.WHITE)
-	landmat.vertex_color_use_as_albedo = true
-	land.material_override = landmat
-	world_root.add_child(land)
-	var static_ground := StaticBody3D.new()
-	var shape := CollisionShape3D.new()
-	shape.shape = mesh.create_trimesh_shape()
-	static_ground.add_child(shape)
-	world_root.add_child(static_ground)
-	var water := MeshInstance3D.new()
-	var plane := PlaneMesh.new()
-	plane.size = Vector2(420,420)
-	water.mesh = plane
-	water.position.y = float(setting("world", "ocean_level", -1.2))
-	var watmat := _mat(Color("237f9a"))
-	watmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	watmat.albedo_color.a = 0.75
-	water.material_override = watmat
-	world_root.add_child(water)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 8675309
-	for i in range(int(setting("world", "tree_count", 85))):
-		var x := rng.randf_range(-53,53)
-		var z := rng.randf_range(-53,53)
-		if Vector2(x,z).length() > 61 or (absf(x) < 9 and z > 12 and z < 31):
-			continue
-		var h := _height(x,z)
-		if h < 0.2:
-			continue
-		var tree := Node3D.new()
-		tree.position = Vector3(x,h,z)
-		world_root.add_child(tree)
-		_cube(tree,Vector3(0,1.45,0),Vector3(0.4,2.9,0.4),Color("69513c"))
-		_ball(tree,Vector3(0,3.5,0),1.9,Color("2a6947"))
+	var landscape: Node3D = VISUAL_WORLD.new()
+	landscape.name = "IlhaVisual"
+	landscape.configure(Callable(self,"_height"),int(setting("world","tree_count",130)))
+	world_root.add_child(landscape)
+	sun = landscape.sun
 	_make_pickups()
-	var ruins := Node3D.new()
-	ruins.position = Vector3(23,_height(23,-16),-16)
-	world_root.add_child(ruins)
-	_cube(ruins,Vector3(0,0.15,0),Vector3(8,0.3,8),Color("677f84"))
-	for xx in [-3.0,3.0]:
-		for zz in [-3.0,3.0]:
-			_cube(ruins,Vector3(xx,2.2,zz),Vector3(0.5,4.4,0.5),Color("607882"))
-	_cube(ruins,Vector3(0,4.5,0),Vector3(8.5,0.45,8.5),Color("6c858c"))
 	_make_wildlife()
 
 func _make_wildlife() -> void:
