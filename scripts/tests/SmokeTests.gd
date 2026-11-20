@@ -26,6 +26,8 @@ func _run() -> void:
 	_check(game.is_inside_tree(), "A cena principal abre")
 	_check(game.cam != null, "Camera 3D criada")
 	_check(game.pickups.size() > 0, "Recursos criados na ilha")
+	_check(game.animals.size() >= 1, "Fauna terrestre criada")
+	_check(game.animals[0].height_at.is_valid(), "Fauna com terreno associado")
 	_check(int(game.setting("visuals", "mobile_fps", 0)) >= 24, "Config de FPS carregada")
 	game._new_game()
 	await process_frame
