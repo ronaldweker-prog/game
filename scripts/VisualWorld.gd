@@ -1,15 +1,18 @@
 extends Node3D
+const COASTAL_PALMS = preload("res://scripts/CoastalPalms.gd")
 ## Direcao visual da ilha: terreno sombreado, ceu, ondas, rochas, vegetacao
 ## instanciada e instalacao antiga. Substitui a geometria de cubos/bolas da v0.1.
 ## Um estilo naturalista procedural inicial; NAO equivale a modelos AAA/PBR fotorrealistas.
 var height_at: Callable
 var tree_count := 130
+var palm_count := 28
 var sun: DirectionalLight3D
 var scenery_rng := RandomNumberGenerator.new()
 
-func configure(terrain_height: Callable, trees: int) -> void:
+func configure(terrain_height: Callable, trees: int, palms: int = 28) -> void:
 	height_at = terrain_height
 	tree_count = maxi(60, trees)
+	palm_count = clampi(palms,0,80)
 
 func _ready() -> void:
 	scenery_rng.seed = 20261120
@@ -17,6 +20,7 @@ func _ready() -> void:
 	_terrain()
 	_ocean()
 	_trees()
+	_palms()
 	_rocks()
 	_grass()
 	_relic_station()
@@ -228,6 +232,12 @@ func _trees() -> void:
 	canopy_inst.multimesh = leaves
 	canopy_inst.name = "CopasInstanciadas"
 	add_child(canopy_inst)
+
+func _palms() -> void:
+	var trees: Node3D = COASTAL_PALMS.new()
+	trees.name = "PalmeirasCosteiras"
+	trees.configure(Callable(self,"_height"),palm_count)
+	add_child(trees)
 
 func _rocks() -> void:
 	var rock_mesh := SphereMesh.new()
