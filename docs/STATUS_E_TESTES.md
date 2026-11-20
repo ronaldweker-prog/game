@@ -3,7 +3,7 @@
 ## Situação
 - **Código atual no GitHub:** protótipo 3D Godot 4.4 com configurações externas, joystick virtual, baú funcional, fauna pacífica e personalização simples.
 - **APK experimental disponível para download:** SIM, exportação ARM64 concluída pelo GitHub Actions. Consulte [Releases](https://github.com/ronaldweker-prog/game/releases).
-- **Testes automáticos no GitHub Actions:** foram executados e passaram nas versões anteriores até a execução 23; novas versões exigem a mesma validação. **Teste físico no POCO M7 Pro 5G: NÃO EXECUTADO.**
+- **Testes automáticos no GitHub Actions:** execução **62 aprovada**, incluindo testes de construção modular, controles, oxigênio, salvamento, personagem e paisagem. **Teste físico no POCO M7 Pro 5G: NÃO EXECUTADO.**
 - **Multiplayer real:** NÃO IMPLEMENTADO.
 - **Fidelidade visual das imagens de referência:** NÃO ALCANÇADA.
 
@@ -18,7 +18,7 @@
 - Arquivo de ícone SVG e conversão automática para PNG no GitHub Actions.
 - Código de versão Android atualizado pela automação em cada exportação.
 
-**Teste automatizado:** compilação e teste da versão 50 foram aprovados; os testes incluem o ícone, animações, novos recursos, corrida, salto, construção, armazenamento, câmera e missão. Os testes são headless, não demonstram qualidade gráfica real, desempenho ou ausência de bugs no celular.
+**Teste automatizado:** compilação e testes até a versão **62** foram aprovados (incluindo a nova construção modular, paisagem tropical e mergulho). Os testes headless não demonstram qualidade gráfica real, desempenho ou ausência de bugs no celular.
 
 **Ainda ausente:** captura comprovada do novo jogo rodando no POCO M7 Pro 5G, animações artísticas com rig profissional, ambiente fotorrealista e os grandes sistemas avançados do plano.
 
@@ -32,9 +32,9 @@ Marcar uma tarefa concluída somente quando compilou, funciona por toque e/ou te
 | 0. Build | CI GitHub Actions, Godot export Android, assinatura de teste, APK instalável, teste físico POCO | Build em nuvem passou; **testes físicos pendentes** |
 | 1. Ilha | exploração 3D, colisões, movimento, câmera 1ª/3ª, HUD, touch, qualidade, salvamento e menu | Protótipo com testes automáticos; **precisa teste em aparelho** |
 | 2. Sobrevivência | coleta, recursos, inventário organizado, peso/capacidade, água, fome, energia, oxigênio, fabricação/estações, abrigo | Parcial em código; restante pendente |
-| 3. Oceano | natação/mergulho, correntes, oxigênio, biomas aquáticos, jangada modular física, baú, veículos náuticos e base aquática | Jangada simples e baú com transferência em código; restante pendente |
+| 3. Oceano | natação/mergulho, correntes, oxigênio, biomas aquáticos, jangada modular física, baú, veículos náuticos e base aquática | Natação/mergulho e oxigênio básicos; jangada simples e baú em código. Correntes, animais e bases aquáticas pendentes |
 | 4. Ecossistema | IA individual de criaturas, populações abstratas longe do jogador, clima, migração, chefes únicos | Fauna pacífica explorando/descansando/evitando jogador; ecossistema amplo pendente |
-| 5. Construção | prévias, snap modular, colocação/cancelamento, estruturas internas funcionais, móveis, eletricidade, água, estabilidade | Abrigo básico no código; restante pendente |
+| 5. Construção | prévias, snap modular, colocação/cancelamento, estruturas internas funcionais, móveis, eletricidade, água, estabilidade | Pisos, paredes, portas articuladas, telhados, grades, custos, colisão e persistência testados automaticamente; restante pendente |
 | 6. Bases | terrestres, subaquáticas, aéreas, subterrâneas, móveis e híbridas, interior navegável, PAC, aterrissagem/acoplamento | Pendente |
 | 7. Veículos | carros, 6x6, caminhões, barcos, submarinos, aviões, drones, suspensão/combustível, pilotagem/câmeras/manutenção | Pendente |
 | 8. NPCs | rotinas, resgates, suprimentos, comunidades, comércio, facções/piratas, desenvolvimento econômico | Pendente |
@@ -50,6 +50,8 @@ Marcar uma tarefa concluída somente quando compilou, funciona por toque e/ou te
 - Salvar e restaurar inventário, abrigo, baú, posição da jangada e câmera.
 - Checar existência de animais, configuração de desempenho e escolha de roupa.
 - Exportar APK ARM64 de teste e verificar integridade ZIP.
+- Construção de módulos com validação do terreno, piso, parede, porta e telhado, rotação, gastos, restrição a duplicatas, abrir porta e salvar/carregar estruturas.
+- Criação de palmeiras costeiras com multimesh, movimentação aquática inicial, comandos subir/mergulhar, perda e recuperação de oxigênio e persistência.
 
 **Limite:** testes headless verificam lógica e compilação; não medem o FPS, o toque real nem a qualidade visual.
 
