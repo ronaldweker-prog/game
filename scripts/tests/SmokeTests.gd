@@ -34,6 +34,7 @@ func _run() -> void:
 	_check(game.world_root.get_node_or_null("IlhaVisual/TerrenoNatural") != null, "Novo terreno visual criado")
 	_check(game.world_root.get_node_or_null("IlhaVisual/MarComOndas") != null, "Oceano animado criado")
 	_check(game.world_root.get_node_or_null("IlhaVisual/TroncosInstanciados") != null, "Vegetacao instanciada criada")
+	_check(game.world_root.get_node_or_null("IlhaVisual/PalmeirasCosteiras/FolhasPalmeiras") != null, "Palmeiras costeiras carregadas")
 	_check(game.world_root.get_node_or_null("IlhaVisual/InstalacaoAntigaExploravel") != null, "Estacao antiga criada")
 	_check(game.animals.size() >= 1, "Fauna terrestre criada")
 	_check(game.animals[0].height_at.is_valid(), "Fauna com terreno associado")
