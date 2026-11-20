@@ -1,9 +1,9 @@
-# O RECOMEÇO 🎮
+# RENASCER: NOVO MUNDO 🎮
 
-Protótipo experimental de sobrevivência 3D em Godot 4.4, preparado para Android (POCO M7 Pro 5G, 12 GB RAM).
+Projeto anteriormente chamado **O RECOMEÇO**. Nome atual do aplicativo: **RENASCER: NOVO MUNDO**. Protótipo experimental de sobrevivência 3D em Godot 4.4 para Android (POCO M7 Pro 5G, 12 GB RAM).
 
 ## Baixar a primeira versao Android
-- [Ver APKs experimentais em Releases](https://github.com/ronaldweker-prog/game/releases)
+- [Baixar versões experimentais de RENASCER: NOVO MUNDO](https://github.com/ronaldweker-prog/game/releases)
 - A compilacao e os testes automaticos rodam em [Actions](https://github.com/ronaldweker-prog/game/actions).
 - Abra a versao de teste mais recente que constar como **sucesso**. Baixe `O_RECOMECO.apk`.
 - O APK é um **protótipo de teste**, não o jogo final e não foi validado fisicamente no POCO M7 Pro 5G.
@@ -29,6 +29,17 @@ Protótipo experimental de sobrevivência 3D em Godot 4.4, preparado para Androi
 - **Compilação de APK e testes automatizados: confirmados em CI. Teste em dispositivo físico: ainda não realizado.**
 - As imagens conceituais hiper-realistas ainda não são a aparência real do protótipo.
 - Bases aéreas, submarinas e subterrâneas, veículos avançados, NPCs, grandes cidades e multiplayer continuam planejados, sem implementação funcional.
+
+## Atualização: animações e identidade visual
+- `assets/icon_renascer.svg`: novo ícone vetorial com motivos de céu, oceano, terra e ruínas, baseado na marca aprovada. **O painel/logo cinematográfico completo continua como referência; o vetor é uma versão simplificada para a tela inicial Android.**
+- `scripts/tools/BuildIcon.gd`: gera PNG de 192px durante a compilação Android.
+- `scripts/CharacterMotion.gd`: animações procedurais de braços e pernas ao caminhar, repousar e navegar, mais mãos na visão de primeira pessoa.
+- `scripts/ResourceVisual.gd`: madeira, pedras, fibras, frutas e água reconhecíveis, com animação leve.
+- Corrida com barra de energia, salto em botão touch e teclado, persistência da energia e câmera em primeira/terceira pessoa.
+- Primeira missão de exploração: objetivos de progresso, investigação de ruína antiga e salvamento do registro.
+- `scripts/tests/SmokeTests.gd`: verifica os novos controles, inventário, recursos, ícone, animação e missão.
+- O aplicativo recebe **versionCode incremental** via GitHub Actions para facilitar atualizações.
+- **Limites:** arte 3D ainda experimental, sem garantia de FPS, estabilidade ou acabamento em dispositivo físico; as cidades e bases avançadas permanecem não implementadas.
 
 ## Otimização
 Renderizador OpenGL Compatibility, iluminação sem sombras dinâmicas, formas 3D simples, qualidade ajustável e limite inicial de 30 FPS no modo econômico. O desempenho real depende de testes no aparelho.
