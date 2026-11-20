@@ -77,7 +77,19 @@ func _run() -> void:
 	_check(hands != null and hands.visible, "Maos de primeira pessoa aparecem")
 	game._cycle_outfit()
 	_check(game.outfit_style == 1, "Personalizar roupa do personagem")
+	game.aboard = false
+	game.sprint_held = true
+	game.held["forward"] = true
+	var old_stamina: float = game.stamina
+	game._physics_process(0.2)
+	_check(game.stamina < old_stamina, "Corrida consome energia")
+	game.sprint_held = false
+	game.held["forward"] = false
+	game._request_jump()
+	_check(game.jump_queued, "Pulo pode ser acionado pelo touch")
+	game.jump_queued = false
 	var original_wood: int = int(game.items["madeira"])
+	var energy_before_save: float = game.stamina
 	var boat_pos: Vector3 = game.raft.position
 	game._save(true)
 	_check(FileAccess.file_exists(game.SAVE), "Arquivo de salvamento criado")
@@ -90,5 +102,6 @@ func _run() -> void:
 	_check(game.raft.position.distance_to(boat_pos) < 0.1, "Posicao da jangada restaurada")
 	_check(game.first_person, "Camera restaurada do save")
 	_check(game.outfit_style == 1, "Aparencia restaurada do save")
+	_check(absf(game.stamina-energy_before_save) < 0.01,"Energia restaurada do save")
 	print("RESUMO DOS TESTES: ", failures, " falhas")
 	quit(1 if failures > 0 else 0)
