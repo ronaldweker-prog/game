@@ -7,6 +7,7 @@ const CONFIG_PATH := "res://config/gameplay.json"
 const VIRTUAL_STICK = preload("res://scripts/VirtualStick.gd")
 const WILDLIFE = preload("res://scripts/Wildlife.gd")
 const VISUAL_WORLD = preload("res://scripts/VisualWorld.gd")
+const UI_SKIN = preload("res://scripts/UISkin.gd")
 var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
@@ -204,6 +205,7 @@ func _label(parent: Control,t: String,p: Vector2,s: Vector2,sz: int) -> Label:
 	l.size = s
 	l.add_theme_font_size_override("font_size",sz)
 	parent.add_child(l)
+	UI_SKIN.style_label(l)
 	return l
 
 func _btn(parent: Control,t: String,p: Vector2,s: Vector2,method: Callable) -> Button:
@@ -212,6 +214,7 @@ func _btn(parent: Control,t: String,p: Vector2,s: Vector2,method: Callable) -> B
 	b.position = p
 	b.size = s
 	b.add_theme_font_size_override("font_size",20)
+	UI_SKIN.style_button(b)
 	b.pressed.connect(method)
 	parent.add_child(b)
 	return b
@@ -224,7 +227,8 @@ func _make_interface() -> void:
 	hud.add_child(menu)
 	var bg := ColorRect.new()
 	bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.025,0.13,0.15,0.94)
+	bg.color = Color.WHITE
+	bg.material = UI_SKIN.menu_overlay()
 	menu.add_child(bg)
 	_label(menu,"O RECOMEÇO",Vector2(85,75),Vector2(780,110),72)
 	_label(menu,"SOBREVIVA • EXPLORE • CONSTRUA • EVOLUA",Vector2(90,185),Vector2(860,50),25)
@@ -237,9 +241,15 @@ func _make_interface() -> void:
 	hud_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud.add_child(hud_panel)
-	info = _label(hud_panel,"O RECOMEÇO",Vector2(18,15),Vector2(710,46),28)
-	status = _label(hud_panel,"SAÚDE 100   ÁGUA 100   FOME 100",Vector2(18,64),Vector2(800,52),23)
-	alert = _label(hud_panel,"",Vector2(320,130),Vector2(860,52),24)
+	var top_strip := ColorRect.new()
+	top_strip.name = "FaixaHUD"
+	top_strip.color = Color(0.015,0.065,0.085,0.75)
+	top_strip.size = Vector2(1280,111)
+	top_strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hud_panel.add_child(top_strip)
+	info = _label(hud_panel,"O RECOMEÇO",Vector2(24,12),Vector2(1100,46),24)
+	status = _label(hud_panel,"SAÚDE 100   ÁGUA 100   FOME 100",Vector2(24,56),Vector2(1100,52),21)
+	alert = _label(hud_panel,"",Vector2(370,125),Vector2(860,52),24)
 	var keys := [["COLETAR","collect"],["FERRAMENTA","craft"],["ABRIGO","shelter"],["JANGADA","raft"],["EMBARCAR","board"],["BAÚ","chest"],["CÂMERA","camera"],["COMER","eat"],["SALVAR","save"]]
 	for i in range(keys.size()):
 		var method := String(keys[i][1])
