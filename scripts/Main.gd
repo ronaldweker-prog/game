@@ -235,8 +235,8 @@ func _make_interface() -> void:
 	bg.color = Color.WHITE
 	bg.material = UI_SKIN.menu_overlay()
 	menu.add_child(bg)
-	_label(menu,"O RECOMEÇO",Vector2(85,75),Vector2(780,110),72)
-	_label(menu,"SOBREVIVA • EXPLORE • CONSTRUA • EVOLUA",Vector2(90,185),Vector2(860,50),25)
+	_label(menu,"RENASCER",Vector2(85,75),Vector2(1050,110),72)
+	_label(menu,"NOVO MUNDO  •  SOBREVIVA  •  CONSTRUA  •  EXPLORE",Vector2(90,185),Vector2(1150,50),25)
 	_btn(menu,"NOVO MUNDO",Vector2(85,290),Vector2(425,62),func(): _new_game())
 	_btn(menu,"CONTINUAR",Vector2(85,370),Vector2(425,62),func(): _continue_game())
 	_btn(menu,"GRÁFICOS: ECONÔMICO / BONITO",Vector2(85,450),Vector2(425,62),func(): _change_quality())
@@ -252,7 +252,7 @@ func _make_interface() -> void:
 	top_strip.size = Vector2(1280,111)
 	top_strip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	hud_panel.add_child(top_strip)
-	info = _label(hud_panel,"O RECOMEÇO",Vector2(24,12),Vector2(1100,46),24)
+	info = _label(hud_panel,"RENASCER",Vector2(24,12),Vector2(1100,46),24)
 	status = _label(hud_panel,"SAÚDE 100   ÁGUA 100   FOME 100",Vector2(24,56),Vector2(1100,52),21)
 	alert = _label(hud_panel,"",Vector2(370,125),Vector2(860,52),24)
 	var keys := [["COLETAR","collect"],["FERRAMENTA","craft"],["ABRIGO","shelter"],["JANGADA","raft"],["EMBARCAR","board"],["BAÚ","chest"],["CÂMERA","camera"],["COMER","eat"],["SALVAR","save"]]
@@ -587,7 +587,7 @@ func _process(delta: float) -> void:
 	if stats.y <= 0 or stats.z <= 0:
 		stats.x = maxf(1.0,stats.x - delta * float(setting("balance", "low_resources_health_loss", 0.1)))
 	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   FPS %d" % [stats.x,stats.y,stats.z,Engine.get_frames_per_second()]
-	info.text = "O RECOMEÇO  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
+	info.text = "RENASCER  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
 	autosave += delta
 	if autosave > 90:
 		autosave = 0
