@@ -3,6 +3,8 @@ extends Node3D
 # O RECOMEÇO — protótipo 0.1. Código concentrado para permitir o primeiro build Android.
 # Expansões (bases, criaturas, NPCs, céu e subterrâneo) ainda não implementadas.
 const SAVE := "user://save.json"
+const CONFIG_PATH := "res://config/gameplay.json"
+var game_config: Dictionary = {}
 var playing := false
 var player: CharacterBody3D
 var body: MeshInstance3D
@@ -36,8 +38,36 @@ var key_map := {}
 var world_root: Node3D
 var icon_materials := {}
 
+func setting(section: String, key: String, fallback: Variant) -> Variant:
+	var group: Variant = game_config.get(section, {})
+	if group is Dictionary:
+		return group.get(key, fallback)
+	return fallback
+
+func recipe(name: String, fallback: Dictionary) -> Dictionary:
+	var recipes: Variant = game_config.get("recipes", {})
+	if recipes is Dictionary:
+		var result: Variant = recipes.get(name, fallback)
+		if result is Dictionary:
+			return result
+	return fallback
+
+func cost_text(cost: Dictionary) -> String:
+	var parts: Array[String] = []
+	for kind in cost:
+		parts.append("%d %s" % [int(cost[kind]), String(kind)])
+	return ", ".join(parts)
+
+func _load_game_config() -> void:
+	if not FileAccess.file_exists(CONFIG_PATH):
+		return
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(CONFIG_PATH))
+	if parsed is Dictionary:
+		game_config = parsed
+
 func _ready() -> void:
-	Engine.max_fps = 30
+	_load_game_config()
+	Engine.max_fps = int(setting("visuals", "mobile_fps", 30))
 	world_root = Node3D.new()
 	world_root.name = "Mundo"
 	add_child(world_root)
@@ -131,7 +161,7 @@ func _make_world() -> void:
 	var plane := PlaneMesh.new()
 	plane.size = Vector2(420,420)
 	water.mesh = plane
-	water.position.y = -1.2
+	water.position.y = float(setting("world", "ocean_level", -1.2))
 	var watmat := _mat(Color("237f9a"))
 	watmat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	watmat.albedo_color.a = 0.75
@@ -139,7 +169,7 @@ func _make_world() -> void:
 	world_root.add_child(water)
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 8675309
-	for i in range(85):
+	for i in range(int(setting("world", "tree_count", 85))):
 		var x := rng.randf_range(-53,53)
 		var z := rng.randf_range(-53,53)
 		if Vector2(x,z).length() > 61 or (absf(x) < 9 and z > 12 and z < 31):
@@ -166,7 +196,7 @@ func _make_pickups() -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 333
 	var kinds := ["madeira","pedra","fibra","comida","agua"]
-	for i in range(80):
+	for i in range(int(setting("world", "pickup_count", 80))):
 		if gathered.has(i):
 			continue
 		var x := rng.randf_range(-38.0,38.0)
@@ -211,7 +241,7 @@ func _make_player() -> void:
 	player.add_child(pivot)
 	cam = Camera3D.new()
 	cam.fov = 75
-	cam.far = 175
+	cam.far = float(setting("visuals", "camera_far", 175))
 	cam.position = Vector3(0,0,4.8)
 	pivot.add_child(cam)
 	cam.current = true
@@ -322,8 +352,8 @@ func _continue_game() -> void:
 				stats = Vector3(float(bars[0]),float(bars[1]),float(bars[2]))
 			time_of_day = float(d.get("time",0.0))
 			quality = int(d.get("quality",0))
-			get_viewport().scaling_3d_scale = [0.70,0.83,1.0][clampi(quality,0,2)]
-			Engine.max_fps = 30 if quality == 0 else 45
+			get_viewport().scaling_3d_scale = float(setting("visuals", "quality_scales", [0.70,0.83,1.0])[clampi(quality,0,2)])
+			Engine.max_fps = int(setting("visuals", "mobile_fps", 30)) if quality == 0 else int(setting("visuals", "balanced_fps", 45))
 			first_person = bool(d.get("first_person",false))
 			cam.position = Vector3.ZERO if first_person else Vector3(0,0,4.8)
 			player_visuals.visible = not first_person
@@ -358,9 +388,9 @@ func _notice(t: String) -> void:
 
 func _change_quality() -> void:
 	quality = (quality + 1) % 3
-	var levels := [0.70,0.83,1.0]
-	get_viewport().scaling_3d_scale = levels[quality]
-	Engine.max_fps = 30 if quality == 0 else 45
+	var levels: Array = setting("visuals", "quality_scales", [0.70, 0.83, 1.0])
+	get_viewport().scaling_3d_scale = float(levels[quality])
+	Engine.max_fps = int(setting("visuals", "mobile_fps", 30)) if quality == 0 else int(setting("visuals", "balanced_fps", 45))
 	_notice("Qualidade: " + ["Econômica","Equilibrada","Bonita"][quality])
 
 func _action(kind: String) -> void:
@@ -385,7 +415,7 @@ func _action(kind: String) -> void:
 		"save": _save()
 
 func _collect() -> void:
-	var nearest := 4.0
+	var nearest := float(setting("balance", "collect_radius", 4.0))
 	var selected := {}
 	for r in pickups:
 		var p: Vector3 = r["node"].global_position
@@ -414,11 +444,11 @@ func _pay(cost: Dictionary) -> bool:
 func _craft() -> void:
 	if has_tool:
 		_notice("Ferramenta já fabricada.")
-	elif _pay({"madeira":2,"pedra":1,"fibra":1}):
+	elif _pay(recipe("tool", {"madeira":2,"pedra":1,"fibra":1})):
 		has_tool = true
 		_notice("Ferramenta pronta!")
 	else:
-		_notice("Precisa de 2 madeiras, 1 pedra e 1 fibra.")
+		_notice("Ferramenta: precisa de " + cost_text(recipe("tool", {"madeira":2,"pedra":1,"fibra":1})))
 
 func _place_hut(pos: Vector3) -> void:
 	var hut := Node3D.new()
@@ -434,12 +464,12 @@ func _place_hut(pos: Vector3) -> void:
 func _shelter() -> void:
 	if not has_tool:
 		_notice("Fabrique uma ferramenta antes.")
-	elif _pay({"madeira":5,"fibra":3}):
+	elif _pay(recipe("shelter", {"madeira":5,"fibra":3})):
 		var p := player.position + player.transform.basis * Vector3(0,0,-5)
 		_place_hut(Vector3(p.x,_height(p.x,p.z),p.z))
 		_notice("Abrigo construído.")
 	else:
-		_notice("Abrigo: 5 madeiras + 3 fibras.")
+		_notice("Abrigo: precisa de " + cost_text(recipe("shelter", {"madeira":5,"fibra":3})))
 
 func _place_raft() -> void:
 	raft = Node3D.new()
@@ -454,11 +484,11 @@ func _build_raft() -> void:
 		_notice("A jangada já foi construída.")
 	elif not has_tool:
 		_notice("Precisa fabricar a ferramenta.")
-	elif _pay({"madeira":6,"fibra":4}):
+	elif _pay(recipe("raft", {"madeira":6,"fibra":4})):
 		_place_raft()
 		_notice("Jangada construída na costa sul.")
 	else:
-		_notice("Jangada: 6 madeiras + 4 fibras.")
+		_notice("Jangada: precisa de " + cost_text(recipe("raft", {"madeira":6,"fibra":4})))
 
 func _board() -> void:
 	if not is_instance_valid(raft):
@@ -482,11 +512,11 @@ func _chest() -> void:
 		_notice("Construa a jangada primeiro.")
 	elif raft_chest:
 		_notice("Baú já instalado.")
-	elif _pay({"madeira":2,"fibra":1}):
+	elif _pay(recipe("chest", {"madeira":2,"fibra":1})):
 		_install_chest()
 		_notice("Baú instalado!")
 	else:
-		_notice("Baú: 2 madeiras + 1 fibra.")
+		_notice("Baú: precisa de " + cost_text(recipe("chest", {"madeira":2,"fibra":1})))
 
 func _save(silent: bool = false) -> void:
 	if not playing:
@@ -508,11 +538,11 @@ func _process(delta: float) -> void:
 	if not playing:
 		return
 	time_of_day += delta
-	sun.rotation.x = -0.7 + sin(time_of_day * 0.025) * 0.38
-	stats.y = maxf(0,stats.y - delta * 0.027)
-	stats.z = maxf(0,stats.z - delta * 0.020)
+	sun.rotation.x = -0.7 + sin(time_of_day * float(setting("world", "day_cycle_speed", 0.025))) * 0.38
+	stats.y = maxf(0,stats.y - delta * float(setting("balance", "hydration_loss_per_second", 0.027)))
+	stats.z = maxf(0,stats.z - delta * float(setting("balance", "hunger_loss_per_second", 0.020)))
 	if stats.y <= 0 or stats.z <= 0:
-		stats.x = maxf(1.0,stats.x - delta * 0.1)
+		stats.x = maxf(1.0,stats.x - delta * float(setting("balance", "low_resources_health_loss", 0.1)))
 	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   FPS %d" % [stats.x,stats.y,stats.z,Engine.get_frames_per_second()]
 	info.text = "O RECOMEÇO  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
 	autosave += delta
@@ -530,13 +560,13 @@ func _physics_process(delta: float) -> void:
 	if held["back"] or Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN): move.y -= 1
 	var dir := (player.transform.basis * Vector3(move.x,0,-move.y)).normalized()
 	if aboard and is_instance_valid(raft):
-		raft.position += dir * delta * 4
+		raft.position += dir * delta * float(setting("balance", "raft_speed", 4.0))
 		raft.position.y = -1.0
 		player.position = raft.position + Vector3(0,1.4,0)
 		player.velocity = Vector3.ZERO
 		return
-	player.velocity.x = dir.x * 5.0
-	player.velocity.z = dir.z * 5.0
+	player.velocity.x = dir.x * float(setting("balance", "player_walk_speed", 5.0))
+	player.velocity.z = dir.z * float(setting("balance", "player_walk_speed", 5.0))
 	if player.is_on_floor():
 		player.velocity.y = 5.0 if Input.is_key_pressed(KEY_SPACE) else -0.3
 	else:
@@ -549,16 +579,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not playing:
 		return
 	if event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		player.rotation.y -= event.relative.x * 0.003
-		pivot.rotation.x = clampf(pivot.rotation.x - event.relative.y * 0.003,-1.1,1.0)
+		player.rotation.y -= event.relative.x * float(setting("visuals", "mouse_sensitivity", 0.003))
+		pivot.rotation.x = clampf(pivot.rotation.x - event.relative.y * float(setting("visuals", "mouse_sensitivity", 0.003)),-1.1,1.0)
 	if event is InputEventScreenTouch:
 		if event.pressed and event.position.x > 420 and mobile_look < 0:
 			mobile_look = event.index
 		elif not event.pressed and event.index == mobile_look:
 			mobile_look = -1
 	if event is InputEventScreenDrag and event.index == mobile_look:
-		player.rotation.y -= event.relative.x * 0.004
-		pivot.rotation.x = clampf(pivot.rotation.x - event.relative.y * 0.004,-1.1,1.0)
+		player.rotation.y -= event.relative.x * float(setting("visuals", "touch_sensitivity", 0.004))
+		pivot.rotation.x = clampf(pivot.rotation.x - event.relative.y * float(setting("visuals", "touch_sensitivity", 0.004)),-1.1,1.0)
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
 			KEY_E: _action("collect")
