@@ -42,6 +42,12 @@ var chest_panel: Panel
 var chest_status: Label
 var stats := Vector3(100,100,100)
 var stamina := 100.0
+var oxygen := 100.0
+var swimming := false
+var swim_up_held := false
+var swim_down_held := false
+var swim_up_button: Button
+var swim_down_button: Button
 var jump_queued := false
 var sprint_held := false
 var time_of_day := 0.0
@@ -273,6 +279,24 @@ func _make_interface() -> void:
 		_btn(hud_panel,String(keys[i][0]),Vector2(812 + (i % 3) * 150,490 + int(i / 3) * 66),Vector2(140,58),func(): _action(method))
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
 	_btn(hud_panel,"PORTA",Vector2(140,118),Vector2(125,48),func(): _open_door())
+	swim_up_button = Button.new()
+	swim_up_button.text = "SUBIR"
+	swim_up_button.position = Vector2(282,118)
+	swim_up_button.size = Vector2(132,48)
+	UI_SKIN.style_button(swim_up_button)
+	swim_up_button.button_down.connect(func(): swim_up_held = true)
+	swim_up_button.button_up.connect(func(): swim_up_held = false)
+	hud_panel.add_child(swim_up_button)
+	swim_down_button = Button.new()
+	swim_down_button.text = "MERGULHAR"
+	swim_down_button.position = Vector2(420,118)
+	swim_down_button.size = Vector2(152,48)
+	UI_SKIN.style_button(swim_down_button)
+	swim_down_button.button_down.connect(func(): swim_down_held = true)
+	swim_down_button.button_up.connect(func(): swim_down_held = false)
+	hud_panel.add_child(swim_down_button)
+	swim_up_button.visible = false
+	swim_down_button.visible = false
 	_make_chest_panel()
 	_btn(hud_panel,"PULAR",Vector2(296,616),Vector2(136,58),func(): _request_jump())
 	_btn(hud_panel,"INVESTIGAR",Vector2(445,616),Vector2(151,58),func(): _investigate_ruins())
@@ -462,6 +486,10 @@ func _new_game() -> void:
 	building_system.call("clear_pieces")
 	stats = Vector3(100,100,100)
 	stamina = 100.0
+	oxygen = 100.0
+	swimming = false
+	swim_up_held = false
+	swim_down_held = false
 	ruins_visited = false
 	jump_queued = false
 	sprint_held = false
@@ -501,6 +529,7 @@ func _continue_game() -> void:
 				stats = Vector3(float(bars[0]),float(bars[1]),float(bars[2]))
 			time_of_day = float(d.get("time",0.0))
 			stamina = clampf(float(d.get("stamina",100.0)),0.0,100.0)
+			oxygen = clampf(float(d.get("oxygen",100.0)),0.0,100.0)
 			ruins_visited = bool(d.get("ruins_visited",false))
 			building_system.call("restore",d.get("modular_buildings",[]))
 			build_kind = str(d.get("build_kind","piso"))
@@ -693,7 +722,7 @@ func _save(silent: bool = false) -> void:
 	var wildlife_positions := []
 	for animal in animals:
 		wildlife_positions.append([animal.position.x,animal.position.y,animal.position.z])
-	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"ruins_visited":ruins_visited,"time":time_of_day,"modular_buildings":building_system.call("serialize"),"build_kind":build_kind,"build_side":build_side}
+	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"oxygen":oxygen,"ruins_visited":ruins_visited,"time":time_of_day,"modular_buildings":building_system.call("serialize"),"build_kind":build_kind,"build_side":build_side}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
@@ -712,11 +741,18 @@ func _process(delta: float) -> void:
 	sun.rotation.x = -0.7 + sin(time_of_day * float(setting("world", "day_cycle_speed", 0.025))) * 0.38
 	stats.y = maxf(0,stats.y - delta * float(setting("balance", "hydration_loss_per_second", 0.027)))
 	stats.z = maxf(0,stats.z - delta * float(setting("balance", "hunger_loss_per_second", 0.020)))
+	var head_submerged: bool = swimming and player.global_position.y + 1.15 < float(setting("world","ocean_level",-1.2))
+	oxygen = clampf(oxygen + (-4.0 if head_submerged else 18.0)*delta,0.0,100.0)
+	if head_submerged and oxygen <= 0.0:
+		stats.x = maxf(1.0,stats.x-2.0*delta)
 	if stats.y <= 0 or stats.z <= 0:
 		stats.x = maxf(1.0,stats.x - delta * float(setting("balance", "low_resources_health_loss", 0.1)))
-	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   ENERGIA %.0f   FPS %d" % [stats.x,stats.y,stats.z,stamina,Engine.get_frames_per_second()]
+	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   ENERGIA %.0f   O₂ %.0f   FPS %d" % [stats.x,stats.y,stats.z,stamina,oxygen,Engine.get_frames_per_second()]
 	if is_instance_valid(objective_label):
 		objective_label.text = _mission_text()
+	if is_instance_valid(swim_up_button):
+		swim_up_button.visible = swimming
+		swim_down_button.visible = swimming
 	if is_instance_valid(build_label):
 		build_label.text = ("OBRA: %s  %s" % [build_kind.to_upper(),cost_text(_build_cost())]) if build_mode else "CONSTRUIR: montar base modular"
 	if is_instance_valid(building_system):
@@ -744,10 +780,26 @@ func _physics_process(delta: float) -> void:
 	stamina = clampf(stamina + (-15.0 if can_sprint else 9.0) * delta,0.0,100.0)
 	var dir := (player.transform.basis * Vector3(move.x,0,-move.y)).normalized()
 	if aboard and is_instance_valid(raft):
+		swimming = false
 		raft.position += dir * delta * float(setting("balance", "raft_speed", 4.0))
 		raft.position.y = -1.0
 		player.position = raft.position + Vector3(0,1.4,0)
 		player.velocity = Vector3.ZERO
+		return
+	swimming = player.position.y < float(setting("world","ocean_level",-1.2)) + 0.3
+	if swimming:
+		var vertical := 0.0
+		if swim_up_held or Input.is_key_pressed(KEY_SPACE) or jump_queued:
+			vertical += 1.0
+		if swim_down_held or Input.is_key_pressed(KEY_CTRL):
+			vertical -= 1.0
+		jump_queued = false
+		player.velocity.x = dir.x * 2.8
+		player.velocity.z = dir.z * 2.8
+		player.velocity.y = vertical * 2.6 + (0.08 if vertical == 0.0 else 0.0)
+		player.move_and_slide()
+		if player.position.y < -7.0:
+			player.position = Vector3(0,_height(0,24)+2.0,24)
 		return
 	var speed := float(setting("balance", "player_walk_speed", 5.0)) * (1.65 if can_sprint else 1.0)
 	player.velocity.x = dir.x * speed
