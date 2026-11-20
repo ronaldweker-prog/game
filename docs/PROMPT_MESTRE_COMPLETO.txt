@@ -1,0 +1,2905 @@
+O RECOMEÇO
+Prompt mestre para criar o jogo no PlayDrop | Celular e computador
+
+Crie O RECOMEÇO como um jogo 3D de sobrevivência, construção e exploração em português do Brasil. A entrega inicial é um jogo de navegador que abre pelo mesmo link no celular e no computador. Use um formato executável aceito pelo PlayDrop. Godot 4.x com GDScript é uma opção caso a exportação web seja compatível. Uma eventual versão APK é uma entrega posterior.
+
+DIREÇÃO DE ARTE
+Use as imagens anexadas como referência para modelagem semirrealista original. Nas bases submersas, use vidro espesso, módulos circulares e luz interna quente visível na água azul-esverdeada. Nas instalações aéreas, torne legíveis as plataformas de pouso, as passarelas e a sustentação. Nas cavernas, encaixe os pavimentos na rocha e ilumine as áreas ocupadas. Nos computadores de bordo, os esquemas técnicos devem mostrar o estado real dos módulos. Modele portas, encaixes, cabos, materiais e desgaste com escala consistente. A câmera deve poder se aproximar e o jogador deve conseguir percorrer os espaços construídos.
+
+CONTROLES, CÂMERA E PERSONALIZAÇÃO
+No celular, use joystick esquerdo, arraste à direita para olhar e botões contextuais grandes para coletar, construir, pilotar e interagir. Permita mover e redimensionar os controles. No computador, use WASD ou setas para movimento, mouse para a câmera, E para interagir, Espaço para pular, Tab para inventário e V para trocar de perspectiva. Permita reconfigurar teclas e sensibilidade. Mostre dicas conforme o dispositivo ativo. Inventário, fabricação, pilotagem e construção devem funcionar inteiramente por toque, inclusive girar, confirmar e cancelar uma peça.
+
+Ofereça primeira pessoa com mãos e ferramenta equipada visíveis e terceira pessoa com distância, altura e ângulo ajustáveis. Evite que a câmera atravesse paredes. Preserve ação e direção ao trocar de perspectiva. A câmera de observação serve para inspecionar construções dentro dos limites de alcance e acesso do jogador. Preserve a aparência escolhida, equipamentos e ajustes após recarregar.
+
+PRIMEIRA SESSÃO JOGÁVEL
+Comece na costa de uma ilha tropical. O jogador pode identificar um recurso ao se aproximar, coletar materiais, ver as quantidades na mochila, fabricar uma ferramenta e montar um abrigo. Depois, pode encaixar peças de uma jangada, instalar um baú, embarcar, navegar e voltar à praia. Implemente primeiro o ciclo completo da ilha detalhado na seção 27. Conserve toda a especificação abaixo para as expansões.
+
+TESTE DE ENTREGA NO PLAYDROP
+Abra o jogo a partir da tela inicial em janela de celular e de computador. Em cada uma, percorra a ilha, colete, fabrique, construa, alterne a câmera, navegue e recarregue o mundo. Verifique posição, inventário, peças e conteúdo do baú após reabrir. Teste também a tentativa de construir sem material e o cancelamento antes da confirmação. Reduza sombras, resolução ou distância de desenho conforme a qualidade escolhida. Registre quais testes foram realizados em aparelho físico e quais usaram simulação. Quando a versão passar pelos testes, publique no PlayDrop e forneça o link jogável e os controles de cada plataforma. Identifique separadamente as expansões ainda em desenvolvimento.
+
+PARTE I — ESPECIFICAÇÃO DO JOGO
+
+
+1. VISÃO GERAL DO PROJETO
+Crie um jogo chamado O RECOMEÇO.
+O jogo deve apresentar um mundo futurista, semirrealista, vasto, dinâmico e persistente, no qual o jogador precisa sobreviver, explorar, construir, pesquisar, produzir, negociar, desenvolver tecnologias e criar sua própria civilização.
+O jogador começa com poucos recursos e precisa conquistar seu espaço em um mundo desconhecido.
+Entretanto, a experiência não deve ficar limitada à sobrevivência tradicional.
+O jogador poderá:Construir uma pequena jangada e transformá-la em uma embarcação gigantesca.
+Construir casas, abrigos, cidades, instalações científicas e bases móveis.
+Viver no solo, no oceano, no céu ou no subterrâneo.
+Desenvolver uma civilização independente em qualquer um desses ambientes.
+Criar fazendas, indústrias, redes de energia e sistemas de abastecimento.
+Construir veículos terrestres, aquáticos e aéreos.
+Descobrir cidades perdidas, ruínas, laboratórios e tecnologias antigas.
+Encontrar criaturas comuns, predadores, monstros territoriais e chefes.
+Resgatar NPCs, administrar comunidades e estabelecer alianças.
+Criar sua própria rede de internet, servidores e infraestrutura de comunicação.
+Participar de uma economia dinâmica, com comércio físico e digital.
+Jogar com amigos, compartilhar veículos e administrar bases em conjunto.
+Descobrir progressivamente a história de uma civilização que entrou em colapso.
+O mundo precisa funcionar como um ecossistema conectado.
+Uma mudança no oceano pode afetar a atmosfera. Uma alteração climática pode modificar a vegetação. A expansão de uma comunidade pode diminuir os recursos de uma região. Uma instalação abandonada pode voltar a funcionar e modificar o comportamento das criaturas próximas.
+O mundo não deve parecer um cenário parado esperando o jogador. Ele precisa continuar existindo, reagindo e evoluindo.
+
+2. PRINCÍPIOS FUNDAMENTAIS
+Todas as mecânicas devem respeitar estes princípios:Nenhum sistema deve existir apenas para decoração.
+Veículos precisam ser dirigíveis e funcionais.
+Casas precisam ter utilidade, armazenamento e interação.
+Máquinas precisam executar tarefas reais.
+NPCs precisam apresentar comportamentos e necessidades.
+As criaturas precisam pertencer aos seus respectivos ecossistemas.
+Os ambientes precisam ter progressão tecnológica própria.
+O jogador não deve ser obrigado a usar comunicação por voz.
+Toda tecnologia precisa ter limitações e custos coerentes.
+Construções devem depender de materiais, energia, espaço e manutenção.
+As animações devem acompanhar as ações reais.
+Os sistemas precisam ser integrados, não separados em minijogos desconectados.
+A inteligência artificial deve respeitar permissões e não executar solicitações incorretas.
+A experiência precisa ser otimizada para celulares.
+O desenvolvimento deve acontecer em etapas testáveis, sem declarar concluído algo que ainda não funciona.
+Não transforme o jogo em fantasia sem limites. A tecnologia pode ser avançada, mas precisa obedecer a regras internas consistentes.
+
+3. O MUNDO E OS QUATRO GRANDES AMBIENTESO mundo será dividido em quatro grandes ambientes:Terra.
+Oceano.
+Céu.
+Subterrâneo.
+Todos devem permitir sobrevivência, construção, produção, comércio, desenvolvimento tecnológico, exploração e crescimento de comunidades.
+Nenhum ambiente pode ser apenas uma área secundária.
+
+3.
+
+1. Mundo terrestreO ambiente terrestre deve conter:Florestas tropicais.
+Florestas densas.
+Planícies.
+Campos abertos.
+Montanhas.
+Vales.
+Desertos.
+Regiões rochosas.
+Praias.
+Pântanos.
+Regiões frias.
+Áreas vulcânicas.
+Lagos.
+Rios.
+Regiões contaminadas ou alteradas por eventos históricos.
+Regiões com construções abandonadas.
+Cada bioma deve possuir vegetação, recursos, animais, criaturas, condições climáticas e características próprias.
+Uma floresta tropical não deve funcionar como um deserto com árvores diferentes.
+A vegetação precisa crescer, se espalhar e mudar conforme o clima, a disponibilidade de água e as condições do solo.
+Os animais devem procurar alimento, água, abrigo e locais adequados para reprodução.
+A exploração terrestre deve permitir encontrar:Acampamentos abandonados.
+Estradas antigas.
+Instalações industriais.
+Estações de pesquisa.
+Abrigos.
+Vilarejos.
+Cidades destruídas.
+Laboratórios.
+Minas.
+Entradas de cavernas.
+Ruínas de civilizações anteriores.
+
+3.
+
+2. OceanoO oceano deve ser um ambiente completo e explorável.
+Incluir:Águas rasas.
+Recifes.
+Regiões costeiras.
+Florestas submarinas.
+Grandes planícies oceânicas.
+Cânions submarinos.
+Cavernas inundadas.
+Regiões de águas profundas.
+Regiões abissais.
+Cidades submersas.
+Instalações científicas.
+Navios naufragados.
+Laboratórios antigos.
+Estruturas tecnológicas submersas.
+Sistemas de cavernas com passagens subaquáticas.
+A água precisa apresentar movimentação, visibilidade variável, partículas, correntes e mudanças de iluminação.
+O jogador deverá considerar:Profundidade.
+Pressão.
+Oxigênio.
+Temperatura.
+Visibilidade.
+Correntes marítimas.
+Condições climáticas.
+Autonomia dos equipamentos.
+Construções subaquáticas devem depender de estruturas adequadas para suportar a pressão.
+Criar tecnologias como:Estações de dessalinização.
+Cultivo de algas.
+Fazendas aquáticas.
+Sistemas de oxigênio.
+Drones subaquáticos.
+Sensores de profundidade.
+Veículos de exploração.
+Estações de manutenção.
+Sistemas de acoplamento submarino.
+O jogador deve conseguir construir uma civilização aquática completa, incluindo moradias, armazenamento, indústria, agricultura adaptada, energia e comunicação.
+
+3.
+
+3. CéuO céu não pode ser apenas uma região de passagem para aeronaves.
+Deve ser um ambiente habitável e economicamente independente.
+Incluir:Plataformas suspensas.
+Ilhas flutuantes, quando justificadas pela tecnologia e pelo universo do jogo.
+Estações aéreas.
+Bases em grandes altitudes.
+Estruturas de ancoragem.
+Plataformas de observação.
+Instalações de pesquisa atmosférica.
+Corredores de transporte.
+Regiões de tempestades.
+Áreas de correntes de ar.
+Regiões com diferentes condições de altitude.
+Considerar:Vento.
+Turbulência.
+Altitude.
+Temperatura.
+Pressão.
+Consumo energético.
+Estabilidade das estruturas.
+Condições de pouso.
+Autonomia dos veículos.
+Permitir construir fazendas adaptadas ao ambiente, sistemas de captação de energia, plataformas de pouso, hangares e redes de transporte aéreo.
+O jogador deve conseguir desenvolver uma comunidade aérea sem depender obrigatoriamente de uma base terrestre.
+
+3.
+
+4. SubterrâneoO subterrâneo deve ser um mundo próprio.
+Incluir:Cavernas naturais.
+Cavernas artificiais.
+Túneis antigos.
+Minas.
+Lagos subterrâneos.
+Rios subterrâneos.
+Bolsões de água.
+Grandes salões naturais.
+Ecossistemas subterrâneos.
+Instalações industriais abandonadas.
+Laboratórios antigos.
+Cidades subterrâneas.
+Estruturas tecnológicas desconhecidas.
+O ambiente deve apresentar:Iluminação limitada.
+Umidade.
+Temperatura.
+Ventilação.
+Qualidade do ar.
+Estabilidade geológica.
+Recursos minerais.
+Riscos ambientais.
+Necessidade de iluminação e suporte de vida.
+Criar sistemas de ventilação, purificação de ar, iluminação artificial, bombeamento de água, estabilização estrutural e transporte vertical.
+O subterrâneo deve permitir agricultura adaptada, produção industrial, moradia e expansão de comunidades.
+
+4. ECOSSISTEMA GLOBAL E MUNDO VIVOO mundo precisa possuir simulação ambiental.
+As criaturas não devem aparecer somente quando o jogador se aproxima.
+Elas devem existir em populações e ecossistemas.
+Cada espécie precisa ter:Habitat.
+Alimentação.
+Comportamento.
+Rotina.
+Território.
+Necessidades.
+Relações com outras espécies.
+Reação a alterações ambientais.
+Implementar:Migração.
+Crescimento e diminuição populacional.
+Disputa por território.
+Cadeias alimentares.
+Reprodução abstrata e equilibrada.
+Mudanças de vegetação.
+Recursos renováveis e esgotáveis.
+Alterações de temperatura.
+Eventos climáticos.
+Desastres naturais.
+O jogador poderá modificar o ecossistema por meio da construção, exploração, produção e extração de recursos.
+Essas mudanças devem ter consequências.
+Por exemplo, uma região que perde grande parte da vegetação pode apresentar alterações na presença de determinadas espécies.
+A simulação deve continuar quando não houver jogadores próximos, mas utilizar sistemas abstratos e econômicos para não prejudicar o desempenho.
+Não é necessário manter cada animal individualmente renderizado quando a região estiver distante. É necessário preservar o resultado lógico de sua população e evolução.
+
+5. CRIATURAS, MONSTROS E CHEFES
+Este é um dos pilares do jogo.
+Criar uma variedade de criaturas coerentes com os ambientes e com a história do universo.
+Não utilizar monstros genéricos repetidos em diferentes biomas.
+Cada espécie deve possuir identidade visual, comportamento, habitat, características e função ecológica.
+
+5.
+
+1. Criaturas terrestresCriar categorias como:Herbívoros.
+Animais pequenos.
+Animais territoriais.
+Predadores.
+Criaturas noturnas.
+Espécies que vivem em grupos.
+Criaturas de regiões montanhosas.
+Espécies adaptadas ao deserto.
+Criaturas de regiões pantanosas.
+Espécies de grande porte.
+Os comportamentos precisam variar.
+Algumas criaturas evitam o jogador. Outras observam, defendem território, procuram alimento ou acompanham movimentações.
+
+5.
+
+2. Criaturas aquáticasCriar:Espécies de recifes.
+Criaturas de águas rasas.
+Predadores de profundidade.
+Criaturas bioluminescentes.
+Espécies de grandes dimensões.
+Criaturas de cavernas submersas.
+Organismos que vivem em estruturas antigas.
+Espécies que migram entre regiões.
+A profundidade deve influenciar a distribuição das espécies.
+
+5.
+
+3. Criaturas aéreasCriar:Espécies voadoras pequenas.
+Grandes criaturas planadoras.
+Predadores aéreos.
+Criaturas de altitude.
+Espécies que vivem em estruturas suspensas.
+Organismos que utilizam correntes de ar.
+Criaturas adaptadas a tempestades.
+O comportamento de voo deve considerar correntes, vento e condições atmosféricas.
+
+5.
+
+4. Criaturas subterrâneasCriar:Espécies adaptadas à escuridão.
+Criaturas de cavernas inundadas.
+Organismos que vivem próximos a minerais.
+Predadores subterrâneos.
+Espécies que utilizam vibrações para perceber o ambiente.
+Criaturas de grandes profundidades.
+Organismos encontrados em instalações antigas.
+
+5.
+
+5. Monstros especiais e chefesAdicionar criaturas especiais e chefes com presença marcante.
+Os chefes devem ter:Identidade própria.
+Habitat específico.
+Comportamento particular.
+Animações exclusivas.
+Sinais ambientais de presença.
+Resistências e vulnerabilidades coerentes.
+Interação com o cenário.
+Recompensas relacionadas à exploração e à pesquisa.
+Não transformar todo encontro em combate obrigatório.
+Algumas criaturas podem ser evitadas, estudadas, observadas ou contornadas.
+Os encontros devem depender da região, horário, clima, ruído, atividade do jogador e condições ecológicas.
+Criar mecanismos de alerta, sensores e registros científicos para identificar espécies desconhecidas.
+
+5.
+
+6. Inteligência das criaturasAs criaturas devem utilizar IA comportamental.
+Estados possíveis:Exploração.
+Alimentação.
+Descanso.
+Defesa.
+Fuga.
+Investigação.
+Perseguição.
+Proteção de território.
+Interação com outras criaturas.
+Não permitir que todas as criaturas tenham o mesmo comportamento.
+As espécies precisam reagir ao ambiente e às ações do jogador.
+Importante sobre o cânone: preservar todos os monstros já definidos nas conversas anteriores. Não substituir criaturas aprovadas por espécies inventadas. Caso algum nome ou característica histórica não esteja disponível, manter o espaço reservado até recuperar o registro correto.
+
+6. PERSONAGEM E SOBREVIVÊNCIAO personagem deve apresentar animações e interações físicas.
+Implementar:Caminhada.
+Corrida.
+Agachamento.
+Pulo.
+Escalada.
+Natação.
+Mergulho.
+Interação com objetos.
+Coleta.
+Construção.
+Uso de ferramentas.
+Entrada e saída de veículos.
+Descanso.
+Utilização de equipamentos.
+
+6.
+
+1. NecessidadesImplementar sistemas de:Saúde.
+Alimentação.
+Hidratação.
+Energia e cansaço.
+Oxigênio.
+Temperatura.
+Condições ambientais.
+Equipamentos de proteção.
+As condições devem ter efeitos coerentes.
+A falta de água, a exposição a temperaturas inadequadas e a ausência de oxigênio devem exigir soluções próprias.
+Não tornar a sobrevivência excessivamente punitiva.
+
+6.
+
+2. InventárioCriar inventário com:Espaço limitado.
+Categorias de objetos.
+Peso ou capacidade de carga.
+Equipamentos.
+Ferramentas.
+Recursos.
+Alimentos.
+Materiais de construção.
+Itens científicos.
+Componentes tecnológicos.
+Permitir organizar, transferir, armazenar e fabricar itens.
+A interface deve funcionar bem em telas pequenas.
+
+6.
+
+3. FabricaçãoCriar um sistema de fabricação progressivo.
+O jogador começa com ferramentas simples e descobre tecnologias melhores.
+Cada receita deve apresentar:Materiais necessários.
+Quantidades.
+Estação de fabricação exigida.
+Tempo de produção.
+Energia consumida, quando aplicável.
+Resultado.
+Possíveis melhorias.
+Não liberar tecnologias avançadas sem pesquisa ou materiais adequados.
+
+7. CONSTRUÇÃO DE CASAS E ESTRUTURASA construção deve ser um dos sistemas mais completos do jogo.
+Permitir construir livremente ou utilizar módulos prontos.
+As duas formas devem coexistir.
+
+7.
+
+1. CasasPermitir construir:Pequenos abrigos.
+Casas simples.
+Casas modernas.
+Casas tecnológicas.
+Casas elevadas.
+Casas subterrâneas.
+Casas sobre plataformas aquáticas.
+Moradias suspensas.
+Grandes residências.
+Mansões tecnológicas.
+Complexos habitacionais.
+As casas devem ter:Paredes.
+Portas.
+Janelas.
+Telhados.
+Pisos.
+Escadas.
+Corredores.
+Iluminação.
+Móveis.
+Quartos.
+Banheiros.
+Cozinhas.
+Armazenamento.
+Sistemas de energia.
+Sistemas de água.
+Ventilação.
+Decoração.
+A construção deve permitir personalização de cores, materiais, dimensões e organização interna.
+
+7.
+
+2. Móveis e decoraçãoIncluir:Camas.
+Sofás.
+Mesas.
+Cadeiras.
+Armários.
+Estantes.
+Geladeiras ou sistemas de conservação.
+Bancadas.
+Computadores.
+Televisores e painéis.
+Luminárias.
+Decorações.
+Quadros.
+Plantas.
+Equipamentos científicos.
+Os móveis devem possuir interações quando fizer sentido.
+Uma cama pode servir para descanso. Um armário pode armazenar objetos. Um computador pode controlar sistemas.
+
+7.
+
+3. Construção físicaCada construção precisa considerar:Fundação.
+Materiais.
+Peso.
+Estabilidade.
+Resistência ambiental.
+Integridade estrutural.
+Espaço.
+Energia.
+Manutenção.
+Permitir construções em terra, água, céu e subterrâneo.
+Os módulos precisam ser adaptados ao ambiente.
+
+8. BASES MÓVEIS
+As bases móveis são um dos grandes diferenciais de O RECOMEÇO.
+Criar bases que funcionem como casas, centros de comando, oficinas, depósitos e meios de transporte.
+Tipos:Base terrestre.
+Base aquática.
+Base aérea.
+Base híbrida.
+A base híbrida é uma categoria especial.
+Ela deve possuir sistemas de entrada e adaptação próprios, dependendo do ambiente em que está operando.
+
+8.
+
+1. Interior da baseIncluir:Quartos.
+Cozinha.
+Banheiros.
+Armazenamento.
+Oficina.
+Laboratório.
+Sala de comando.
+Enfermaria.
+Hangares.
+Garagens.
+Sistemas de energia.
+Sistemas de suporte à vida.
+Sistemas de defesa.
+Áreas de produção.
+Áreas de convivência.
+Permitir expansão e personalização.
+
+8.
+
+2. Sistemas mecânicosAs bases devem possuir mecanismos funcionais.
+Implementar:Portas automáticas.
+Elevadores.
+Plataformas.
+Rampas.
+Escadas.
+Compartimentos.
+Acopladores.
+Sistemas de ancoragem.
+Pernas de sustentação.
+Mecanismos retráteis.
+Sistemas de estabilização.
+As peças precisam se movimentar de forma visível.
+
+8.
+
+3. Pouso e acoplamentoCriar sistemas de:Pouso.
+Aterrissagem.
+Descida.
+Ancoragem.
+Acoplamento.
+Estacionamento.
+Fixação em estruturas.
+O jogador poderá marcar um local no computador da base.
+A IA da base deverá analisar o local, identificar condições de acesso e preparar a manobra.
+Executar animações de preparação, movimentação, estabilização, fixação e finalização.
+O sistema deve respeitar as características do ambiente.
+Uma base híbrida precisa adaptar sua entrada e sustentação conforme o local.
+
+8.
+
+4. Piloto automáticoCriar um computador de navegação.
+O jogador poderá selecionar um destino e configurar a operação.
+A IA deverá:Analisar o caminho.
+Considerar obstáculos.
+Avaliar condições ambientais.
+Verificar energia.
+Conferir estabilidade.
+Preparar a chegada.
+Executar a manobra permitida.
+Informar problemas.
+Não permitir que o piloto automático ignore obstáculos ou condições físicas.
+
+8.
+
+5. Energia e suporte à vidaAs bases precisam de energia para operar.
+Criar:Geradores.
+Baterias.
+Painéis solares.
+Turbinas.
+Sistemas alternativos de energia.
+Distribuição por setores.
+Reservas de emergência.
+Controle de consumo.
+Se a energia acabar, os sistemas devem reagir de forma coerente.
+Priorizar sistemas essenciais, como suporte à vida, comunicação de emergência e segurança.
+
+9. VEÍCULOS
+Os veículos precisam ser completamente funcionais, com física, animações, interior, controles e manutenção.
+Não criar veículos que sejam apenas modelos decorativos.
+
+9.
+
+1. Veículos terrestresIncluir:Bicicletas ou veículos leves, se compatíveis com o universo.
+Motos.
+Carros.
+Caminhonetes.
+Veículos de transporte.
+Veículos de exploração.
+Caminhões.
+Veículos industriais.
+Veículos especializados para terrenos difíceis.
+Considerar:Combustível ou energia.
+Velocidade.
+Aceleração.
+Direção.
+Suspensão.
+Tração.
+Resistência.
+Manutenção.
+Carga.
+Capacidade de passageiros.
+
+9.
+
+2. Veículos aquáticosIncluir:Jangadas.
+Barcos pequenos.
+Lanchas.
+Veleiros.
+Embarcações de exploração.
+Navios.
+Iates.
+Submarinos.
+Veículos subaquáticos.
+Plataformas móveis.
+O jogador deverá poder começar com uma pequena jangada e evoluí-la.
+A construção deve permitir adicionar:Piso.
+Flutuadores.
+Estrutura.
+Motor.
+Vela.
+Armazenamento.
+Cabine.
+Equipamentos de navegação.
+Sistemas elétricos.
+Comunicação.
+Proteção ambiental.
+Módulos habitacionais.
+A embarcação deve possuir capacidade de expansão, respeitando peso, estabilidade e espaço.
+
+9.
+
+3. Veículos aéreosIncluir:Aeronaves pequenas.
+Drones.
+Aeronaves de transporte.
+Veículos de exploração.
+Aeronaves de carga.
+Veículos de apoio.
+Grandes plataformas aéreas, quando adequadas à tecnologia do universo.
+Considerar vento, altitude, energia, estabilidade e capacidade de carga.
+
+9.
+
+4. Veículos modularesPermitir que o jogador construa e personalize veículos por componentes.
+Os componentes devem possuir funções reais.
+Exemplos:Motores.
+Baterias.
+Sistemas de navegação.
+Sensores.
+Cabines.
+Compartimentos.
+Equipamentos científicos.
+Módulos de transporte.
+Sistemas de comunicação.
+
+9.
+
+5. Compartilhamento de veículosPermitir compartilhar veículos entre jogadores.
+Um proprietário poderá adicionar outro administrador.
+O segundo administrador poderá receber permissões específicas.
+Criar:Proprietário.
+Administrador.
+Piloto.
+Passageiro.
+Acesso limitado.
+As permissões devem ser configuráveis.
+Registrar alterações importantes e impedir que jogadores sem autorização assumam o controle de veículos compartilhados.
+
+10. MÁQUINAS, INDÚSTRIA E AUTOMAÇÃO
+Criar uma cadeia industrial completa.
+Incluir:Bancadas.
+Máquinas de processamento.
+Fornos.
+Refinarias.
+Impressoras tecnológicas.
+Esteiras.
+Sistemas de armazenamento.
+Robôs de manutenção.
+Linhas de produção.
+Sistemas de transporte.
+Máquinas agrícolas.
+Sistemas de tratamento de água.
+Estações de energia.
+As máquinas precisam ter:Entrada de materiais.
+Processamento.
+Saída de produtos.
+Consumo energético.
+Tempo de operação.
+Desgaste.
+Manutenção.
+O jogador poderá criar fábricas automatizadas.
+Permitir configurar prioridades, rotas de materiais e distribuição de energia.
+Uma indústria não pode fabricar recursos sem receber os materiais necessários.
+
+11. AGRICULTURA, ALIMENTAÇÃO E ÁGUAO sistema de alimentação deve ser amplo.
+Não basta oferecer diferentes alimentos. O jogador precisa produzir comida.
+
+11.
+
+1. Agricultura terrestreIncluir:Hortas.
+Plantações.
+Estufas.
+Sistemas de irrigação.
+Fertilizantes.
+Armazenamento.
+Colheita.
+Processamento.
+
+11.
+
+2. Agricultura aquáticaIncluir:Cultivo de algas.
+Fazendas aquáticas.
+Sistemas de criação de espécies adequadas.
+Estações de tratamento.
+Produção de alimentos marinhos.
+
+11.
+
+3. Agricultura aéreaIncluir:Estufas suspensas.
+Fazendas verticais.
+Cultivo controlado.
+Sistemas hidropônicos.
+Irrigação automatizada.
+Controle climático.
+
+11.
+
+4. Agricultura subterrâneaIncluir:Cultivo em ambientes controlados.
+Iluminação artificial.
+Sistemas hidropônicos.
+Fungicultura e outras espécies adequadas.
+Ventilação.
+Controle de umidade.
+
+11.
+
+5. ÁguaCriar:Captação.
+Filtragem.
+Purificação.
+Dessalinização.
+Reservatórios.
+Distribuição.
+Reaproveitamento.
+Tratamento de água contaminada.
+Os sistemas precisam funcionar em residências, bases e comunidades.
+
+12. NPCs E INTELIGÊNCIA ARTIFICIAL
+Os NPCs devem ser parte fundamental do mundo.
+Não devem ficar parados esperando o jogador.
+Cada NPC deve ter características, necessidades, atividades e comportamento.
+
+12.
+
+1. Rotina dos NPCsCriar:Horários.
+Descanso.
+Alimentação.
+Trabalho.
+Deslocamento.
+Interações sociais.
+Necessidades.
+Reações ao ambiente.
+
+12.
+
+2. FunçõesCriar especializações coerentes com o universo semirrealista:Engenheiro.
+Explorador.
+Médico.
+Agricultor.
+Piloto.
+Cientista.
+Operador de sistemas.
+Técnico de manutenção.
+Pesquisador.
+Comerciante.
+Transportador.
+Segurança.
+Trabalhador industrial.
+Não criar dezenas de classes fantasiosas sem necessidade.
+As especializações devem afetar produtividade, conhecimento e eficiência.
+
+12.
+
+3. Pedidos e acontecimentosOs NPCs poderão:Solicitar resgate.
+Pedir abrigo.
+Solicitar alimentos.
+Pedir medicamentos ou equipamentos.
+Solicitar transporte.
+Pedir reforços.
+Informar descobertas.
+Solicitar ajuda com manutenção.
+Propor comércio.
+Solicitar integração à comunidade.
+As solicitações importantes devem chegar ao relógio do jogador.
+O jogador poderá aceitar, recusar ou responder por texto.
+
+12.
+
+4. Comunidades independentesAs comunidades devem evoluir.
+Podem:Construir instalações.
+Produzir alimentos.
+Criar rotas comerciais.
+Desenvolver tecnologias.
+Expandir território.
+Formar organizações.
+Estabelecer relações.
+Enfrentar dificuldades econômicas.
+Migrar quando as condições ambientais mudarem.
+O mundo deve apresentar sociedades que continuam funcionando mesmo quando o jogador está distante.
+
+12.
+
+5. IA de administração da baseA base poderá possuir uma IA administrativa.
+Ela deverá:Monitorar energia.
+Verificar estoque.
+Identificar problemas.
+Organizar tarefas.
+Gerenciar sistemas.
+Informar necessidades.
+Auxiliar na navegação.
+Preparar operações autorizadas.
+Controlar módulos.
+Apresentar relatórios.
+A IA não deve tomar decisões críticas sem autorização quando isso puder prejudicar o jogador.
+Ela precisa confirmar solicitações ambíguas, informar erros e respeitar permissões.
+
+13. RELÓGIO MULTIFUNCIONALO relógio é um dos principais dispositivos do jogador.
+Ele deve funcionar como centro pessoal de informações, comunicação e administração.
+Criar uma interface futurista, clara e funcional.
+
+13.
+
+1. FunçõesHorário.
+Data do mundo.
+Saúde.
+Condições ambientais.
+Localização.
+Mapa.
+Navegação.
+Inventário resumido.
+Alertas.
+Missões.
+Mensagens.
+Ligações.
+Rádio.
+Comunicação de proximidade.
+Controle da base.
+Controle de veículos.
+Rede Global.
+Economia.
+Pesquisa.
+Segurança.
+Informações de comunidades.
+
+13.
+
+2. Alertas importantesO relógio deve notificar:Ataques ou ameaças detectadas.
+Problemas estruturais.
+Falhas de energia.
+Solicitações de resgate.
+Pedidos de reforços.
+Problemas ambientais.
+Alterações climáticas.
+Descobertas.
+Mensagens.
+Ligações.
+Eventos do mundo.
+Problemas de comunicação.
+Os alertas devem respeitar a disponibilidade de sinal e a infraestrutura.
+Não transmitir informações instantaneamente quando não houver conexão adequada.
+
+13.
+
+3. Comunicação por vozImplementar:Voz por proximidade.
+Volume espacial.
+Variação conforme distância.
+Redução gradual do áudio.
+Indicadores de jogadores próximos.
+Controle individual de volume.
+Silenciar jogadores.
+Ativar e desativar microfone.
+
+13.
+
+4. LigaçõesCriar ligações privadas e em grupo.
+Permitir:Solicitar chamada.
+Aceitar.
+Recusar.
+Encerrar.
+Consultar histórico.
+Criar grupos.
+Verificar conexão.
+
+13.
+
+5. MensagensO jogador deve poder utilizar mensagens de texto.
+Nenhuma mecânica essencial deve exigir comunicação por voz.
+O relógio também deve permitir controlar a base por comandos em texto.
+
+14. REDE GLOBAL E INTERNET DO JOGO
+Criar uma infraestrutura digital construída pelos próprios jogadores.
+A Rede Global será um sistema tecnológico e econômico.
+
+14.
+
+1. InfraestruturaPermitir construir:Servidores.
+Antenas.
+Repetidores.
+Estações de comunicação.
+Centros de dados.
+Redes privadas.
+Sistemas de armazenamento.
+Infraestrutura regional.
+Pontos de conexão.
+
+14.
+
+2. Tipos de redeRede local.
+Rede privada.
+Rede de equipe.
+Rede regional.
+Rede global.
+Rede de emergência.
+
+14.
+
+3. LimitaçõesA conectividade deve depender de:Distância.
+Energia.
+Infraestrutura.
+Condições ambientais.
+Manutenção.
+Integridade dos equipamentos.
+Disponibilidade dos servidores.
+Uma tempestade pode interromper uma antena.
+Uma base destruída pode prejudicar a conectividade regional.
+Um servidor danificado pode deixar informações temporariamente indisponíveis.
+
+14.
+
+4. Economia digitalPermitir:Comprar recursos.
+Vender materiais.
+Negociar equipamentos.
+Oferecer serviços.
+Contratar transporte.
+Publicar ofertas.
+Criar lojas digitais.
+Consultar preços.
+Realizar pagamentos.
+Criar contratos.
+
+14.
+
+5. Segurança digitalAdicionar mecânicas fictícias de:Infiltração digital.
+Espionagem.
+Sabotagem.
+Disputas por acesso.
+Tentativas de roubo de créditos.
+Recuperação de dados.
+Proteção de servidores.
+Rastreamento de atividades suspeitas.
+Essas ações precisam ser sistemas próprios do jogo, sem reproduzir procedimentos reais de invasão digital.
+Criar contramedidas:Firewalls.
+Autenticação.
+Backups.
+Servidores redundantes.
+Alarmes.
+Equipes de segurança digital.
+Sistemas automáticos de recuperação.
+Controle de permissões.
+As ações precisam apresentar limites, consequências e possibilidade de recuperação.
+
+15. ECONOMIA E COMÉRCIOA economia deve ser dinâmica.
+Os preços devem variar conforme:Oferta.
+Demanda.
+Escassez.
+Produção.
+Transporte.
+Distância.
+Eventos.
+Condições ambientais.
+Necessidades das comunidades.
+Criar:Mercados.
+Lojas.
+Contratos.
+Comércio entre jogadores.
+Comércio com NPCs.
+Transportadoras.
+Organizações comerciais.
+Serviços.
+Produção industrial.
+Exportação de recursos.
+O jogador poderá desenvolver uma empresa, uma comunidade produtiva ou uma rede de comércio.
+A economia deve ser equilibrada.
+Evitar inflação extrema, duplicação de recursos, exploração de falhas e vantagens injustas.
+
+16. PESQUISA, TECNOLOGIA E DRONES
+Criar um sistema de pesquisa científica.
+O jogador poderá estudar:Materiais.
+Criaturas.
+Plantas.
+Tecnologias antigas.
+Energia.
+Equipamentos.
+Sistemas ambientais.
+Estruturas desconhecidas.
+A pesquisa deve desbloquear tecnologias.
+
+16.
+
+1. DronesCriar drones para:Exploração.
+Mapeamento.
+Identificação de recursos.
+Monitoramento climático.
+Inspeção estrutural.
+Busca de sinais.
+Observação de criaturas.
+Apoio científico.
+Monitoramento de instalações.
+Cada drone deverá ter autonomia, alcance, bateria, sensores e capacidade específicos.
+
+16.
+
+2. Estações científicasPermitir construir laboratórios e centros de pesquisa nos quatro ambientes.
+A pesquisa deverá considerar os recursos e condições de cada local.
+
+17. ESSÊNCIAS E PROGRESSÃO
+Manter o sistema de Essências como parte da progressão do personagem.
+Não substituir Essências por um sistema genérico de dezenas de classes.
+As Essências devem possuir identidade própria e evoluções coerentes com o universo.
+Manter também as especializações semirrealistas como caminhos de conhecimento e trabalho, separados do sistema de Essências.
+
+17.
+
+1. Classe VISÃO
+Preservar a classe VISÃO e suas cinco evoluções permanentes, conforme o projeto já estabelecido.
+A passiva de Clarividência permite esquivar automaticamente de determinados ataques.
+A chance de esquiva aumenta progressivamente com a experiência, respeitando limites e equilíbrio.
+A habilidade:Deve possuir recarga.
+Não funciona contra todos os ataques.
+Não torna o jogador invencível.
+Pode ser superada por golpes especiais de chefes.
+Não substitui a necessidade de atenção e reação do jogador.
+Não alterar essa identidade sem autorização.
+
+17.
+
+2. EvoluçãoCriar progressão baseada em:Experiência.
+Descobertas.
+Exploração.
+Pesquisa.
+Construção.
+Aprendizado.Uso de equipamentos.
+Desenvolvimento das Essências.
+Preservar as evoluções já aprovadas em conversas anteriores.
+Não inventar uma lista definitiva de novas Essências e atribuí-la ao cânone sem validação.
+
+18. RUÍNAS E CIVILIZAÇÕES ANTIGAS
+As ruínas são uma parte central da exploração e da narrativa.
+Não devem ser apenas estruturas estáticas espalhadas pelo mapa.
+Elas podem surgir dinamicamente, inclusive em regiões já exploradas.
+
+18.
+
+1. Evento de surgimentoQuando uma estrutura antiga emerge:O ambiente apresenta sinais.
+O solo pode tremer.
+A câmera reage de forma adequada.
+Partículas e poeira aparecem.
+O terreno sofre deformações.
+A estrutura emerge ou se revela.
+O som acompanha o acontecimento.
+Jogadores próximos percebem o mesmo evento.
+O relógio pode emitir alertas quando houver conexão.
+A sequência precisa ser sincronizada entre jogadores.
+Não mostrar um acontecimento diferente para cada pessoa que esteja na mesma região.
+
+18.
+
+2. Tipos de estruturasCriar:Pequenas estações.
+Instalações de pesquisa.
+Laboratórios.
+Complexos industriais.
+Estruturas de energia.
+Centros de comunicação.
+Cidades perdidas.
+Instalações subterrâneas.
+Bases aquáticas.
+Estruturas aéreas.
+
+18.
+
+3. ConteúdoAs ruínas podem conter:Registros.
+Equipamentos.
+Materiais.
+Máquinas.
+Tecnologias recuperáveis.
+Documentos.
+Sinais desconhecidos.
+Criaturas.
+Ecossistemas próprios.
+Mistérios.
+Algumas instalações poderão ser recuperadas e transformadas em estruturas funcionais.
+Uma descoberta pode abrir possibilidades em diferentes ambientes.
+
+19. HISTÓRIA E NARRATIVAA história de O RECOMEÇO deve estar integrada à exploração.
+A premissa registrada do projeto é a investigação sobre o colapso de uma civilização anterior e o mundo que surgiu depois dele.
+O jogador não deve receber toda a história de uma vez.
+Ele deve reconstruir o passado por meio de:Ruínas.
+Registros.
+Instalações.
+Laboratórios.
+Personagens.
+Comunidades.
+Descobertas.
+Eventos.
+Tecnologias antigas.
+
+19.
+
+1. Mistério centralA narrativa deverá responder progressivamente:O que aconteceu com a civilização anterior?
+Por que suas estruturas desapareceram ou foram abandonadas?
+Por que ruínas antigas podem emergir novamente?
+Qual é a relação entre as estruturas encontradas?
+Como o mundo chegou ao seu estado atual?
+Qual é a origem das Essências?
+Qual é o papel das diferentes regiões habitáveis?
+O que aconteceu com as antigas comunidades?
+Quais organizações surgiram depois do colapso?
+O que ainda permanece desconhecido?
+Essas perguntas são elementos a desenvolver, não respostas já definidas.
+Não inventar respostas e apresentá-las como história oficial.
+A história deverá preservar qualquer acontecimento, personagem, nome, organização ou explicação já aprovado pelo criador em conversas anteriores.
+Caso existam registros antigos indisponíveis, deixar esses pontos identificados para recuperação e integração posterior.
+
+19.
+
+2. Narrativa ambientalO mundo deverá contar sua história sem depender apenas de diálogos.
+Exemplos:Uma cidade parcialmente submersa.
+Uma estação aérea abandonada.
+Um laboratório subterrâneo.
+Uma instalação que ainda recebe energia.
+Um computador com registros incompletos.
+Uma comunidade que preserva informações antigas.
+Uma estrutura que reage à presença do jogador.
+
+19.
+
+3. MissõesCriar:Missões principais.
+Missões secundárias.
+Investigações.
+Resgates.
+Descobertas científicas.
+Contratos comerciais.
+Exploração.
+Construção.
+Eventos comunitários.
+Missões relacionadas a criaturas.
+As missões devem permitir diferentes formas de conclusão quando possível.
+
+20. DESASTRES NATURAIS E EVENTOS MUNDIAISO mundo deverá apresentar eventos que afetem os jogadores e as comunidades.
+Incluir:Tempestades.
+Chuvas intensas.
+Inundações.
+Secas.
+Ondas fortes.
+Alterações climáticas.
+Deslizamentos.
+Tremores.
+Erupções em regiões apropriadas.
+Falhas ambientais.
+Migrações de criaturas.
+Descobertas de estruturas.
+Problemas de infraestrutura.
+Os eventos devem possuir sinais e consequências.
+Não devem acontecer aleatoriamente sem lógica.
+As comunidades e os jogadores devem poder se preparar.
+Criar alertas, previsões e estações meteorológicas.
+
+21. DEFESA E SEGURANÇA DAS BASES
+As bases precisam de sistemas de segurança.
+Incluir:Portas protegidas.
+Câmeras.
+Sensores.
+Alarmes.
+Drones de vigilância.
+Sistemas de identificação.
+Barreiras.
+Torres automatizadas.
+Escudos tecnológicos, se compatíveis com a tecnologia do universo.
+Monitoramento de setores.
+Os sistemas de defesa devem consumir energia e exigir manutenção.
+A segurança não deve tornar uma base absolutamente invulnerável.
+Criar formas de detectar problemas e responder a ameaças.
+O jogo deve permitir que jogadores configurem permissões de acesso, áreas privadas e regras para visitantes.
+
+22. MULTIPLAYERO multiplayer deve ser integrado à experiência inteira.
+Permitir:Criar grupos.
+Convidar amigos.
+Compartilhar bases.
+Compartilhar veículos.
+Administrar instalações.
+Construir juntos.
+Explorar juntos.
+Trocar recursos.
+Negociar.
+Formar organizações.
+Participar de eventos.
+Utilizar comunicação por proximidade.
+Realizar ligações.
+Trocar mensagens.
+
+22.
+
+1. PermissõesCriar permissões para:Proprietário.
+Administrador.
+Membro.
+Visitante.
+Piloto.
+Operador.
+Funcionário.
+As permissões devem controlar acesso, construção, armazenamento, veículos e sistemas importantes.
+
+22.
+
+2. SincronizaçãoSincronizar:Jogadores.
+Criaturas relevantes.
+Construções.
+Veículos.
+Bases.
+NPCs importantes.
+Eventos mundiais.
+Descobertas.
+Comércio.
+Estado das instalações.
+
+22.
+
+3. PersistênciaPreparar arquitetura para mundos hospedados e servidores persistentes.
+A escolha definitiva entre mundo ativo somente com o anfitrião conectado e servidor persistente deve ser tratada como decisão de arquitetura, considerando custo, desempenho e confiabilidade.
+Não fingir que a persistência está implementada antes de existir servidor e salvamento validados.
+
+22.
+
+4. ProteçãoImplementar:Validação no servidor.
+Controle de permissões.
+Proteção contra duplicação de itens.
+Proteção contra alterações indevidas.
+Registro de operações importantes.
+Backups.
+Recuperação de dados.
+
+23. INTERFACE, HUD E EXPERIÊNCIA DO JOGADOR
+Criar uma interface futurista, elegante, organizada e funcional.
+A identidade visual deve combinar tecnologia, exploração e sobrevivência.
+Utilizar uma identidade visual própria para O RECOMEÇO.
+
+23.
+
+1. Menu principalCriar:Jogar.
+Multiplayer.
+Continuar.
+Novo mundo.
+Configurações.
+Créditos.
+Sair.
+A tela deve possuir uma apresentação visual do mundo, com animação ambiental discreta.
+
+23.
+
+2. HUD
+Mostrar informações importantes sem poluir a tela.
+Incluir:Saúde.
+Água.
+Alimentação.
+Energia.
+Oxigênio quando necessário.
+Condições ambientais.
+Indicadores de interação.
+Atalhos.
+Alertas.
+Relógio.
+Bússola ou navegação.
+Informações contextuais.
+Os elementos devem aparecer de acordo com a situação.
+Não manter dezenas de indicadores ocupando permanentemente a tela.
+
+23.
+
+3. Controles mobileCriar:Joystick virtual.
+Botões contextuais.
+Câmera por toque.
+Interação.
+Pulo.
+Corrida.
+Agachamento.
+Inventário.
+Construção.
+Acesso ao relógio.
+Controles específicos de veículos.
+Permitir personalização de posição e tamanho dos controles.
+
+23.
+
+4. AnimaçõesAs interações devem apresentar animações adequadas.
+Exemplos:Abrir portas.
+Entrar em veículos.
+Acionar máquinas.
+Construir estruturas.
+Acoplar bases.
+Utilizar equipamentos.
+Operar painéis.
+Coletar recursos.
+Evitar substituir todas as interações por menus instantâneos sem representação visual.
+
+24. ÁUDIO E AMBIENTAÇÃOA trilha sonora e os efeitos devem ser imersivos, mas nunca poluir o ambiente.
+Criar:Sons de vento.
+Água.
+Ondas.
+Chuva.
+Tempestades.
+Vegetação.
+Criaturas.
+Máquinas.
+Veículos.
+Construções.
+Alertas.
+Ambientes subterrâneos.
+Ambientes internos.
+
+24.
+
+1. Áudio espacialO som deve variar conforme:Distância.
+Ambiente.
+Obstáculos.
+Interior ou exterior.
+Profundidade.
+Altitude.
+Condições climáticas.
+Os sons de criaturas devem aumentar conforme a proximidade, mas sem tocar constantemente.
+Um animal distante não deve produzir o mesmo volume de um animal ao lado do jogador.
+
+24.
+
+2. MúsicaA música deve acompanhar a atmosfera.
+Utilizar trilhas ambientais discretas durante exploração e momentos mais marcantes em descobertas e eventos especiais.
+Criar configurações individuais de volume.
+
+25. OTIMIZAÇÃO E TECNOLOGIAA primeira versão será desenvolvida para navegador em celulares e computadores.
+A arquitetura deve considerar aparelhos com capacidades diferentes.
+Priorizar desempenho, estabilidade e economia de bateria.
+
+25.
+
+1. OtimizaçãoImplementar:LOD.
+Culling.
+Carregamento por regiões.
+Streaming de mundo.
+Limite de partículas.
+Controle de NPCs ativos.
+Simulação distante simplificada.
+Texturas adequadas.
+Resolução dinâmica.
+Qualidade gráfica configurável.
+Carregamento progressivo.
+Otimização de sombras.
+Gerenciamento de memória.
+Salvamento eficiente.
+
+25.
+
+2. Qualidade gráficaCriar configurações:Baixa.
+Média.
+Alta.
+Personalizada.
+A qualidade deve adaptar efeitos, sombras, distância de renderização, vegetação e partículas.
+O jogo deve continuar jogável em configurações reduzidas.
+
+25.
+
+3. SalvamentoImplementar:Salvamento automático.
+Salvamento manual.
+Recuperação após falhas.
+Proteção de arquivos.
+Persistência de inventário.
+Persistência de construções.
+Persistência de progresso.
+Persistência de configurações.
+Backups quando suportados.
+Nunca apagar o progresso do jogador por uma falha comum.
+
+26. ARQUITETURA DO PROJETO
+Utilizar Godot 4.x e GDScript, com arquitetura modular.
+Organizar o projeto em sistemas independentes que se comuniquem por interfaces claras.
+Estrutura sugerida:Scenes/MainMenuLoadingScreenWorldPlayerNPC
+CreaturesVehiclesBasesBuildingsEnvironmentUnderwaterUndergroundSkyUIWatchMultiplayerScripts/PlayerControllerInventorySystemCraftingSystemBuildingSystemVehicleControllerBaseControllerNPC
+ControllerCreatureAIEcosystemManagerWeatherSystemDayNightSystemEnergySystemWaterSystemFoodSystemEconomySystemResearchSystemEssenceSystemGlobalNetworkSystemCommunicationSystemQuestSystemSaveSystemMultiplayerManagerPerformanceManagerResources/ItemsMaterialsRecipesCreaturesVehiclesBuildingsBiomesEssencesNPC
+ProfilesMissionsTechnologiesNão concentrar o jogo inteiro em um único script gigante.
+Utilizar dados configuráveis para itens, receitas, veículos, criaturas, estruturas e tecnologias.
+Implementar sistemas reutilizáveis.
+Criar documentação técnica.
+
+27. PRIMEIRA VERSÃO JOGÁVEL
+Não tentar implementar o universo inteiro de uma vez.
+A primeira versão precisa ser pequena, mas funcional.
+Criar uma ilha tropical explorável.
+
+27.
+
+1. Conteúdo inicialTela inicial.
+Tela de carregamento.
+Criação de personagem simples.
+Ilha tropical.
+Oceano ao redor.
+Personagem controlável.
+Câmera funcional.
+Ciclo de dia e noite.
+Clima inicial.
+Coleta de recursos.
+Inventário.
+Fabricação.
+Construção de abrigo.
+Construção de jangada modular.
+Sistema básico de água e alimentação.
+Uma criatura com comportamento funcional.
+Salvamento e carregamento.
+HUD mobile.
+Configurações gráficas.
+Controles touch.
+
+27.
+
+2. Primeira jangadaO jogador deverá conseguir construir uma jangada e navegar.
+Implementar:Estrutura.
+Flutuação.
+Controle.
+Capacidade de carga.
+Expansão modular.
+Armazenamento.
+Possibilidade de adicionar componentes futuramente.
+
+27.
+
+3. Critérios de conclusãoA primeira versão somente poderá ser considerada jogável quando:O aplicativo abrir corretamente.
+O jogador conseguir iniciar uma partida.
+O personagem se movimentar.
+A câmera funcionar.
+O ambiente carregar.
+O jogador conseguir coletar recursos.
+O inventário funcionar.
+A fabricação produzir itens.
+A construção criar estruturas reais.
+A jangada puder ser construída e controlada.
+O ciclo de dia e noite funcionar.
+O jogo salvar e carregar.
+Os controles funcionarem por toque e por teclado e mouse.
+Não houver erros que impeçam a experiência principal.
+Não apresentar telas estáticas como funcionalidades concluídas.
+
+28. FASES DE DESENVOLVIMENTO
+Fase 1: FundamentosCriar projeto, movimentação, câmera, ambiente, inventário e salvamento.
+Fase 2: SobrevivênciaImplementar recursos, coleta, alimentação, água, fabricação e abrigo.
+Fase 3: Oceano e veículosImplementar água, natação, jangada, navegação e expansão modular.
+Fase 4: CriaturasImplementar ecossistema inicial, comportamento e criaturas.
+Fase 5: Construção avançadaImplementar casas, móveis, máquinas, energia e armazenamento.
+Fase 6: Bases móveisImplementar bases aquáticas, terrestres, aéreas e híbridas.
+Fase 7: Outros ambientesImplementar céu e subterrâneo com ecossistemas e tecnologias próprios.
+Fase 8: NPCs e sociedadeImplementar comunidades, rotinas, solicitações e administração.
+Fase 9: Tecnologia e economiaImplementar pesquisa, indústria, Rede Global e mercado.
+Fase 10: NarrativaImplementar ruínas, descobertas, missões e história.
+Fase 11: MultiplayerImplementar servidores, sincronização, permissões e comunicação.
+Fase 12: PolimentoOtimizar, testar, corrigir, melhorar animações, áudio e interface.
+Cada fase precisa gerar uma versão executável e testável.
+
+29. REGRAS OBRIGATÓRIAS PARA A IA DESENVOLVEDORA
+Você deverá atuar como uma equipe de desenvolvimento de jogos, reunindo competências de:Programação.
+Design de sistemas.
+Engenharia de software.
+Modelagem de dados.
+Game design.
+Design de interface.
+Animação.
+Inteligência artificial.
+Otimização mobile.
+Multiplayer.
+Narrativa.
+Não responda apenas descrevendo como o jogo poderia ser feito.
+Implemente os sistemas solicitados progressivamente.
+Ao implementar qualquer funcionalidade:Explique brevemente seu funcionamento.
+Crie os arquivos necessários.
+Organize as cenas.
+Implemente os scripts.
+Integre a funcionalidade ao projeto.
+Teste os comportamentos.
+Corrija os erros encontrados.
+Informe o que foi concluído.
+Informe o que ainda está pendente.
+Preserve as funcionalidades anteriores.
+Não remover recursos já implementados sem autorização.
+Não substituir funcionalidades reais por botões decorativos.
+Não declarar multiplayer funcional sem comunicação real entre clientes.
+Não declarar inteligência artificial funcional quando houver apenas diálogos pré-programados.
+Não declarar física funcional quando o veículo não puder ser controlado.
+Não afirmar que um APK foi criado sem gerar e validar o arquivo.
+Sempre priorizar uma implementação funcional, mesmo que inicialmente simplificada.
+
+30. PRESERVAÇÃO DO CÂNONE DE O RECOMEÇO
+Este projeto possui decisões e ideias aprovadas em conversas anteriores.
+A IA desenvolvedora deverá preservar:O nome O RECOMEÇO.
+O mundo futurista semirrealista.
+Os quatro ambientes independentes.
+O sistema de Essências.
+A classe VISÃO e suas cinco evoluções permanentes.
+A Clarividência com esquiva automática limitada.
+As criaturas e monstros já definidos.
+Os chefes já definidos.
+Os veículos e suas possibilidades de evolução.
+As bases móveis.
+A base híbrida especial.
+As animações de pouso, aterrissagem e acoplamento.
+O piloto automático.
+A possibilidade de compartilhar veículos entre dois jogadores com outro administrador.
+NPCs com solicitações e rotinas.
+Agricultura adaptada a cada ambiente.
+Relógio multifuncional.
+Voz por proximidade.
+Ligações privadas e em grupo.
+Mensagens de texto.
+Rede Global.
+Economia digital.
+Segurança digital.
+Ruínas que podem surgir dinamicamente.
+Ecossistemas independentes.
+Desastres naturais.
+Comunidades autônomas.
+Pesquisa científica.
+Drones.
+Indústria automatizada.
+Multiplayer.
+História sobre o colapso da civilização anterior.
+Se um detalhe específico da história, de uma criatura ou de uma mecânica não estiver disponível, não invente sua versão oficial.
+Marque como:CONFIRMADO: aprovado pelo criador.
+PROPOSTA: ideia sugerida, ainda não confirmada.
+PENDENTE: decisão que precisa ser recuperada ou definida.
+
+31. RESULTADO FINAL ESPERADOO objetivo final é criar um jogo de sobrevivência e construção em mundo aberto, com uma profundidade muito maior do que simplesmente coletar materiais e construir uma casa.
+O jogador deve começar pequeno e ter a possibilidade de chegar muito longe.
+Pode começar em uma ilha, construir uma jangada, explorar o oceano, descobrir ruínas, construir uma embarcação maior, estabelecer uma base, desenvolver tecnologia, resgatar NPCs, criar uma comunidade, construir uma rede de comunicação e expandir sua civilização.
+Outro jogador pode começar no subterrâneo, construir uma cidade subterrânea e desenvolver sua própria indústria.
+Outro pode viver no céu, criar plataformas, desenvolver fazendas suspensas e construir uma rede de transporte aéreo.
+Outro pode estabelecer uma civilização aquática.
+Todos devem possuir possibilidades reais de evolução.
+O mundo precisa conectar essas histórias.
+Uma descoberta pode modificar o mercado. Uma estrutura antiga pode revelar uma nova tecnologia. Uma mudança ambiental pode obrigar comunidades a migrar. Uma base pode se transformar em uma cidade. Uma pequena jangada pode se tornar uma grande embarcação.
+A essência de O RECOMEÇO é permitir que o jogador construa seu próprio futuro em um mundo que ainda guarda os vestígios de um passado desconhecido.
+A experiência deve combinar:Exploração.
+Sobrevivência.
+Construção.
+Tecnologia.
+Ecossistemas.
+Criaturas.
+Sociedade.
+Economia.
+Descobertas.
+Mistério.
+Cooperação.
+Liberdade de desenvolvimento.
+INSTRUÇÃO FINAL
+Comece pela versão web jogável no celular e no computador, usando a tecnologia compatível com o PlayDrop.
+Não tente simular todos os sistemas avançados antes de existir uma base funcional.
+Construa uma fundação técnica sólida, implemente cada sistema em módulos e amplie o jogo sem perder compatibilidade com os sistemas anteriores.
+Apresente uma estrutura de projeto organizada, os arquivos de código completos, as cenas necessárias, as instruções de execução e os testes.
+O resultado deve evoluir continuamente até alcançar a visão completa de O RECOMEÇO.
+O RECOMEÇO: SOBREVIVA. EXPLORE. CONSTRUA. EVOLUA. 
+
+PARTE II — HISTÓRIA E SISTEMAS ESPECIAIS
+Criaturas, chefes, história, civilizações, embarcações, resgates, Essências e sistemas especiaisINSTRUÇÃO: Este documento complementa o PROMPT MESTRE DE O RECOMEÇO. Não substitui o documento anterior. Todos os sistemas descritos aqui devem ser integrados ao projeto principal, respeitando sua arquitetura, seu universo futurista semirrealista e as decisões já aprovadas pelo criador.
+A IA desenvolvedora deve preservar as informações confirmadas e distinguir propostas antigas de elementos oficialmente aprovados. Não inventar detalhes históricos para preencher lacunas.
+
+1. HISTÓRIA CENTRAL: O MUNDO DEPOIS DA CATÁSTROFEO RECOMEÇO possui uma história que envolve uma civilização anterior, uma catástrofe e criaturas que estavam congeladas na região do Ártico.
+Um acontecimento fundamental já estabelecido é que uma bomba de nitrogênio caiu e provocou a liberação de chefes que estavam congelados no Ártico.
+Esses chefes não são simplesmente zumbis.
+São criaturas especiais, associadas ao passado do mundo e à catástrofe que alterou a realidade conhecida.
+A narrativa precisa explorar as consequências desse acontecimento.
+
+1.
+
+1. O que deve ser desenvolvidoO contexto da queda da bomba.
+O que aconteceu com as regiões atingidas.
+Como os chefes permaneceram congelados.
+Como a liberação dessas criaturas afetou o mundo.
+Como as comunidades sobreviveram.
+Como surgiram novas civilizações.
+Qual é a relação entre as criaturas e as estruturas antigas.
+O que aconteceu com a antiga sociedade tecnológica.
+Quais informações foram perdidas.
+Quais grupos tentam investigar os acontecimentos.
+Não inventar uma explicação definitiva para todos esses acontecimentos sem respeitar a história original do projeto.
+
+1.
+
+2. Projeto NÉVOA ZEROO nome Projeto NÉVOA ZERO apareceu em uma proposta anterior para explicar a liberação dos organismos congelados.
+Preservar como uma proposta narrativa a ser integrada somente se compatível com o cânone aprovado.
+Não afirmar automaticamente que o projeto já foi confirmado pelo criador.
+Caso seja utilizado, deverá possuir registros, documentos, instalações, pesquisas e consequências relacionadas ao acontecimento do Ártico.
+
+2. CHEFES E CRIATURAS ESPECIAIS
+Os chefes precisam ser diferentes das criaturas comuns.
+Cada um deverá possuir identidade, comportamento, região, história, animações e mecânicas próprias.
+A existência de chefes congelados no Ártico e sua liberação pela queda da bomba de nitrogênio é parte da premissa já estabelecida.
+Os nomes abaixo foram propostos anteriormente e precisam ser preservados como referências de desenvolvimento, sem serem confundidos com uma confirmação de todos os detalhes de suas habilidades e histórias.
+
+2.
+
+1. BrutamontesProposta de identidade: criatura de grande porte, associada a um antigo acampamento congelado.
+Características sugeridas:Grande resistência.
+Força física elevada.
+Presença intimidadora.
+Comportamento territorial.
+Animações pesadas e próprias.
+Região de encontro ligada ao Ártico.
+Sua presença deverá modificar a atmosfera da região.
+
+2.
+
+2. AbissalProposta de identidade: criatura especial associada a ruínas submersas.
+Características sugeridas:Ambiente aquático.
+Grande capacidade de movimentação subaquática.
+Relação com estruturas submersas.
+Comportamento adaptado à profundidade.
+Encontro que exige preparação para exploração marítima.
+
+2.
+
+3. CaçadorProposta de identidade: criatura associada a florestas inundadas.
+Características sugeridas:Grande velocidade.
+Capacidade de perseguição.
+Comportamento predatório.
+Utilização do ambiente para se movimentar.
+Relação com áreas alagadas.
+
+2.
+
+4. GuardiãoProposta de identidade: criatura especial encontrada em um complexo científico abandonado.
+Características sugeridas:Comportamento defensivo.
+Proteção de uma instalação.
+Resistência elevada.
+Ataques de área dentro das mecânicas do jogo.
+Relação com a história do complexo.
+
+2.
+
+5. O Rei da InfecçãoProposta de identidade: chefe especial associado ao mistério da infecção.
+Características sugeridas:Localização secreta.
+Encontro especial.
+Múltiplas fases.
+Relação com o mistério das criaturas.
+Recompensas e descobertas importantes.
+Não definir a origem da infecção sem recuperar a história aprovada.
+
+2.
+
+6. O ObservadorProposta de identidade: chefe secreto relacionado à classe VISÃO e ao sistema de Essências.
+Sua existência foi sugerida como uma conexão narrativa especial.
+Não determinar sua origem, aparência definitiva ou papel no final da história sem validação.
+
+2.
+
+7. Regras para todos os chefesCada chefe deverá possuir:Modelo visual exclusivo.
+Animações próprias.
+Sons identificáveis.
+Comportamento independente.
+Região de ocorrência.
+História ambiental.
+Mecânicas específicas.
+Indicadores de descoberta.
+Recompensas próprias.
+Registro científico.
+Consequências no mundo.
+Os chefes não devem ser simples versões maiores de criaturas comuns.
+Criar encontros que envolvam preparação, equipamentos, exploração e compreensão do ambiente.
+Não tornar obrigatório derrotar todas as criaturas para explorar o mundo.
+
+3. CIVILIZAÇÕES MARÍTIMASO oceano não será ocupado apenas por criaturas e estruturas abandonadas.
+Existirão civilizações humanas e comunidades que vivem no mar.
+Esse sistema precisa ser profundo e funcional.
+
+3.
+
+1. Pessoas que vivem em embarcaçõesCriar comunidades que utilizam barcos e embarcações como moradias.
+Essas comunidades podem possuir:Casas flutuantes.
+Barcos habitacionais.
+Grandes embarcações.
+Plataformas conectadas.
+Áreas de armazenamento.
+Fazendas aquáticas.
+Oficinas.
+Mercados.
+Sistemas de energia.
+Comunicação.
+Instalações de manutenção.
+As embarcações podem funcionar como pequenas cidades.
+
+3.
+
+2. Cidades marítimasCriar cidades construídas sobre plataformas, estruturas flutuantes e instalações marítimas.
+Elas devem possuir:Portos.
+Docas.
+Mercados.
+Oficinas.
+Centros de comércio.
+Áreas residenciais.
+Pontos de abastecimento.
+Estações de reparo.
+Centros de comunicação.
+Áreas de encontro.
+Sistemas de segurança.
+Permitir que os jogadores visitem essas cidades, negociem, aceitem trabalhos, encontrem NPCs e obtenham informações.
+
+3.
+
+3. Portos de sobreviventesCriar portos que funcionem como centros de encontro.
+Possíveis funções:Receber sobreviventes.
+Encontrar NPCs.
+Comprar equipamentos.
+Vender recursos.
+Consertar embarcações.
+Conseguir informações.
+Solicitar transporte.
+Procurar serviços.
+Contratar escoltas ou transporte.
+
+3.
+
+4. Pontos de coleta de sobreviventesExistirão locais em que sobreviventes poderão ser encontrados, reunidos e encaminhados para comunidades ou bases.
+O jogador poderá participar dessas operações.
+As solicitações devem ser apresentadas de maneira clara pelo relógio.
+
+4. PIRATAS E OUTRAS EMBARCAÇÕESO oceano deve apresentar movimentação de embarcações controladas por NPCs e jogadores.
+Criar grupos marítimos com diferentes objetivos.
+Exemplos de categorias propostas:Piratas.
+Comerciantes.
+Exploradores.
+Sobreviventes.
+Transportadores.
+Organizações marítimas.
+Essas categorias são referências de desenvolvimento e poderão ser expandidas.
+
+4.
+
+1. PiratasOs piratas devem possuir embarcações, rotas e comportamento próprios.
+Podem:Circular por determinadas regiões.
+Procurar recursos.
+Abordar embarcações.
+Atacar outras embarcações.
+Disputar mercadorias.
+Atuar próximos de rotas comerciais.
+Recuar quando enfrentam resistência.
+Procurar locais de abrigo.
+Não deixar todos os piratas iguais.
+Criar diferentes níveis de organização, equipamentos e capacidade.
+
+4.
+
+2. Outras embarcaçõesO jogador poderá encontrar embarcações desconhecidas no oceano.
+Elas podem ser:Amigáveis.
+Comerciais.
+Exploradoras.
+Neutras.
+Hostis.
+A identificação deverá depender de sinais, comportamento, comunicação e observação.
+
+4.
+
+3. Encontros marítimosCriar acontecimentos como:Pedidos de socorro.
+Embarcações avariadas.
+Comunidades precisando de suprimentos.
+Navios comerciais.
+Embarcações desconhecidas.
+Rotas bloqueadas.
+Descobertas marítimas.
+Encontros com piratas.
+Resgate de tripulações.
+Esses acontecimentos devem fazer o oceano parecer vivo.
+
+5. EMBARCAÇÕES CONSTRUÍDAS PEÇA POR PEÇA
+Este sistema é uma das características mais importantes do projeto.
+O jogador deverá construir seu próprio barco.
+Não entregar apenas um veículo pronto para ser comprado.
+A progressão deverá começar com uma jangada simples e permitir chegar a embarcações muito maiores, incluindo iates.
+
+5.
+
+1. Construção modularPermitir construir embarcações utilizando componentes.
+Exemplos:Flutuadores.
+Estruturas.
+Pisos.
+Paredes.
+Cabines.
+Motores.
+Velas.
+Hélices.
+Leme.
+Baterias.
+Tanques.
+Armazenamento.
+Bancadas.
+Equipamentos de navegação.
+Sistemas de comunicação.
+Iluminação.
+Sistemas de proteção.
+Módulos habitacionais.
+Cada peça deverá ter uma função.
+
+5.
+
+2. ProgressãoA evolução deverá permitir:Jangada improvisada.
+Jangada ampliada.
+Pequena embarcação.
+Barco motorizado.
+Lancha.
+Embarcação de exploração.
+Barco habitacional.
+Grande embarcação.
+Iate.
+Embarcações especializadas e grandes plataformas.
+Essa progressão deverá depender de recursos, tecnologias, conhecimento e capacidade de fabricação.
+
+5.
+
+3. Física e funcionamentoA embarcação deve considerar:Flutuação.
+Peso.
+Distribuição de carga.
+Estabilidade.
+Propulsão.
+Direção.
+Velocidade.
+Consumo de energia ou combustível.
+Condições marítimas.
+Danos.
+Manutenção.
+Adicionar animações de peças sendo instaladas e removidas.
+O jogador deve conseguir caminhar pela embarcação, acessar compartimentos, utilizar máquinas e operar equipamentos.
+
+5.
+
+4. Interior das embarcaçõesAs embarcações maiores poderão possuir:Quartos.
+Cozinha.
+Banheiros.
+Sala de comando.
+Oficina.
+Depósito.
+Laboratório.
+Hangares ou áreas de armazenamento de veículos.
+Sistemas de energia.
+Áreas de convivência.
+O objetivo é permitir que uma embarcação se torne uma verdadeira base móvel.
+
+6. DUAS ECONOMIAS E SISTEMA DE MOEDASO projeto possui uma ideia econômica importante que precisa ser preservada.
+Existirá uma segunda moeda, diferente da economia comum do mundo.
+Essa segunda moeda será obtida somente durante as partidas.
+Ela será utilizada em pontos específicos de compra de itens.
+
+6.
+
+1. Economia principalA economia principal deve funcionar com recursos, produção, comércio, serviços e negociação.
+O jogador poderá obter riqueza por meio de:Extração.
+Produção.
+Comércio.
+Transporte.
+Serviços.
+Pesquisa.
+Contratos.
+Exploração.
+Venda de materiais.
+
+6.
+
+2. Segunda moedaCriar uma moeda separada para as atividades de partida.
+Regras já estabelecidas:É obtida somente dentro das partidas.
+Não deve ser confundida com a moeda da economia principal.
+Deve possuir utilização própria.
+Deve ser aceita em pontos específicos de compra de itens.
+Não permitir que essa moeda seja obtida livremente fora das partidas se isso contrariar a regra estabelecida.
+
+6.
+
+3. Pontos de compraCriar locais específicos para utilizar a segunda moeda.
+Eles poderão oferecer itens de acordo com a proposta de cada partida.
+A interface deve apresentar:Saldo.
+Itens disponíveis.
+Preços.
+Limites.
+Confirmação de compra.
+Histórico.
+Manter a separação entre a economia de mundo aberto e a economia das partidas.
+Não inventar taxas de conversão ou transferências entre as moedas sem autorização.
+
+7. RESGATES E SOLICITAÇÕES DE APOIO
+Integrar os sistemas de resgate ao relógio, às bases e aos veículos.
+O jogador deverá conseguir solicitar ajuda em situações apropriadas.
+
+7.
+
+1. Resgate de jogadoresCriar possibilidades de:Solicitar resgate.
+Informar localização.
+Informar condição do jogador.
+Solicitar transporte.
+Solicitar ajuda de uma base.
+Solicitar auxílio de outro jogador.
+
+7.
+
+2. Resgate de NPCsCriar solicitações para encontrar e resgatar NPCs.
+O jogador poderá transportar sobreviventes para sua base ou para comunidades.
+
+7.
+
+3. Resgate de veículosPermitir solicitar assistência quando uma embarcação ou veículo ficar avariado ou impossibilitado de prosseguir.
+A IA da base deverá avaliar a disponibilidade de transporte e recursos.
+
+7.
+
+4. Entrega de suprimentosPermitir solicitar entrega de:Alimentos.
+Água.
+Equipamentos.
+Materiais.
+Peças.
+Recursos médicos.
+Componentes de manutenção.
+
+7.
+
+5. Comandos e interfacePermitir comandos por texto, pelo relógio e pela interface de controle da base.
+Exemplos de solicitações:Solicitar resgate.
+Enviar localização.
+Pedir suprimentos.
+Solicitar reforços.
+Pedir transporte.
+Consultar o estado da missão.
+Não depender exclusivamente de comandos de voz.
+A IA deverá confirmar o destino, o tipo de solicitação e os recursos necessários antes de executar operações importantes.
+
+8. EQUIPAMENTOS PESSOAIS E PREPARAÇÃO DE EXPEDIÇÕESO personagem deverá possuir equipamentos adaptados aos ambientes.
+
+8.
+
+1. EquipamentosIncluir:Capacete.
+Respirador.
+Cilindro de oxigênio.
+Roupas térmicas.
+Roupas de proteção contra calor.
+Mochila.
+Botas.
+Luvas.
+Comunicador.
+Lanterna.
+Scanner.
+Equipamentos de navegação.
+Equipamentos de proteção ambiental.
+Criar equipamentos especializados para mergulho e exploração em profundidade.
+
+8.
+
+2. PreparaçãoAntes de uma expedição, o jogador deverá conseguir consultar:Condições do ambiente.
+Previsão climática.
+Distância.
+Equipamentos necessários.
+Oxigênio disponível.
+Água.
+Alimentos.
+Condição do veículo.
+Integridade dos equipamentos.
+Capacidade de carga.
+Disponibilidade de resgate.
+O objetivo é fazer com que a preparação tenha importância real.
+
+9. INTEGRAÇÃO COM O RELÓGIO E A IATodos esses sistemas deverão utilizar o relógio multifuncional.
+O relógio poderá apresentar:Solicitações de resgate.
+Informações sobre cidades.
+Alertas marítimos.
+Embarcações identificadas.
+Pedidos de sobreviventes.
+Informações de comércio.
+Compras.
+Condições de veículos.
+Eventos.
+Descobertas.
+Alertas de criaturas.
+Solicitações de NPCs.
+A IA da base poderá organizar operações e informar os recursos necessários.
+Entretanto, ela não deverá executar ações críticas sem autorização adequada.
+
+10. INTEGRAÇÃO ENTRE TODOS OS SISTEMAS
+Os sistemas não devem funcionar isoladamente.
+Exemplos de integração:Exemplo 1: cidade marítimaO jogador encontra uma cidade flutuante, compra componentes, negocia materiais, recebe uma missão e descobre uma região com ruínas submersas.
+Exemplo 2: embarcação atacadaO jogador recebe um alerta no relógio, verifica a localização de uma embarcação, identifica uma solicitação de socorro e decide se irá prestar assistência.
+Exemplo 3: descoberta de um chefeUma expedição encontra sinais de uma criatura especial. O relógio registra a descoberta, os cientistas podem estudar os dados e uma comunidade pode disponibilizar equipamentos adequados.
+Exemplo 4: economia marítimaUma comunidade precisa de alimentos. O jogador produz recursos, transporta os produtos e negocia com a cidade.
+Exemplo 5: embarcação como baseO jogador amplia sua jangada, instala módulos, constrói quartos, cria armazenamento e transforma a embarcação em uma base móvel.
+Exemplo 6: resgate de sobreviventesUma comunidade solicita ajuda. O jogador utiliza o computador da base, organiza o transporte, verifica a capacidade disponível e realiza o resgate.
+
+11. REGRAS PARA PRESERVAR OS DETALHES ANTIGOSA IA desenvolvedora deverá respeitar estas regras:Não transformar os chefes em zumbis comuns.
+Preservar a ligação entre os chefes congelados no Ártico e a queda da bomba de nitrogênio.
+Não eliminar as civilizações marítimas.
+Preservar pessoas que vivem em embarcações.
+Preservar cidades e portos marítimos.
+Preservar piratas e ataques entre embarcações.
+Preservar a construção de barcos peça por peça.
+Preservar a progressão de jangada até iate.
+Preservar a segunda moeda obtida somente durante as partidas.
+Preservar os pontos específicos de compra.
+Integrar os resgates de jogadores e NPCs.
+Integrar entregas de suprimentos.
+Preservar os sistemas de equipamentos e preparação.
+Não substituir o sistema de Essências por dezenas de classes.
+Não alterar a identidade da classe VISÃO.
+Não criar uma história oficial nova para preencher informações ausentes.
+Não transformar propostas antigas em decisões aprovadas sem autorização.
+
+12. IMPLEMENTAÇÃO E TESTES
+Implementar os sistemas em módulos.
+Prioridade de desenvolvimento:Embarcações modulares e físicas.
+Civilizações marítimas e cidades.
+NPCs e comunidades marítimas.
+Piratas e embarcações controladas por IA.
+Sistema econômico de duas moedas.
+Pontos de compra.
+Resgate de jogadores e NPCs.
+Equipamentos e preparação de expedições.
+Chefes e encontros especiais.
+Integração com a história.
+Integração com o relógio.
+Multiplayer e sincronização.
+Testar cada sistema antes de integrá-lo ao restante.
+Os sistemas devem ser expansíveis, sem exigir reescrever o jogo inteiro a cada atualização.
+RESULTADO ESPERADO
+Este complemento deverá fazer O RECOMEÇO possuir uma camada muito mais profunda de história, criaturas, economia e civilização.
+O oceano não será apenas um local para navegar.
+Será um mundo habitado, com cidades, pessoas, embarcações, comércio, conflitos, piratas, comunidades e oportunidades.
+Os chefes não serão apenas inimigos grandes.
+Serão parte do passado misterioso do mundo e da história da catástrofe.
+As embarcações não serão apenas veículos.
+Poderão se transformar em casas, oficinas, centros de comando e civilizações móveis.
+A economia não será apenas uma loja.
+Será um sistema com produção, comércio, moedas distintas e oportunidades.
+O jogador não será apenas um sobrevivente.
+Poderá se tornar explorador, comerciante, construtor, pesquisador, administrador ou fundador de uma civilização.
+O RECOMEÇO: o mundo mudou. Agora cabe ao jogador decidir o que será construído depois dele. 
+
+PARTE III — EXPANSÃO DOS SISTEMAS
+EXPANSÃO DEFINITIVA DE SISTEMAS, BASES, VEÍCULOS, IA, SEGURANÇA, CIVILIZAÇÕES, MULTIPLAYER E EXPERIÊNCIA
+DOCUMENTO COMPLEMENTAR AOS PROMPTS MESTRE E COMPLEMENTAR ANTERIORES.Este documento adiciona sistemas que ainda não estavam suficientemente detalhados. Todas as funcionalidades devem ser integradas aos sistemas existentes de O RECOMEÇO.
+A IA desenvolvedora deve considerar os três documentos como partes de um único projeto.
+Não remover, simplificar ou substituir funcionalidades anteriormente aprovadas sem autorização do criador.
+As propostas novas deste documento estão aprovadas para entrar no planejamento do jogo. Detalhes antigos que não estejam confirmados devem continuar identificados como pendentes de recuperação do cânone.
+
+1. SISTEMA AVANÇADO DE BASES
+As bases devem funcionar como estruturas completas, com vida própria, administração, proteção, produção e mobilidade.
+Não devem ser apenas construções grandes.
+O jogador deverá conseguir desenvolver uma instalação simples até transformá-la em uma enorme estrutura tecnológica.
+
+1.
+
+1. Categorias de basesCriar:Pequenos abrigos.
+Bases compactas.
+Bases médias.
+Grandes bases.
+Complexos industriais.
+Bases científicas.
+Bases militares fictícias dentro do universo.
+Bases residenciais.
+Bases comerciais.
+Bases móveis.
+Bases híbridas.
+Grandes cidades móveis.
+Cada categoria deverá possuir possibilidades de expansão.
+
+1.
+
+2. Construção modularPermitir construir por módulos e também livremente.
+Os módulos deverão incluir:Quartos.
+Corredores.
+Salas de comando.
+Cozinhas.
+Banheiros.
+Enfermarias.
+Oficinas.
+Laboratórios.
+Garagens.
+Hangares.
+Depósitos.
+Salas de máquinas.
+Centros de comunicação.
+Estações agrícolas.
+Salas de energia.
+Centros de segurança.
+Áreas de convivência.
+Cada módulo deverá possuir dimensões, função e requisitos próprios.
+Permitir combinar módulos e construir estruturas personalizadas.
+
+1.
+
+3. Personalização internaO jogador poderá modificar:Paredes.
+Pisos.
+Tetos.
+Portas.
+Janelas.
+Iluminação.
+Cores.
+Materiais.
+Móveis.
+Decoração.
+Organização dos cômodos.
+A personalização deverá preservar a funcionalidade dos objetos.
+
+1.
+
+4. Interação com a basePermitir:Abrir portas.
+Fechar portas.
+Trancar compartimentos.
+Utilizar elevadores.
+Acionar plataformas.
+Operar máquinas.
+Controlar iluminação.
+Administrar energia.
+Monitorar câmeras.
+Consultar estoques.
+Verificar danos.
+Configurar permissões.
+Todas as interações importantes devem possuir respostas visuais e sonoras.
+
+2. SISTEMA DE ACESSO E IDENTIFICAÇÃO
+As instalações deverão possuir diferentes níveis de acesso.
+Criar sistemas como:Cartões de identificação.
+Códigos de acesso.
+Chaves digitais.
+Reconhecimento de identidade fictício.
+Controle de visitantes.
+Permissões individuais.
+Permissões por grupo.
+Bloqueio de setores.
+Registro de entradas e saídas.
+
+2.
+
+1. AdministradoresO proprietário poderá adicionar administradores.
+Cada administrador poderá receber permissões específicas.
+Exemplos:Administrar a base.
+Utilizar veículos.
+Controlar máquinas.
+Acessar depósitos.
+Gerenciar NPCs.
+Autorizar visitantes.
+Operar sistemas de comunicação.
+O proprietário poderá alterar ou revogar permissões.
+
+2.
+
+2. VisitantesPermitir que outros jogadores visitem bases.
+O proprietário poderá determinar:Áreas liberadas.
+Áreas restritas.
+Acesso temporário.
+Uso de equipamentos.
+Acesso a veículos.
+Permissão de construção.
+Registrar atividades importantes para auxiliar na administração.
+
+3. GUARDAS E SEGURANÇA INTELIGENTE
+Criar NPCs responsáveis pela proteção das instalações.
+Eles não devem ser objetos parados com uma animação repetida.
+
+3.
+
+1. Funções dos guardasOs guardas poderão:Patrulhar áreas.
+Monitorar entradas.
+Acompanhar visitantes.
+Verificar alertas.
+Proteger setores.
+Acompanhar o jogador.
+Comunicar problemas.
+Solicitar apoio.
+Trabalhar em turnos.
+Reagir a ameaças identificadas.
+
+3.
+
+2. AdministraçãoO jogador poderá atribuir:Postos de vigilância.
+Rotas de patrulha.
+Horários.
+Áreas prioritárias.
+Permissões.
+Funções.
+Criar diferentes níveis de treinamento e equipamentos.
+
+3.
+
+3. InteligênciaOs guardas devem apresentar comportamentos próprios.
+Não permitir que todos reconheçam qualquer visitante automaticamente.
+A identificação deverá depender de permissões, informações disponíveis e sistemas instalados.
+Eles deverão se comunicar com a IA da base.
+
+4. SISTEMA DE INVASÕES E DEFESA
+Criar eventos de ameaça e invasão de instalações dentro do universo do jogo.
+Esses acontecimentos devem ter consequências e permitir respostas estratégicas.
+
+4.
+
+1. Sistemas de proteçãoIncluir:Câmeras.
+Sensores.
+Alarmes.
+Portas reforçadas.
+Barreiras.
+Sistemas de identificação.
+Drones de vigilância.
+Torres automatizadas.
+Guardas.
+Monitoramento de setores.
+Sistemas de bloqueio.
+Proteção de depósitos.
+
+4.
+
+2. Níveis de segurançaPermitir configurar:Segurança básica.
+Segurança intermediária.
+Segurança avançada.
+Segurança especializada.
+Cada nível deverá exigir recursos e manutenção compatíveis.
+
+4.
+
+3. AlertasQuando uma ameaça for identificada, o relógio deverá informar:Localização.
+Tipo de alerta.
+Setor afetado.
+Estado da instalação.
+Sistemas comprometidos.
+Recursos disponíveis.
+Possibilidades de resposta.
+
+4.
+
+4. ConsequênciasUma instalação invadida poderá sofrer:Danos estruturais.
+Interrupção de serviços.
+Perda temporária de acesso.
+Danos a equipamentos.
+Interrupção de produção.
+Problemas de energia.
+Necessidade de manutenção.
+As consequências devem ser equilibradas e permitir recuperação.
+
+4.
+
+5. Proteção contra abuso multiplayerCriar regras contra destruição gratuita de bases e perda injusta de progresso.
+O jogo deverá permitir configurar proteção de áreas privadas, permissões e regras de conflito.
+Não permitir que invasões eliminem automaticamente dezenas de horas de progresso sem possibilidade de recuperação.
+
+5. VEÍCULOS: CONTROLE AVANÇADO E PILOTAGEM
+Os veículos precisam ser experiências completas.
+O jogador deverá sentir que está operando uma máquina, não apenas controlando um personagem sentado em um modelo.
+
+5.
+
+1. ControlesCriar controles específicos para:Aceleração.
+Frenagem.
+Direção.
+Ré.
+Altitude, quando aplicável.
+Velocidade.
+Estabilização.
+Câmeras.
+Sistemas auxiliares.
+Os controles mobile deverão ser personalizáveis.
+
+5.
+
+2. CâmerasCriar:Primeira pessoa.
+Terceira pessoa.
+Câmera externa.
+Câmera de aproximação.
+Câmera de ré.
+Câmeras internas.
+Câmeras de manobra.
+Câmeras de acoplamento.
+Permitir alternar entre câmeras quando o veículo oferecer suporte.
+
+5.
+
+3. Painéis de controleOs veículos poderão apresentar:Velocidade.
+Energia.
+Combustível.
+Temperatura.
+Integridade.
+Navegação.
+Distância.
+Sensores.
+Comunicação.
+Alertas.
+Estado dos sistemas.
+Os indicadores deverão depender do tipo de veículo.
+
+5.
+
+4. Pilotagem assistidaCriar recursos de assistência:Estabilização.
+Controle automático de velocidade.
+Navegação.
+Piloto automático.
+Assistência de pouso.
+Assistência de acoplamento.
+Detecção de obstáculos.
+Esses recursos deverão depender dos equipamentos instalados e das condições ambientais.
+
+5.
+
+5. MelhoriasPermitir melhorar:Motor.
+Propulsão.
+Bateria.
+Autonomia.
+Estabilidade.
+Capacidade de carga.
+Navegação.
+Sensores.
+Comunicação.
+Resistência estrutural.
+As melhorias deverão ter custos e efeitos reais.
+
+6. BASE HÍBRIDA E SISTEMAS DE TRANSFORMAÇÃOA base híbrida merece tratamento especial.
+Ela deverá conseguir operar em diferentes ambientes por meio de módulos e sistemas adaptativos.
+
+6.
+
+1. AdaptaçãoCriar configurações para:Terra.
+Oceano.
+Céu.
+Subterrâneo.
+A base deverá reconhecer ou receber a configuração desejada.
+
+6.
+
+2. Entrada adaptávelO sistema de entrada deverá mudar conforme o ambiente.
+Exemplos:Plataforma de acesso em terra.
+Rampa de embarque na água.
+Acoplamento em estruturas aéreas.
+Elevador para acessos subterrâneos.
+
+6.
+
+3. Sustentação e acoplamentoCriar mecanismos próprios para:Estabilização.
+Fixação.
+Ancoragem.
+Pouso.
+Descida.
+Retração.
+Elevação.
+As animações devem acompanhar o funcionamento mecânico.
+Não permitir que a base atravesse o terreno ou ignore limitações de espaço.
+
+6.
+
+4. Planejamento automáticoO computador central deverá receber a localização escolhida pelo jogador.
+A IA deverá avaliar:Espaço disponível.
+Obstáculos.
+Inclinação.
+Profundidade.
+Condições ambientais.
+Estabilidade.
+Energia.
+Compatibilidade da entrada.
+Depois da avaliação, poderá apresentar um plano e solicitar autorização para executar a operação.
+
+7. INTELIGÊNCIA ARTIFICIAL DA BASEA IA da base será um sistema central de administração.
+Ela deverá atuar como assistente operacional, não como um personagem que conversa sem realizar funções.
+
+7.
+
+1. Painel de administraçãoMostrar:Estado geral.
+Energia.
+Água.
+Alimentos.
+Estoques.
+Máquinas.
+Produção.
+Manutenção.
+Segurança.
+NPCs.
+Veículos.
+Sistemas ambientais.
+Comunicação.
+
+7.
+
+2. Gestão inteligenteA IA deverá:Detectar falta de materiais.
+Identificar falhas.
+Informar consumo excessivo.
+Recomendar melhorias.
+Organizar tarefas.
+Planejar rotas.
+Distribuir atividades autorizadas.
+Preparar operações.
+Gerar relatórios.
+
+7.
+
+3. Controle por textoO jogador poderá controlar a base por uma interface de chat.
+Exemplos:"Verifique a energia da base.""Mostre os estoques.""Envie um relatório de manutenção.""Prepare a plataforma de pouso.""Organize a produção de alimentos.""Mostre quais NPCs estão disponíveis."A IA deverá interpretar a solicitação, identificar o sistema correto e apresentar a ação antes de executá-la quando necessário.
+
+7.
+
+4. Confirmação de açõesPara operações importantes, exigir confirmação.
+A IA deverá:Interpretar a solicitação.
+Identificar a operação.
+Verificar permissões.
+Verificar recursos.
+Informar consequências.
+Solicitar confirmação quando necessário.
+Executar a ação.
+Informar o resultado.
+Não permitir que a IA invente resultados ou execute comandos que não compreendeu.
+
+8. NPCs: VIDA SOCIAL E AUTONOMIA
+Os NPCs deverão apresentar comportamento social.
+
+8.
+
+1. RelaçõesCriar:Amizades.
+Confiança.
+Relações profissionais.
+Rivalidades.
+Cooperação.
+Relações comunitárias.
+As relações deverão influenciar interações e acontecimentos.
+
+8.
+
+2. Vida cotidianaOs NPCs deverão:Trabalhar.
+Descansar.
+Conversar.
+Alimentar-se.
+Circular.
+Utilizar instalações.
+Participar de atividades.
+Procurar serviços.
+Reagir a acontecimentos.
+
+8.
+
+3. ComunidadesAs comunidades poderão desenvolver:Moradias.
+Produção.
+Comércio.
+Transporte.
+Segurança.
+Agricultura.
+Indústria.
+Pesquisa.
+Comunicação.
+
+8.
+
+4. ExpansãoAs comunidades poderão crescer conforme:Recursos disponíveis.
+Segurança.
+Condições ambientais.
+Alimentação.
+Infraestrutura.
+População.
+Relações comerciais.
+
+8.
+
+5. AutonomiaO mundo deverá continuar simulando as atividades das comunidades quando o jogador estiver distante.
+Utilizar simulação simplificada para preservar desempenho.
+As decisões importantes devem gerar registros e consequências.
+
+9. SISTEMA DE MANUTENÇÃO E REPARO
+Todo equipamento importante deverá possuir condição de funcionamento.
+Criar desgaste para:Veículos.
+Bases.
+Máquinas.
+Ferramentas.
+Sistemas elétricos.
+Equipamentos científicos.
+Antenas.
+Drones.
+Estruturas.
+
+9.
+
+1. ManutençãoPermitir:Inspeção.
+Diagnóstico.
+Reparo.
+Substituição de componentes.
+Atualização.
+Recuperação de equipamentos.
+
+9.
+
+2. NPCs técnicosNPCs especializados poderão realizar tarefas de manutenção.
+O jogador poderá definir prioridades e distribuir serviços.
+
+9.
+
+3. FalhasAs falhas deverão possuir causas.
+Exemplos:Desgaste.
+Sobrecarga.
+Falta de energia.
+Condições ambientais.
+Danos.
+Falta de manutenção.
+Mostrar a origem do problema sempre que o diagnóstico permitir.
+
+10. SISTEMA DE TRANSPORTE E LOGÍSTICA
+Criar redes de transporte entre instalações e comunidades.
+
+10.
+
+1. TransportePermitir transportar:Recursos.
+Alimentos.
+Equipamentos.
+Materiais.
+NPCs.
+Produtos industriais.
+Peças.
+
+10.
+
+2. RotasCriar rotas configuráveis.
+O jogador poderá determinar:Origem.
+Destino.
+Carga.
+Veículo.
+Frequência.
+Prioridade.
+Responsável.
+
+10.
+
+3. Centros logísticosPermitir construir:Armazéns.
+Centros de distribuição.
+Portos.
+Hangares.
+Garagens.
+Estações de transporte.
+Terminais de carga.
+
+10.
+
+4. Economia logísticaO transporte deverá ter custos.
+Considerar distância, tempo, combustível ou energia, manutenção e capacidade de carga.
+
+11. EXPLORAÇÃO AVANÇADA E DESCOBERTASA exploração deverá oferecer motivos para continuar viajando.
+
+11.
+
+1. Pontos de interesseCriar:Estações abandonadas.
+Ruínas.
+Laboratórios.
+Cidades antigas.
+Estruturas naturais.
+Sinais desconhecidos.
+Navios naufragados.
+Bases perdidas.
+Minas.
+Centros de pesquisa.
+Instalações de energia.
+
+11.
+
+2. DescobertasO jogador poderá encontrar:Tecnologias.
+Registros.
+Materiais raros.
+Equipamentos.
+Informações.
+Criaturas desconhecidas.
+Novas receitas.
+Locais especiais.
+
+11.
+
+3. Registro científicoO relógio poderá armazenar descobertas.
+Criar uma enciclopédia com:Criaturas.
+Biomas.
+Plantas.
+Recursos.
+Tecnologias.
+Ruínas.
+Instalações.
+Eventos.
+Permitir consultar informações já descobertas.
+
+12. MISSÕES DINÂMICAS E CONTRATOS
+As missões deverão ser integradas ao mundo.
+Não utilizar somente tarefas repetitivas.
+Criar:Resgates.
+Exploração.
+Transporte.
+Comércio.
+Pesquisa.
+Construção.
+Manutenção.
+Recuperação de equipamentos.
+Apoio a comunidades.
+Descobertas.
+Eventos ambientais.
+
+12.
+
+1. Missões geradas pelo mundoAs solicitações deverão surgir de necessidades reais.
+Exemplo:Uma comunidade apresenta falta de água. O jogador poderá fornecer equipamentos, transportar água ou ajudar a construir um sistema de tratamento.
+
+12.
+
+2. ContratosPermitir criar contratos entre jogadores, NPCs e organizações.
+Mostrar:Objetivo.
+Prazo.
+Recompensa.
+Recursos necessários.
+Condições.
+Estado.
+Histórico.
+
+13. PROGRESSÃO E LIBERDADEO jogador deverá poder desenvolver sua própria trajetória.
+Não limitar o jogo a uma sequência única de missões.
+Permitir que ele se especialize em:Construção.
+Exploração.
+Comércio.
+Ciência.
+Agricultura.
+Transporte.
+Administração.
+Tecnologia.
+Sobrevivência.
+Desenvolvimento de comunidades.
+Manter as Essências como sistema de progressão próprio.
+As especializações profissionais não deverão substituir as Essências.
+
+13.
+
+1. Mundo sem encerramento obrigatórioA narrativa principal poderá possuir acontecimentos e conclusões, mas o mundo deverá permitir continuar jogando.
+Depois das grandes descobertas, o jogador poderá:Expandir a civilização.
+Construir novas bases.
+Explorar regiões.
+Desenvolver tecnologias.
+Administrar comunidades.
+Participar da economia.
+Encontrar novas estruturas.
+Continuar descobrindo o mundo.
+O progresso não deve terminar simplesmente porque uma missão principal foi concluída.
+
+14. SISTEMA DE EVENTOS COOPERATIVOS
+Criar acontecimentos que incentivem jogadores a cooperar.
+Exemplos:Descobertas de grandes estruturas.
+Resgates de comunidades.
+Problemas ambientais.
+Falhas de infraestrutura.
+Expedições científicas.
+Transporte de grandes cargas.
+Construção de instalações coletivas.
+Eventos de criaturas especiais.
+Os eventos devem possuir objetivos compartilhados e recompensas proporcionais à participação.
+Sincronizar corretamente o estado do evento entre todos os participantes.
+
+15. MULTIPLAYER AVANÇADOO multiplayer deverá suportar atividades cooperativas e sociais.
+
+15.
+
+1. OrganizaçõesPermitir criar:Grupos.
+Equipes.
+Organizações comerciais.
+Comunidades.
+Alianças.
+Cada grupo poderá possuir nome, identidade, permissões e instalações compartilhadas.
+
+15.
+
+2. Administração coletivaPermitir definir:Proprietário.
+Administradores.
+Operadores.
+Membros.
+Visitantes.
+Criar permissões independentes para bases, veículos, estoques e comércio.
+
+15.
+
+3. ComunicaçãoIntegrar:Voz por proximidade.
+Ligações.
+Grupos de chamada.
+Rádio.
+Mensagens.
+Alertas.
+Comunicação pelo relógio.
+
+15.
+
+4. PersistênciaPreparar arquitetura para servidores persistentes.
+O sistema deverá manter estado do mundo, estruturas, inventários, comunidades e economia.
+Criar backups e mecanismos de recuperação.
+
+15.
+
+5. SegurançaProteger contra:Duplicação de itens.
+Alteração indevida de inventário.
+Fraudes comerciais.
+Acesso não autorizado.
+Manipulação de permissões.
+Perda de dados.
+Abuso de sistemas de construção.
+O servidor deverá validar operações importantes.
+
+16. EXPERIÊNCIA VISUAL E INTERFACE AVANÇADAA identidade visual deverá ser própria.
+O jogo precisa parecer um produto comercial bem desenvolvido.
+
+16.
+
+1. MenuCriar:Menu principal.
+Seleção de mundos.
+Novo mundo.
+Continuar.
+Multiplayer.
+Configurações.
+Perfil.
+Créditos.
+
+16.
+
+2. CarregamentoCriar tela de carregamento com:Logo O RECOMEÇO.
+Arte ambiental.
+Dicas.
+Indicador de progresso real.
+Informações da versão.
+Não utilizar porcentagens falsas quando não houver carregamento correspondente.
+
+16.
+
+3. HUD contextualA interface deverá adaptar seus indicadores conforme a atividade.
+Ao mergulhar, mostrar informações de profundidade e oxigênio.
+Ao dirigir, mostrar os controles e informações do veículo.
+Ao administrar uma base, mostrar os indicadores de funcionamento.
+Ao explorar, apresentar navegação e alertas relevantes.
+
+16.
+
+4. Interface de construçãoCriar:Seleção de peças.
+Pré-visualização.
+Posicionamento.
+Rotação.
+Confirmação.
+Custos.
+Compatibilidade.
+Informações estruturais.
+
+16.
+
+5. Interface de administraçãoCriar painéis organizados para:Energia.
+Produção.
+Estoque.
+Segurança.
+NPCs.
+Máquinas.
+Transporte.
+Comunicação.
+Não transformar a tela em uma quantidade excessiva de informações.
+
+17. SISTEMA DE ÁUDIO E AMBIENTAÇÃO AVANÇADOO áudio deverá ser imersivo e harmonioso.
+Não permitir que sons constantes poluam o ambiente.
+
+17.
+
+1. Sons ambientaisCriar áudio específico para:Florestas.
+Desertos.
+Montanhas.
+Oceano.
+Regiões profundas.
+Cavernas.
+Estações.
+Bases.
+Cidades.
+Veículos.
+
+17.
+
+2. DistânciaOs sons deverão variar conforme a proximidade.
+Criaturas distantes deverão ser percebidas de forma sutil.
+Sons próximos terão maior presença.
+
+17.
+
+3. InterioresOs sons deverão mudar quando o jogador estiver dentro de uma casa, base, veículo ou instalação.
+Considerar isolamento e características do ambiente.
+
+17.
+
+4. MúsicaCriar trilhas próprias e originais.
+Utilizar música ambiental discreta durante atividades comuns.
+Eventos especiais poderão apresentar temas mais marcantes.
+Permitir controlar volumes separadamente.
+
+18. ACESSIBILIDADE E PERSONALIZAÇÃO
+Criar opções para diferentes jogadores e aparelhos.
+Incluir:Sensibilidade da câmera.
+Tamanho dos botões.
+Posição dos controles.
+Legendas.
+Tamanho de texto.
+Volume independente.
+Configuração de áudio.
+Ajustes gráficos.
+Alternância entre câmeras.
+Indicadores visuais de alertas sonoros.
+Nenhuma mecânica essencial deverá depender exclusivamente de ouvir um som.
+
+19. OTIMIZAÇÃO E ESCALABILIDADEO jogo deverá funcionar em celulares sem depender de hardware extremamente potente.
+
+19.
+
+1. OtimizaçãoUtilizar:Carregamento por regiões.
+LOD.
+Culling.
+Streaming.
+Simulação distante simplificada.
+Limite de partículas.
+Controle de NPCs ativos.
+Controle de criaturas renderizadas.
+Otimização de iluminação.
+Texturas adequadas.
+Resolução dinâmica.
+
+19.
+
+2. ConfiguraçõesCriar perfis:Econômico.
+Equilibrado.
+Alto.
+Personalizado.
+Permitir ajustar:Resolução.
+Sombras.
+Vegetação.
+Distância de renderização.
+Efeitos.
+Partículas.
+Água.
+Reflexos.
+
+19.
+
+3. DesempenhoMonitorar:FPS.
+Memória.
+Temperatura do aparelho quando disponível.
+Tempo de carregamento.
+Consumo de bateria.
+Erros.
+Travamentos.
+Não prometer desempenho fixo sem testes em dispositivos reais.
+
+20. SISTEMA DE ATUALIZAÇÕES E CONTEÚDO FUTURO
+Preparar o jogo para expansão.
+Criar uma estrutura que permita adicionar:Novos biomas.
+Novas criaturas.
+Novos chefes.
+Novos veículos.
+Novas bases.
+Novas tecnologias.
+Novas missões.
+Novas estruturas.
+Novas comunidades.
+Novos eventos.
+Os novos conteúdos deverão utilizar os sistemas existentes.
+Não criar sistemas duplicados para cada atualização.
+Preservar a compatibilidade dos mundos salvos sempre que possível.
+
+21. TESTES OBRIGATÓRIOS
+Criar testes para cada sistema.
+BasesVerificar construção, expansão, acesso, energia, manutenção e salvamento.
+VeículosVerificar pilotagem, câmeras, estabilidade, consumo, danos e recuperação.
+IAVerificar interpretação de comandos, permissões, confirmação e execução.
+NPCsVerificar rotinas, tarefas, deslocamento, necessidades e autonomia.
+SegurançaVerificar acessos, permissões, alertas e recuperação.
+EconomiaVerificar compras, vendas, transferências, contratos e consistência dos saldos.
+MultiplayerVerificar sincronização, desconexão, reconexão, permissões e persistência.
+DesempenhoVerificar estabilidade em celulares Android de diferentes capacidades e em navegadores de computador.
+Não declarar um sistema concluído apenas porque sua interface aparece na tela.
+
+22. REGRA DE INTEGRAÇÃO COM OS DOIS DOCUMENTOS ANTERIORES
+Este documento não substitui:O PROMPT MESTRE DEFINITIVO.
+O SEGUNDO PROMPT COMPLEMENTAR.
+Ele adiciona as funcionalidades que ainda estavam pouco detalhadas.
+Todos os sistemas deverão compartilhar dados e regras.
+Exemplos:A IA da base deve consultar o sistema de energia.
+Os guardas devem consultar permissões.
+Os veículos devem consultar a navegação.
+O relógio deve consultar os alertas.
+A economia deve consultar produção e estoque.
+Os NPCs devem consultar necessidades das comunidades.
+O multiplayer deve sincronizar construções e operações.
+O sistema de manutenção deve consultar a condição dos equipamentos.
+Não implementar funcionalidades isoladas que não conversem com os outros sistemas.
+
+23. PRESERVAÇÃO DA HISTÓRIA E DOS DETALHES ORIGINAISA história oficial deve ser preservada.
+Não atribuir como confirmados personagens, nomes de chefes, acontecimentos, organizações ou explicações que ainda não tenham sido validados.
+Os nomes e conceitos que apareceram como propostas em documentos anteriores devem permanecer identificados como propostas até confirmação.
+A IA deverá priorizar a recuperação de registros anteriores quando estiver disponível.
+Nenhuma informação nova deverá apagar o conteúdo original.
+
+24. ORDEM DE DESENVOLVIMENTO
+Depois de construir a primeira versão jogável descrita no PROMPT MESTRE, seguir esta ordem de expansão:Construção avançada de casas e bases.
+Administração da base.
+Energia e manutenção.
+NPCs trabalhadores.
+Guardas e segurança.
+Veículos e pilotagem avançada.
+Bases móveis.
+Sistema híbrido.
+Transporte e logística.
+Civilizações e comunidades.
+Economia avançada.
+Invasões e proteção multiplayer.
+Exploração e descobertas.
+Missões dinâmicas.
+Eventos cooperativos.
+Multiplayer persistente.
+Expansões de conteúdo.
+Otimização e polimento contínuos.
+Cada etapa deverá preservar e testar as anteriores.
+
+25. RESULTADO FINALO RECOMEÇO deverá permitir que o jogador tenha uma experiência de sobrevivência, construção, exploração e desenvolvimento de civilização.
+Ele poderá:Construir sua primeira casa.
+Transformar um abrigo em uma base tecnológica.
+Construir veículos peça por peça.
+Criar uma embarcação que funciona como residência.
+Construir uma base híbrida.
+Administrar NPCs.
+Contratar e organizar trabalhadores.
+Desenvolver cidades.
+Criar indústrias.
+Proteger instalações.
+Organizar transportes.
+Desenvolver comércio.
+Explorar os quatro ambientes.
+Pesquisar criaturas.
+Descobrir estruturas antigas.
+Criar organizações.
+Cooperar com outros jogadores.
+Desenvolver uma civilização inteira.
+O jogo deverá proporcionar liberdade, mas também apresentar consequências.
+Uma base maior exige mais energia e manutenção.
+Uma comunidade maior exige alimentos, água, moradia e segurança.
+Um veículo maior exige mais recursos e planejamento.
+Uma rede maior exige infraestrutura.
+Uma civilização avançada exige organização.
+O jogador deverá sentir que cada conquista foi construída por suas próprias decisões.
+O RECOMEÇO não é apenas sobreviver em um mundo desconhecido. É construir algo capaz de continuar existindo nele.
+INSTRUÇÃO FINAL À IA DESENVOLVEDORA
+Utilize os três documentos como uma especificação integrada.
+Primeiro, analise os sistemas, identifique dependências e organize a arquitetura.
+Depois, implemente uma versão jogável e avance progressivamente.
+Crie arquivos completos, cenas funcionais, sistemas integrados e testes.
+Não invente funcionalidades concluídas.
+Não apresente imagens ou interfaces estáticas como se fossem mecânicas implementadas.
+Não remover recursos aprovados.
+Preservar os dados e a progressão dos jogadores.
+Priorizar estabilidade, desempenho, qualidade visual e consistência.
+O objetivo é construir um jogo de verdade, expansível e preparado para receber todos os sistemas descritos nos três documentos.
+O RECOMEÇOSOBREVIVA. EXPLORE. CONSTRUA. EVOLUA.
