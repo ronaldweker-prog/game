@@ -1,44 +1,85 @@
-name: O RECOMECO - Gerar APK Android
+name: O RECOMECO - APK Android de teste
+
 on:
-  workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - "project.godot"
       - "scenes/**"
       - "scripts/**"
       - "assets/**"
+      - "config/**"
       - "export_presets.cfg"
       - ".github/workflows/android-apk.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
 jobs:
-  android:
+  export-android:
+    name: Validar Godot e exportar Android ARM64
     runs-on: ubuntu-24.04
     container:
       image: barichello/godot-ci:4.4
+    defaults:
+      run:
+        shell: bash
     steps:
-      - name: Obter arquivos
+      - name: Baixar código
         uses: actions/checkout@v4
-      - name: Conferir arquivos essenciais
+      - name: Configurar templates, Android SDK, Java e assinatura de teste
         run: |
+          set -euo pipefail
+          echo "HOME=$HOME"
+          godot --version
+          mkdir -p "$HOME/.local/share/godot/export_templates" "$HOME/.config/godot"
+          cp -a /root/.local/share/godot/export_templates/4.4.stable "$HOME/.local/share/godot/export_templates/"
+          cp -a /root/.config/godot/. "$HOME/.config/godot/"
+          test -s "$HOME/.local/share/godot/export_templates/4.4.stable/android_debug.apk"
+          test -s /root/debug.keystore
+          test -d /usr/lib/android-sdk
+          test -f "$HOME/.config/godot/editor_settings-4.4.tres"
+          echo "Ferramentas e templates configurados."
+      - name: Importar e validar projeto
+        run: |
+          set -euo pipefail
           test -f project.godot
-          test -f export_presets.cfg
           test -f scenes/main.tscn
           test -f scripts/Main.gd
-      - name: Configurar modelos de exportacao
+          godot --headless --path . --editor --quit 2>&1 | tee /tmp/import.log
+          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script|Error parsing' /tmp/import.log; then exit 1; fi
+      - name: Testar abertura e scripts
         run: |
-          godot --version
-          mkdir -p ~/.local/share/godot/export_templates
-          ls -la ~/.local/share/godot/export_templates || true
-      - name: Importar projeto e verificar erros
-        run: godot --headless --path . --editor --quit
-      - name: Exportar APK Android para teste
+          set -euo pipefail
+          godot --headless --path . --quit-after 8 2>&1 | tee /tmp/smoke.log
+          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script|Error parsing' /tmp/smoke.log; then exit 1; fi
+      - name: Exportar APK Android
         run: |
+          set -euo pipefail
           mkdir -p build/android
-          godot --headless --path . --export-debug "Android Debug" build/android/O_RECOMECO.apk
+          godot --headless --path . --export-debug "Android Debug" build/android/O_RECOMECO.apk 2>&1 | tee /tmp/export.log
           test -s build/android/O_RECOMECO.apk
-      - name: Disponibilizar instalador
+          unzip -tq build/android/O_RECOMECO.apk
+          echo "APK gerado: $(du -h build/android/O_RECOMECO.apk)"
+      - name: Disponibilizar APK para download
         uses: actions/upload-artifact@v4
         with:
-          name: O-RECOMECO-Android-APK-teste
+          name: O-RECOMECO-APK-Android
           path: build/android/O_RECOMECO.apk
           if-no-files-found: error
-          retention-days: 14
+          retention-days: 30
+      - name: Publicar versao experimental para download direto
+        if: success()
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-teste-${{ github.run_number }}
+          name: O RECOMEÇO — teste Android ${{ github.run_number }}
+          prerelease: true
+          make_latest: false
+          generate_release_notes: false
+          body: |
+            APK experimental gerado automaticamente. Não representa o jogo completo.
+            Ainda precisa ser testado em aparelho Android físico (POCO M7 Pro 5G).
+            Mecanicas avançadas e gráficos finais permanecem em desenvolvimento.
+          files: build/android/O_RECOMECO.apk
