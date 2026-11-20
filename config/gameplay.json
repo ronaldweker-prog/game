@@ -13,7 +13,8 @@
     "tree_count": 85,
     "pickup_count": 80,
     "day_cycle_speed": 0.025,
-    "ocean_level": -1.2
+    "ocean_level": -1.2,
+    "creature_count": 4
   },
   "visuals": {
     "mobile_fps": 30,
