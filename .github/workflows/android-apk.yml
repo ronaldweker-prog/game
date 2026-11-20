@@ -69,11 +69,8 @@ jobs:
       - name: Baixar modelos fotogrametricos CC0
         run: |
           set -euo pipefail
-          if command -v python3 >/dev/null; then
-            python3 scripts/tools/fetch_models.py
-          else
-            echo "SEM_MODELOS_EXTRAS: cenário procedural será utilizado."
-          fi
+          godot --headless --path . --script res://scripts/tools/FetchModels.gd 2>&1 | tee /tmp/models.log
+          if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script' /tmp/models.log; then exit 1; fi
       - name: Definir versao incremental do APK
         run: |
           set -euo pipefail
