@@ -63,6 +63,8 @@ func _run() -> void:
 	game._transfer_to_chest("madeira", true)
 	game._action("camera")
 	_check(game.first_person, "Trocar para primeira pessoa")
+	game._cycle_outfit()
+	_check(game.outfit_style == 1, "Personalizar roupa do personagem")
 	var original_wood: int = int(game.items["madeira"])
 	var boat_pos: Vector3 = game.raft.position
 	game._save(true)
@@ -75,5 +77,6 @@ func _run() -> void:
 	_check(game.huts.size() == 1, "Abrigo restaurado do save")
 	_check(game.raft.position.distance_to(boat_pos) < 0.1, "Posicao da jangada restaurada")
 	_check(game.first_person, "Camera restaurada do save")
+	_check(game.outfit_style == 1, "Aparencia restaurada do save")
 	print("RESUMO DOS TESTES: ", failures, " falhas")
 	quit(1 if failures > 0 else 0)
