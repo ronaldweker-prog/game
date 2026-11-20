@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "game_title": "O RECOMEÇO",
+  "balance": {
+    "player_walk_speed": 5,
+    "raft_speed": 4,
+    "hydration_loss_per_second": 0.027,
+    "hunger_loss_per_second": 0.02,
+    "low_resources_health_loss": 0.1,
+    "collect_radius": 4
+  },
+  "world": {
+    "tree_count": 85,
+    "pickup_count": 80,
+    "day_cycle_speed": 0.025,
+    "ocean_level": -1.2
+  },
+  "visuals": {
+    "mobile_fps": 30,
+    "balanced_fps": 45,
+    "camera_far": 175,
+    "quality_scales": [
+      0.7,
+      0.83,
+      1
+    ],
+    "mouse_sensitivity": 0.003,
+    "touch_sensitivity": 0.004
+  },
+  "recipes": {
+    "tool": {
+      "madeira": 2,
+      "pedra": 1,
+      "fibra": 1
+    },
+    "shelter": {
+      "madeira": 5,
+      "fibra": 3
+    },
+    "raft": {
+      "madeira": 6,
+      "fibra": 4
+    },
+    "chest": {
+      "madeira": 2,
+      "fibra": 1
+    }
+  }
+}
