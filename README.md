@@ -49,6 +49,15 @@ Projeto anteriormente chamado **O RECOMEÇO**. Nome atual do aplicativo: **RENAS
 - Movimento aquático básico: subir, mergulhar e barra de oxigênio com persistência no salvamento. **Ainda não há fauna oceânica avançada, correntes nem base submarina funcional.**
 - Essas peças e modelos ainda são experimentais, com aparência procedural. Não representam os gráficos finais previstos no projeto.
 
+## Nova melhoria visual — materiais e modelos escaneados
+- O terreno agora usa **texturas fotográficas reais** de areia, vegetação do solo e rochas, com fallback procedural offline. Fontes e licença CC0 em [materiais naturais](assets/materials/README.md).
+- O cenário incorpora **modelos 3D fotogramétricos de uma rocha e um tronco antigo**, posicionados em poucos pontos da ilha para não sobrecarregar o Android. Fontes CC0 em [modelos de cenário](assets/models/README.md).
+- `scripts/CharacterAppearance.gd` substitui o antigo torso de cubos por um sobrevivente 3D com rosto, cabelo, roupas e mochila. Ainda precisa de um personagem profissional com rig e animações.
+- O HUD possui um botão **AÇÕES** que abre e recolhe controles extras, deixando mais espaço para enxergar o mundo.
+- A câmera em terceira pessoa verifica obstáculos com raycast para reduzir atravessamentos de terreno e paredes.
+- Modelos e texturas são integrados durante a compilação e ficam acessíveis no APK offline. Não é necessário conectar o celular à internet para usá-los.
+- **Fidelidade atual:** é uma melhoria concreta do protótipo, mas ainda longe do fotorrealismo das artes conceituais. O FPS e a renderização visual precisam de teste físico no POCO M7 Pro 5G.
+
 ## Otimização
 Renderizador OpenGL Compatibility, iluminação sem sombras dinâmicas, formas 3D simples, qualidade ajustável e limite inicial de 30 FPS no modo econômico. O desempenho real depende de testes no aparelho.
 
