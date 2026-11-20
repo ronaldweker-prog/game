@@ -1,9 +1,9 @@
 # O RECOMEÇO — Estado real, aceitação e testes
 
 ## Situação
-- **Código atual no GitHub:** primeiro protótipo 3D monolítico Godot 4.4, ainda sem validação em Godot.
-- **APK disponível para instalar:** NÃO CONFIRMADO.
-- **Testes num POCO M7 Pro 5G:** NÃO EXECUTADOS.
+- **Código atual no GitHub:** protótipo 3D Godot 4.4 com configurações externas, joystick virtual, baú funcional, fauna pacífica e personalização simples.
+- **APK experimental disponível para download:** SIM, exportação ARM64 concluída pelo GitHub Actions. Consulte [Releases](https://github.com/ronaldweker-prog/game/releases).
+- **Testes automáticos no GitHub Actions:** foram executados e passaram nas versões anteriores até a execução 23; novas versões exigem a mesma validação. **Teste físico no POCO M7 Pro 5G: NÃO EXECUTADO.**
 - **Multiplayer real:** NÃO IMPLEMENTADO.
 - **Fidelidade visual das imagens de referência:** NÃO ALCANÇADA.
 
@@ -14,11 +14,11 @@ Marcar uma tarefa concluída somente quando compilou, funciona por toque e/ou te
 
 | Etapa | Sistemas a entregar | Estado |
 |---|---|---|
-| 0. Build | CI GitHub Actions, Godot export Android, assinatura de teste, APK instalável, teste físico POCO | Preparação; **pendente validação** |
-| 1. Ilha | exploração 3D, colisões, movimento, câmera 1ª/3ª, HUD, touch, qualidade, salvamento e menu | Protótipo em código; **não validado** |
+| 0. Build | CI GitHub Actions, Godot export Android, assinatura de teste, APK instalável, teste físico POCO | Build em nuvem passou; **testes físicos pendentes** |
+| 1. Ilha | exploração 3D, colisões, movimento, câmera 1ª/3ª, HUD, touch, qualidade, salvamento e menu | Protótipo com testes automáticos; **precisa teste em aparelho** |
 | 2. Sobrevivência | coleta, recursos, inventário organizado, peso/capacidade, água, fome, energia, oxigênio, fabricação/estações, abrigo | Parcial em código; restante pendente |
-| 3. Oceano | natação/mergulho, correntes, oxigênio, biomas aquáticos, jangada modular física, baú, veículos náuticos e base aquática | Jangada simples em código; restante pendente |
-| 4. Ecossistema | IA individual de criaturas, populações abstratas longe do jogador, clima, migração, chefes únicos | Pendente |
+| 3. Oceano | natação/mergulho, correntes, oxigênio, biomas aquáticos, jangada modular física, baú, veículos náuticos e base aquática | Jangada simples e baú com transferência em código; restante pendente |
+| 4. Ecossistema | IA individual de criaturas, populações abstratas longe do jogador, clima, migração, chefes únicos | Fauna pacífica explorando/descansando/evitando jogador; ecossistema amplo pendente |
 | 5. Construção | prévias, snap modular, colocação/cancelamento, estruturas internas funcionais, móveis, eletricidade, água, estabilidade | Abrigo básico no código; restante pendente |
 | 6. Bases | terrestres, subaquáticas, aéreas, subterrâneas, móveis e híbridas, interior navegável, PAC, aterrissagem/acoplamento | Pendente |
 | 7. Veículos | carros, 6x6, caminhões, barcos, submarinos, aviões, drones, suspensão/combustível, pilotagem/câmeras/manutenção | Pendente |
@@ -28,7 +28,17 @@ Marcar uma tarefa concluída somente quando compilou, funciona por toque e/ou te
 | 11. Multiplayer | co-op, voz opcional/texto, servidor, sincronização, salvamento, papéis, permissões, anti-duplicação | Pendente |
 | 12. Polimento | arte 3D original, luzes, áudio, interface, acessibilidade, FPS, estabilidade, correção de falhas | Pendente |
 
-## Testes mínimos antes de anunciar um APK
+## Testes já automatizados no GitHub
+- Iniciar cena e partida; câmera; presença de recursos.
+- Coletar e alterar inventário; fabricar ferramenta; construir abrigo e jangada.
+- Instalar baú, guardar e retirar recursos; embarcar; mudar câmera.
+- Salvar e restaurar inventário, abrigo, baú, posição da jangada e câmera.
+- Checar existência de animais, configuração de desempenho e escolha de roupa.
+- Exportar APK ARM64 de teste e verificar integridade ZIP.
+
+**Limite:** testes headless verificam lógica e compilação; não medem o FPS, o toque real nem a qualidade visual.
+
+## Testes mínimos antes de anunciar uma versão final
 - Godot abre `project.godot`, importa todos recursos e reconhece scripts.
 - Exportar sem erro e gerar um APK ARM64 não vazio com assinatura de teste.
 - Instalar e abrir no POCO; iniciar menu e nova partida.
