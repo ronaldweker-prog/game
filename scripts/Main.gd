@@ -46,6 +46,8 @@ var sprint_held := false
 var time_of_day := 0.0
 var sun: DirectionalLight3D
 var status: Label
+var objective_label: Label
+var ruins_visited := false
 var info: Label
 var alert: Label
 var quality := 0
@@ -254,6 +256,7 @@ func _make_interface() -> void:
 	info = _label(hud_panel,"RENASCER",Vector2(24,12),Vector2(1100,46),24)
 	status = _label(hud_panel,"SAÚDE 100   ÁGUA 100   FOME 100",Vector2(24,56),Vector2(1100,52),21)
 	alert = _label(hud_panel,"",Vector2(370,125),Vector2(860,52),24)
+	objective_label = _label(hud_panel,"",Vector2(22,178),Vector2(940,36),19)
 	var keys := [["COLETAR","collect"],["FERRAMENTA","craft"],["ABRIGO","shelter"],["JANGADA","raft"],["EMBARCAR","board"],["BAÚ","chest"],["CÂMERA","camera"],["COMER","eat"],["SALVAR","save"]]
 	for i in range(keys.size()):
 		var method := String(keys[i][1])
@@ -261,6 +264,7 @@ func _make_interface() -> void:
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
 	_make_chest_panel()
 	_btn(hud_panel,"PULAR",Vector2(296,616),Vector2(136,58),func(): _request_jump())
+	_btn(hud_panel,"INVESTIGAR",Vector2(445,616),Vector2(151,58),func(): _investigate_ruins())
 	var run_button := Button.new()
 	run_button.text = "CORRER"
 	run_button.position = Vector2(296,545)
@@ -332,6 +336,29 @@ func _transfer_to_chest(kind: String, depositing: bool) -> void:
 		_notice(("Guardado: " if depositing else "Retirado: ") + kind)
 	_update_chest_status()
 
+func _mission_text() -> String:
+	if not has_tool:
+		return "OBJETIVO: encontre madeira, pedra e fibra para fabricar uma ferramenta."
+	if huts.is_empty():
+		return "OBJETIVO: construa seu primeiro abrigo."
+	if not is_instance_valid(raft):
+		return "OBJETIVO: construa uma jangada e alcance o oceano."
+	if not raft_chest:
+		return "OBJETIVO: instale um baú na jangada."
+	if not ruins_visited:
+		return "OBJETIVO: explore a instalação antiga (leste da ilha) e investigue."
+	return "OBJETIVO CONCLUÍDO: primeiro registro encontrado. Explore e construa."
+
+func _investigate_ruins() -> void:
+	var place := Vector3(23.0,_height(23.0,-16.0),-16.0)
+	if player.global_position.distance_to(place) > 11.0:
+		_notice("Investigue a instalação antiga no leste da ilha.")
+	elif ruins_visited:
+		_notice("Registro recuperado. O mistério da catástrofe continua.")
+	else:
+		ruins_visited = true
+		_notice("REGISTRO ANTIGO RECUPERADO: fragmentos de uma civilização desaparecida.")
+
 func _request_jump() -> void:
 	if playing and not aboard:
 		jump_queued = true
@@ -355,6 +382,7 @@ func _new_game() -> void:
 	has_tool = false
 	stats = Vector3(100,100,100)
 	stamina = 100.0
+	ruins_visited = false
 	jump_queued = false
 	sprint_held = false
 	time_of_day = 0.0
@@ -393,6 +421,7 @@ func _continue_game() -> void:
 				stats = Vector3(float(bars[0]),float(bars[1]),float(bars[2]))
 			time_of_day = float(d.get("time",0.0))
 			stamina = clampf(float(d.get("stamina",100.0)),0.0,100.0)
+			ruins_visited = bool(d.get("ruins_visited",false))
 			quality = int(d.get("quality",0))
 			outfit_style = int(d.get("outfit_style",outfit_style))
 			_apply_outfit()
@@ -581,7 +610,7 @@ func _save(silent: bool = false) -> void:
 	var wildlife_positions := []
 	for animal in animals:
 		wildlife_positions.append([animal.position.x,animal.position.y,animal.position.z])
-	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"time":time_of_day}
+	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"ruins_visited":ruins_visited,"time":time_of_day}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
@@ -603,6 +632,8 @@ func _process(delta: float) -> void:
 	if stats.y <= 0 or stats.z <= 0:
 		stats.x = maxf(1.0,stats.x - delta * float(setting("balance", "low_resources_health_loss", 0.1)))
 	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   ENERGIA %.0f   FPS %d" % [stats.x,stats.y,stats.z,stamina,Engine.get_frames_per_second()]
+	if is_instance_valid(objective_label):
+		objective_label.text = _mission_text()
 	info.text = "RENASCER  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
 	autosave += delta
 	if autosave > 90:
@@ -667,4 +698,5 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_T: _action("board")
 			KEY_V: _action("camera")
 			KEY_F5: _action("save")
+			KEY_I: _investigate_ruins()
 			KEY_ESCAPE: Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
