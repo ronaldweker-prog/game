@@ -1,68 +1,24 @@
-# RENASCER: NOVO MUNDO 🎮
+# RENASCER: NOVO MUNDO — Unity 6
 
-Projeto anteriormente chamado **O RECOMEÇO**. Nome atual do aplicativo: **RENASCER: NOVO MUNDO**. Protótipo experimental de sobrevivência 3D em Godot 4.4 para Android (POCO M7 Pro 5G, 12 GB RAM).
+**Novo projeto Unity real, independente do antigo Godot.** O conteudo desta branch foi reconstruido do zero. A branch principal preserva o backup Godot.
 
-## Baixar a primeira versao Android
-- [Baixar versões experimentais de RENASCER: NOVO MUNDO](https://github.com/ronaldweker-prog/game/releases)
-- A compilacao e os testes automaticos rodam em [Actions](https://github.com/ronaldweker-prog/game/actions).
-- Abra a versão de teste mais recente cuja compilação esteja **aprovada**. Baixe `RENASCER_NOVO_MUNDO.apk`.
-- O APK é um **protótipo de teste**, não o jogo final e não foi validado fisicamente no POCO M7 Pro 5G.
+## Abrir
+1. Instale Unity Hub e Unity **6000.0.40f1** (ou versao 6000.0 compativel), com suporte Android se necessario.
+2. Abra a pasta deste repositorio como projeto Unity. O bootstrap cria uma cena jogavel automaticamente em Play Mode, sem precisar de cena manual.
+3. Em Unity: Play. WASD mover, mouse olhar, Shift correr, E coletar, Tab inventario, F criar kit de abrigo, F5 salvar, F9 carregar, Esc liberar mouse.
 
-## Documentação, histórico e tarefas
-- [Cânone e lacunas](docs/CANONE_E_LACUNAS.md): decisões confirmadas, propostas e informações antigas ainda faltantes.
-- [Mudar o jogo por conversa no ChatGPT](docs/ALTERAR_PELO_CHATGPT.md): como solicitar alterações e receber APKs atualizados.
-- [Configurações editáveis](config/gameplay.json): desempenho, receitas, mundo, sobrevivência e controles.
-- [Estado e testes](docs/STATUS_E_TESTES.md): critérios para considerar uma função realmente concluída.
-- [Referências visuais](docs/REFERENCIAS_VISUAIS.md): bases submarinas, aéreas, cavernas, painel PAC e veículo 6x6.
-- [Prompt mestre unificado](docs/PROMPT_MESTRE_COMPLETO.txt).
-- [Prompt mestre antigo](docs/historico/PROMPT_MESTRE_ANTIGO.txt).
-- [Complemento antigo](docs/historico/COMPLEMENTO_HISTORIA_CRIATURAS_ECONOMIA.txt).
-- [Plano completo de etapas](docs/PLANO_COMPLETO_DE_ETAPAS.md): todas as frentes preservadas, com fases e critérios de qualidade.
-- [Tarefas técnicas abertas](https://github.com/ronaldweker-prog/game/issues): frentes de desenvolvimento para não perder mecânicas.
+## Implementado neste marco (codigo-fonte)
+- Estrutura Unity 6 URP e configuracao basica de projeto.
+- Terreno insular continuo com malha procedural, praia e montanhas, oceano, luz solar e nevoa.
+- Controlador de personagem em primeira pessoa, gravidade, corrida, salto, camera e colisao.
+- Recursos coletaveis, inventario, crafting simples e persistencia local em JSON.
+- HUD funcional de exploracao e diagnostico.
 
-## Estado atual
-- Código-fonte do protótipo inicial: ilha 3D, ambiente, exploração, coleta, inventário inicial, ferramenta, abrigo, jangada, **baú com armazenamento real**, **joystick virtual para celular**, **fauna pacífica com estados**, roupas básicas configuráveis, câmeras e salvamento.
-- **Versões Android publicadas automaticamente:** [abrir Releases](https://github.com/ronaldweker-prog/game/releases). Cada versão aprovada possui APK de teste, mas o jogo ainda não foi validado fisicamente no POCO M7 Pro 5G.
-- **Nova base visual procedural:** terreno com ruído por material, céu procedural, luz solar, ondas animadas, vegetação instanciada, rochas, capim, ruínas detalhadas e tema visual de botões. **Ainda não é fotorrealista**, pois carece de modelos profissionais, texturas PBR e animações completas.
-- Os testes de integração automatizados verificam coleta, abrigo, jangada, baú, câmera, aparência e salvamento.
-- Documento completo do projeto: `docs/PROMPT_MESTRE_COMPLETO.txt`.
-- **Compilação de APK e testes automatizados: confirmados em CI. Teste em dispositivo físico: ainda não realizado.**
-- As imagens conceituais hiper-realistas ainda não são a aparência real do protótipo.
-- Bases aéreas, submarinas e subterrâneas, veículos avançados, NPCs, grandes cidades e multiplayer continuam planejados, sem implementação funcional.
+## Limites reais
+**Ainda nao ha APK, build Unity verificada, modelos 3D profissionais, animacoes finais, casa pousante, nem prova de qualidade proxima as artes.** O cenario inicial e uma base tecnica jogavel, nao a qualidade visual aprovada. Nao ha editor Unity ou GPU de nuvem gratuita conectados e validados aqui. As artes conceituais nao sao capturas do jogo.
 
-## Atualização: animações e identidade visual
-- `assets/icon_renascer.svg`: novo ícone vetorial com motivos de céu, oceano, terra e ruínas, baseado na marca aprovada. **O painel/logo cinematográfico completo continua como referência; o vetor é uma versão simplificada para a tela inicial Android.**
-- `scripts/tools/BuildIcon.gd`: gera PNG de 192px durante a compilação Android.
-- `scripts/CharacterMotion.gd`: animações procedurais de braços e pernas ao caminhar, repousar e navegar, mais mãos na visão de primeira pessoa.
-- `scripts/ResourceVisual.gd`: madeira, pedras, fibras, frutas e água reconhecíveis, com animação leve.
-- Corrida com barra de energia, salto em botão touch e teclado, persistência da energia e câmera em primeira/terceira pessoa.
-- Primeira missão de exploração: objetivos de progresso, investigação de ruína antiga e salvamento do registro.
-- `scripts/tests/SmokeTests.gd`: verifica os novos controles, inventário, recursos, ícone, animação e missão.
-- O aplicativo recebe **versionCode incremental** via GitHub Actions para facilitar atualizações.
-- **Limites:** arte 3D ainda experimental, sem garantia de FPS, estabilidade ou acabamento em dispositivo físico; as cidades e bases avançadas permanecem não implementadas.
+## Proximos criterios de qualidade
+Integrar modelos reais com licencas verificadas (personagem humanoide animado, vegetacao, rochas, casa pousante), materiais de solo/agua, iluminacao e perfis graficos; validar visualmente no editor e medir FPS em Android/PC. Nao publicar como versao visual final antes disso.
 
-## Etapa de desenvolvimento — construção modular e início do oceano
-- `scripts/BuildingSystem.gd`: colocação em grade de pisos, paredes, portas articuladas e telhados, com colisores físicos, prévia de posição, restrição contra duplicatas e consumo de materiais.
-- Controles de construção no Android: **CONSTRUIR**, **PEÇA**, **GIRAR**, **COLOCAR** e **PORTA**. No teclado: **G**, **C**, **Q**, **Enter** e **O**.
-- Estruturas modulares agora fazem parte do salvamento. Os testes cobrem criação, uso de materiais, portas, validação de posição e restauração.
-- `scripts/CoastalPalms.gd`: palmeiras costeiras geradas por malhas e instanciadas com troncos curvos e folhas em leque.
-- Movimento aquático básico: subir, mergulhar e barra de oxigênio com persistência no salvamento. **Ainda não há fauna oceânica avançada, correntes nem base submarina funcional.**
-- Essas peças e modelos ainda são experimentais, com aparência procedural. Não representam os gráficos finais previstos no projeto.
-
-## Nova melhoria visual — materiais e modelos escaneados
-- O terreno agora usa **texturas fotográficas reais** de areia, vegetação do solo e rochas, com fallback procedural offline. Fontes e licença CC0 em [materiais naturais](assets/materials/README.md).
-- O cenário incorpora **modelos 3D fotogramétricos de uma rocha e um tronco antigo**, posicionados em poucos pontos da ilha para não sobrecarregar o Android. Fontes CC0 em [modelos de cenário](assets/models/README.md).
-- `scripts/CharacterAppearance.gd` substitui o antigo torso de cubos por um sobrevivente 3D com rosto, cabelo, roupas e mochila. Ainda precisa de um personagem profissional com rig e animações.
-- O HUD possui um botão **AÇÕES** que abre e recolhe controles extras, deixando mais espaço para enxergar o mundo.
-- A câmera em terceira pessoa verifica obstáculos com raycast para reduzir atravessamentos de terreno e paredes.
-- Modelos e texturas são integrados durante a compilação e ficam acessíveis no APK offline. Não é necessário conectar o celular à internet para usá-los.
-- **Fidelidade atual:** é uma melhoria concreta do protótipo, mas ainda longe do fotorrealismo das artes conceituais. O FPS e a renderização visual precisam de teste físico no POCO M7 Pro 5G.
-
-## Otimização
-Renderizador OpenGL Compatibility, iluminação sem sombras dinâmicas, formas 3D simples, qualidade ajustável e limite inicial de 30 FPS no modo econômico. O desempenho real depende de testes no aparelho.
-
-## Privacidade
-**Atenção: este repositório está público.** Qualquer pessoa pode acessar os arquivos, copiar o código e o documento de ideias. Não adicione senhas, dados pessoais ou credenciais.
-
-## Créditos
-Projeto original **O RECOMEÇO**. Desenvolvimento experimental com assistência de IA.
+## CI
+Workflow valida a estrutura e os arquivos C# de maneira estatica. Compilacao Unity requer runner com editor e licenca adequados; a pipeline nao finge gerar APK.

@@ -1,0 +1,20 @@
+name: Unity source structure check
+on:
+  push:
+    branches: [unity6-renascer]
+  workflow_dispatch:
+jobs:
+  verify-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify required project files
+        run: |
+          test -f ProjectSettings/ProjectVersion.txt
+          test -f Packages/manifest.json
+          test -f Assets/Scripts/Core/GameBootstrap.cs
+          test -f Assets/Scripts/World/IslandWorld.cs
+          test -f Assets/Scripts/Player/ExplorerController.cs
+          test -f Assets/Scripts/Gameplay/SurvivalInventory.cs
+          python3 -m json.tool Packages/manifest.json >/dev/null
+          echo 'Structure valid. Unity compilation and Android export NOT tested.'
