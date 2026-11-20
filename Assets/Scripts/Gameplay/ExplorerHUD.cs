@@ -1,4 +1,5 @@
 using UnityEngine;
+using Renascer.Core;
 
 namespace Renascer.Gameplay
 {
@@ -8,7 +9,7 @@ namespace Renascer.Gameplay
         private bool showInventory;
         private GUIStyle textStyle;
         private void Awake() { inventory = GetComponent<SurvivalInventory>(); }
-        private void Update() { if (Input.GetKeyDown(KeyCode.Tab)) showInventory = !showInventory; }
+        private void Update() { if (InputBridge.Down(KeyCode.Tab)) showInventory = !showInventory; }
         private void OnGUI()
         {
             if (textStyle == null)
