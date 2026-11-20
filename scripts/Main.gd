@@ -145,7 +145,7 @@ func _height(x: float, z: float) -> float:
 func _make_world() -> void:
 	var landscape: Node3D = VISUAL_WORLD.new()
 	landscape.name = "IlhaVisual"
-	landscape.configure(Callable(self,"_height"),int(setting("world","tree_count",130)))
+	landscape.configure(Callable(self,"_height"),int(setting("world","tree_count",130)),int(setting("world","palm_count",28)))
 	world_root.add_child(landscape)
 	sun = landscape.sun
 	_make_pickups()
