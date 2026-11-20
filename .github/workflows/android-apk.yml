@@ -54,6 +54,11 @@ jobs:
           set -euo pipefail
           godot --headless --path . --quit-after 8 2>&1 | tee /tmp/smoke.log
           if grep -E 'SCRIPT ERROR|Parse Error|Failed to load script|Error parsing' /tmp/smoke.log; then exit 1; fi
+      - name: Testar inventario, construcao, camera e salvamento
+        run: |
+          set -euo pipefail
+          godot --headless --path . --script res://scripts/tests/SmokeTests.gd 2>&1 | tee /tmp/integration.log
+          if grep -E 'SCRIPT ERROR|Parse Error|FALHOU:|Error parsing' /tmp/integration.log; then exit 1; fi
       - name: Exportar APK Android
         run: |
           set -euo pipefail
