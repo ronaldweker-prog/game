@@ -25,6 +25,9 @@ func _run() -> void:
 	await process_frame
 	_check(game.is_inside_tree(), "A cena principal abre")
 	_check(game.cam != null, "Camera 3D criada")
+	_check(game.character_motion != null, "Sistema de animacao do personagem criado")
+	_check(FileAccess.file_exists("res://assets/app_icon.png"), "Icone PNG gerado e incluido no projeto")
+	_check(str(game.game_config.get("game_title","")) == "RENASCER: NOVO MUNDO", "Novo nome configurado")
 	_check(game.pickups.size() > 0, "Recursos criados na ilha")
 	_check(game.world_root.get_node_or_null("IlhaVisual/TerrenoNatural") != null, "Novo terreno visual criado")
 	_check(game.world_root.get_node_or_null("IlhaVisual/MarComOndas") != null, "Oceano animado criado")
@@ -36,6 +39,8 @@ func _run() -> void:
 	game._new_game()
 	await process_frame
 	_check(game.playing, "Iniciar partida")
+	game.character_motion.call("animate_character",0.1,Vector3(3.0,0.0,0.0),false,false)
+	_check(game.character_motion.get("state") == "andando", "Animacao de caminhada")
 	var entry: Dictionary = game.pickups[0]
 	var kind: String = entry["kind"]
 	var before: int = int(game.items[kind])
@@ -67,6 +72,9 @@ func _run() -> void:
 	game._transfer_to_chest("madeira", true)
 	game._action("camera")
 	_check(game.first_person, "Trocar para primeira pessoa")
+	game.character_motion.call("animate_character",0.1,Vector3.ZERO,false,true)
+	var hands: Node3D = game.character_motion.get("camera_arms")
+	_check(hands != null and hands.visible, "Maos de primeira pessoa aparecem")
 	game._cycle_outfit()
 	_check(game.outfit_style == 1, "Personalizar roupa do personagem")
 	var original_wood: int = int(game.items["madeira"])
