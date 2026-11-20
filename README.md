@@ -5,7 +5,7 @@ Projeto anteriormente chamado **O RECOMEÇO**. Nome atual do aplicativo: **RENAS
 ## Baixar a primeira versao Android
 - [Baixar versões experimentais de RENASCER: NOVO MUNDO](https://github.com/ronaldweker-prog/game/releases)
 - A compilacao e os testes automaticos rodam em [Actions](https://github.com/ronaldweker-prog/game/actions).
-- Abra a versao de teste mais recente que constar como **sucesso**. Baixe `O_RECOMECO.apk`.
+- Abra a versão de teste mais recente cuja compilação esteja **aprovada**. Baixe `RENASCER_NOVO_MUNDO.apk`.
 - O APK é um **protótipo de teste**, não o jogo final e não foi validado fisicamente no POCO M7 Pro 5G.
 
 ## Documentação, histórico e tarefas
@@ -22,7 +22,7 @@ Projeto anteriormente chamado **O RECOMEÇO**. Nome atual do aplicativo: **RENAS
 
 ## Estado atual
 - Código-fonte do protótipo inicial: ilha 3D, ambiente, exploração, coleta, inventário inicial, ferramenta, abrigo, jangada, **baú com armazenamento real**, **joystick virtual para celular**, **fauna pacífica com estados**, roupas básicas configuráveis, câmeras e salvamento.
-- **Versão Android 30 aprovada em CI:** [baixar o APK](https://github.com/ronaldweker-prog/game/releases/download/android-teste-30/O_RECOMECO.apk). Compilação, testes de lógica e verificação de arquivo APK passaram; testes reais de toque e aparência no celular ainda pendentes.
+- **Versões Android publicadas automaticamente:** [abrir Releases](https://github.com/ronaldweker-prog/game/releases). Cada versão aprovada possui APK de teste, mas o jogo ainda não foi validado fisicamente no POCO M7 Pro 5G.
 - **Nova base visual procedural:** terreno com ruído por material, céu procedural, luz solar, ondas animadas, vegetação instanciada, rochas, capim, ruínas detalhadas e tema visual de botões. **Ainda não é fotorrealista**, pois carece de modelos profissionais, texturas PBR e animações completas.
 - Os testes de integração automatizados verificam coleta, abrigo, jangada, baú, câmera, aparência e salvamento.
 - Documento completo do projeto: `docs/PROMPT_MESTRE_COMPLETO.txt`.
@@ -40,6 +40,14 @@ Projeto anteriormente chamado **O RECOMEÇO**. Nome atual do aplicativo: **RENAS
 - `scripts/tests/SmokeTests.gd`: verifica os novos controles, inventário, recursos, ícone, animação e missão.
 - O aplicativo recebe **versionCode incremental** via GitHub Actions para facilitar atualizações.
 - **Limites:** arte 3D ainda experimental, sem garantia de FPS, estabilidade ou acabamento em dispositivo físico; as cidades e bases avançadas permanecem não implementadas.
+
+## Etapa de desenvolvimento — construção modular e início do oceano
+- `scripts/BuildingSystem.gd`: colocação em grade de pisos, paredes, portas articuladas e telhados, com colisores físicos, prévia de posição, restrição contra duplicatas e consumo de materiais.
+- Controles de construção no Android: **CONSTRUIR**, **PEÇA**, **GIRAR**, **COLOCAR** e **PORTA**. No teclado: **G**, **C**, **Q**, **Enter** e **O**.
+- Estruturas modulares agora fazem parte do salvamento. Os testes cobrem criação, uso de materiais, portas, validação de posição e restauração.
+- `scripts/CoastalPalms.gd`: palmeiras costeiras geradas por malhas e instanciadas com troncos curvos e folhas em leque.
+- Movimento aquático básico: subir, mergulhar e barra de oxigênio com persistência no salvamento. **Ainda não há fauna oceânica avançada, correntes nem base submarina funcional.**
+- Essas peças e modelos ainda são experimentais, com aparência procedural. Não representam os gráficos finais previstos no projeto.
 
 ## Otimização
 Renderizador OpenGL Compatibility, iluminação sem sombras dinâmicas, formas 3D simples, qualidade ajustável e limite inicial de 30 FPS no modo econômico. O desempenho real depende de testes no aparelho.
