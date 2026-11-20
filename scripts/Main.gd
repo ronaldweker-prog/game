@@ -20,6 +20,8 @@ var joystick := Vector2.ZERO
 var joystick_control: Control
 var mobile_look := -1
 var first_person := false
+var outfit_style := 0
+var outfit_button: Button
 var items := {"madeira": 0, "pedra": 0, "fibra": 0, "comida": 0, "agua": 0}
 var gathered: Array = []
 var pickups: Array = []
@@ -84,6 +86,7 @@ func _ready() -> void:
 		animal.player = player
 	_make_interface()
 	_show_menu(true)
+	_apply_outfit()
 
 func _mat(c: Color) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -301,7 +304,8 @@ func _make_interface() -> void:
 	_btn(menu,"NOVO MUNDO",Vector2(85,290),Vector2(425,62),func(): _new_game())
 	_btn(menu,"CONTINUAR",Vector2(85,370),Vector2(425,62),func(): _continue_game())
 	_btn(menu,"GRÁFICOS: ECONÔMICO / BONITO",Vector2(85,450),Vector2(425,62),func(): _change_quality())
-	_label(menu,"PROTÓTIPO 0.1 • Expansões futuras: bases, céu, oceano e cavernas",Vector2(85,590),Vector2(1100,60),20)
+	outfit_button = _btn(menu,"ROUPA DO PERSONAGEM: VERDE",Vector2(85,530),Vector2(425,54),func(): _cycle_outfit())
+	_label(menu,"PROTÓTIPO 0.1 • Expansões futuras: bases, céu, oceano e cavernas",Vector2(85,610),Vector2(1100,60),20)
 	hud_panel = Control.new()
 	hud_panel.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	hud_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -321,6 +325,18 @@ func _make_interface() -> void:
 	joystick_control.size = Vector2(210,210)
 	hud_panel.add_child(joystick_control)
 	hud_panel.visible = false
+
+func _apply_outfit() -> void:
+	var palette := [Color("54635b"),Color("3b6780"),Color("8b6b4d"),Color("68627b")]
+	outfit_style = posmod(outfit_style,palette.size())
+	if is_instance_valid(body):
+		body.material_override = _mat(palette[outfit_style])
+	if is_instance_valid(outfit_button):
+		outfit_button.text = "ROUPA: " + ["VERDE","AZUL","MARROM","ROXO"][outfit_style]
+
+func _cycle_outfit() -> void:
+	outfit_style = (outfit_style + 1) % 4
+	_apply_outfit()
 
 func _make_chest_panel() -> void:
 	chest_panel = Panel.new()
@@ -420,6 +436,8 @@ func _continue_game() -> void:
 				stats = Vector3(float(bars[0]),float(bars[1]),float(bars[2]))
 			time_of_day = float(d.get("time",0.0))
 			quality = int(d.get("quality",0))
+			outfit_style = int(d.get("outfit_style",outfit_style))
+			_apply_outfit()
 			get_viewport().scaling_3d_scale = float(setting("visuals", "quality_scales", [0.70,0.83,1.0])[clampi(quality,0,2)])
 			Engine.max_fps = int(setting("visuals", "mobile_fps", 30)) if quality == 0 else int(setting("visuals", "balanced_fps", 45))
 			first_person = bool(d.get("first_person",false))
@@ -605,7 +623,7 @@ func _save(silent: bool = false) -> void:
 	var wildlife_positions := []
 	for animal in animals:
 		wildlife_positions.append([animal.position.x,animal.position.y,animal.position.z])
-	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"first_person":first_person,"time":time_of_day}
+	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"time":time_of_day}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
