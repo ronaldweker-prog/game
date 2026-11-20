@@ -39,6 +39,9 @@ var chest_items := {"madeira":0,"pedra":0,"fibra":0,"comida":0,"agua":0}
 var chest_panel: Panel
 var chest_status: Label
 var stats := Vector3(100,100,100)
+var stamina := 100.0
+var jump_queued := false
+var sprint_held := false
 var time_of_day := 0.0
 var sun: DirectionalLight3D
 var status: Label
@@ -261,6 +264,15 @@ func _make_interface() -> void:
 		_btn(hud_panel,String(keys[i][0]),Vector2(812 + (i % 3) * 150,490 + int(i / 3) * 66),Vector2(140,58),func(): _action(method))
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
 	_make_chest_panel()
+	_btn(hud_panel,"PULAR",Vector2(296,616),Vector2(136,58),func(): _request_jump())
+	var run_button := Button.new()
+	run_button.text = "CORRER"
+	run_button.position = Vector2(296,545)
+	run_button.size = Vector2(136,58)
+	UI_SKIN.style_button(run_button)
+	run_button.button_down.connect(func(): sprint_held = true)
+	run_button.button_up.connect(func(): sprint_held = false)
+	hud_panel.add_child(run_button)
 	joystick_control = VIRTUAL_STICK.new()
 	joystick_control.name = "JoystickMobile"
 	joystick_control.position = Vector2(45,490)
@@ -324,6 +336,10 @@ func _transfer_to_chest(kind: String, depositing: bool) -> void:
 		_notice(("Guardado: " if depositing else "Retirado: ") + kind)
 	_update_chest_status()
 
+func _request_jump() -> void:
+	if playing and not aboard:
+		jump_queued = true
+
 func _show_menu(show: bool) -> void:
 	if show and playing:
 		_save(true)
@@ -342,6 +358,9 @@ func _new_game() -> void:
 	gathered.clear()
 	has_tool = false
 	stats = Vector3(100,100,100)
+	stamina = 100.0
+	jump_queued = false
+	sprint_held = false
 	time_of_day = 0.0
 	first_person = false
 	cam.position = Vector3(0,0,4.8)
@@ -377,6 +396,7 @@ func _continue_game() -> void:
 			if bars.size() >= 3:
 				stats = Vector3(float(bars[0]),float(bars[1]),float(bars[2]))
 			time_of_day = float(d.get("time",0.0))
+			stamina = clampf(float(d.get("stamina",100.0)),0.0,100.0)
 			quality = int(d.get("quality",0))
 			outfit_style = int(d.get("outfit_style",outfit_style))
 			_apply_outfit()
@@ -565,7 +585,7 @@ func _save(silent: bool = false) -> void:
 	var wildlife_positions := []
 	for animal in animals:
 		wildlife_positions.append([animal.position.x,animal.position.y,animal.position.z])
-	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"time":time_of_day}
+	var data := {"wildlife_positions":wildlife_positions,"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"outfit_style":outfit_style,"first_person":first_person,"stamina":stamina,"time":time_of_day}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
@@ -586,7 +606,7 @@ func _process(delta: float) -> void:
 	stats.z = maxf(0,stats.z - delta * float(setting("balance", "hunger_loss_per_second", 0.020)))
 	if stats.y <= 0 or stats.z <= 0:
 		stats.x = maxf(1.0,stats.x - delta * float(setting("balance", "low_resources_health_loss", 0.1)))
-	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   FPS %d" % [stats.x,stats.y,stats.z,Engine.get_frames_per_second()]
+	status.text = "SAÚDE %.0f   ÁGUA %.0f   FOME %.0f   ENERGIA %.0f   FPS %d" % [stats.x,stats.y,stats.z,stamina,Engine.get_frames_per_second()]
 	info.text = "RENASCER  |  Madeira %d  Pedra %d  Fibra %d  Comida %d  Água %d" % [items["madeira"],items["pedra"],items["fibra"],items["comida"],items["agua"]]
 	autosave += delta
 	if autosave > 90:
@@ -605,6 +625,9 @@ func _physics_process(delta: float) -> void:
 		move.x += joystick_control.amount.x
 		move.y -= joystick_control.amount.y
 	move = move.limit_length(1.0)
+	var moving := move.length_squared() > 0.01
+	var can_sprint := (sprint_held or Input.is_key_pressed(KEY_SHIFT)) and moving and stamina > 1.0 and not aboard
+	stamina = clampf(stamina + (-15.0 if can_sprint else 9.0) * delta,0.0,100.0)
 	var dir := (player.transform.basis * Vector3(move.x,0,-move.y)).normalized()
 	if aboard and is_instance_valid(raft):
 		raft.position += dir * delta * float(setting("balance", "raft_speed", 4.0))
@@ -612,10 +635,12 @@ func _physics_process(delta: float) -> void:
 		player.position = raft.position + Vector3(0,1.4,0)
 		player.velocity = Vector3.ZERO
 		return
-	player.velocity.x = dir.x * float(setting("balance", "player_walk_speed", 5.0))
-	player.velocity.z = dir.z * float(setting("balance", "player_walk_speed", 5.0))
+	var speed := float(setting("balance", "player_walk_speed", 5.0)) * (1.65 if can_sprint else 1.0)
+	player.velocity.x = dir.x * speed
+	player.velocity.z = dir.z * speed
 	if player.is_on_floor():
-		player.velocity.y = 5.0 if Input.is_key_pressed(KEY_SPACE) else -0.3
+		player.velocity.y = 5.0 if jump_queued else -0.3
+		jump_queued = false
 	else:
 		player.velocity.y -= 18.0 * delta
 	player.move_and_slide()
@@ -638,6 +663,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		pivot.rotation.x = clampf(pivot.rotation.x - event.relative.y * float(setting("visuals", "touch_sensitivity", 0.004)),-1.1,1.0)
 	if event is InputEventKey and event.pressed and not event.echo:
 		match event.keycode:
+			KEY_SPACE: _request_jump()
 			KEY_E: _action("collect")
 			KEY_F: _action("craft")
 			KEY_B: _action("shelter")
