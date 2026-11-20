@@ -46,6 +46,12 @@ jobs:
           set -euo pipefail
           godot --headless --path . --script res://scripts/tools/BuildIcon.gd
           test -s assets/app_icon.png
+      - name: Definir versao incremental do APK
+        run: |
+          set -euo pipefail
+          sed -i "s|^version/code=.*|version/code=${GITHUB_RUN_NUMBER}|" export_presets.cfg
+          sed -i "s|^version/name=.*|version/name=\"0.2.${GITHUB_RUN_NUMBER}\"|" export_presets.cfg
+          grep -E '^version/(code|name)=' export_presets.cfg
       - name: Importar e validar projeto
         run: |
           set -euo pipefail
