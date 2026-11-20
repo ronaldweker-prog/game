@@ -5,6 +5,15 @@ Protótipo experimental de sobrevivência 3D em Godot 4.4, preparado para Androi
 ## Baixar e instalar no celular
 Abra a aba **Actions** deste repositório, escolha **O RECOMECO - Gerar APK Android**, abra uma execução concluída com sucesso e baixe o artefato **O-RECOMECO-Android-APK-teste**. Extraia o ZIP do artefato, transfira o APK para o celular e abra o instalador. Se a execução falhar, o APK **não existe ainda**: corrija o erro de compilação primeiro.
 
+## Documentação, histórico e tarefas
+- [Cânone e lacunas](docs/CANONE_E_LACUNAS.md): decisões confirmadas, propostas e informações antigas ainda faltantes.
+- [Estado e testes](docs/STATUS_E_TESTES.md): critérios para considerar uma função realmente concluída.
+- [Referências visuais](docs/REFERENCIAS_VISUAIS.md): bases submarinas, aéreas, cavernas, painel PAC e veículo 6x6.
+- [Prompt mestre unificado](docs/PROMPT_MESTRE_COMPLETO.txt).
+- [Prompt mestre antigo](docs/historico/PROMPT_MESTRE_ANTIGO.txt).
+- [Complemento antigo](docs/historico/COMPLEMENTO_HISTORIA_CRIATURAS_ECONOMIA.txt).
+- [Tarefas técnicas abertas](../../issues): 6 frentes de desenvolvimento para não perder mecânicas.
+
 ## Estado atual
 - Código-fonte do protótipo inicial: ilha 3D, ambiente, exploração, recursos, coleta, inventário simplificado, ferramenta, abrigo, jangada, controles por botões para celular, câmeras e salvamento.
 - Documento completo do projeto: `docs/PROMPT_MESTRE_COMPLETO.txt`.
