@@ -10,6 +10,7 @@ const VISUAL_WORLD = preload("res://scripts/VisualWorld.gd")
 const UI_SKIN = preload("res://scripts/UISkin.gd")
 const CHARACTER_MOTION = preload("res://scripts/CharacterMotion.gd")
 const RESOURCE_VISUAL = preload("res://scripts/ResourceVisual.gd")
+const CHARACTER_APPEARANCE = preload("res://scripts/CharacterAppearance.gd")
 const BUILDING_SYSTEM = preload("res://scripts/BuildingSystem.gd")
 var game_config: Dictionary = {}
 var playing := false
@@ -204,9 +205,7 @@ func _make_player() -> void:
 	player_visuals = Node3D.new()
 	player_visuals.name = "VisualDoPersonagem"
 	player.add_child(player_visuals)
-	body = _cube(player_visuals,Vector3(0,1.0,0),Vector3(0.72,1.7,0.44),Color("54635b"))
-	_ball(player_visuals,Vector3(0,1.92,0),0.28,Color("af8b72"))
-	_cube(player_visuals,Vector3(0,1.1,0.36),Vector3(0.8,0.95,0.25),Color("47584b"))
+	body = CHARACTER_APPEARANCE.create_body(player_visuals)
 	pivot = Node3D.new()
 	pivot.position.y = 1.55
 	player.add_child(pivot)
