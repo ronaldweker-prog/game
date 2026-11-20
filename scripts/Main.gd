@@ -27,6 +27,9 @@ var has_tool := false
 var raft: Node3D
 var aboard := false
 var raft_chest := false
+var chest_items := {"madeira":0,"pedra":0,"fibra":0,"comida":0,"agua":0}
+var chest_panel: Panel
+var chest_status: Label
 var stats := Vector3(100,100,100)
 var time_of_day := 0.0
 var sun: DirectionalLight3D
@@ -295,6 +298,7 @@ func _make_interface() -> void:
 		var method := String(keys[i][1])
 		_btn(hud_panel,String(keys[i][0]),Vector2(812 + (i % 3) * 150,490 + int(i / 3) * 66),Vector2(140,58),func(): _action(method))
 	_btn(hud_panel,"MENU",Vector2(18,118),Vector2(116,48),func(): _show_menu(true))
+	_make_chest_panel()
 	joystick_control = VIRTUAL_STICK.new()
 	joystick_control.name = "JoystickMobile"
 	joystick_control.position = Vector2(45,490)
@@ -302,11 +306,57 @@ func _make_interface() -> void:
 	hud_panel.add_child(joystick_control)
 	hud_panel.visible = false
 
+func _make_chest_panel() -> void:
+	chest_panel = Panel.new()
+	chest_panel.name = "ArmazenamentoDaJangada"
+	chest_panel.position = Vector2(320,175)
+	chest_panel.size = Vector2(490,450)
+	chest_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	hud_panel.add_child(chest_panel)
+	_label(chest_panel,"ARMAZENAMENTO DA JANGADA",Vector2(20,14),Vector2(450,42),24)
+	chest_status = _label(chest_panel,"",Vector2(20,54),Vector2(450,46),17)
+	var types := ["madeira","pedra","fibra","comida","agua"]
+	for i in range(types.size()):
+		var item: String = types[i]
+		_label(chest_panel,item.capitalize(),Vector2(20,105+i*55),Vector2(120,36),19)
+		_btn(chest_panel,"Guardar 1",Vector2(150,100+i*55),Vector2(145,46),func(): _transfer_to_chest(item,true))
+		_btn(chest_panel,"Retirar 1",Vector2(310,100+i*55),Vector2(145,46),func(): _transfer_to_chest(item,false))
+	_btn(chest_panel,"FECHAR",Vector2(280,389),Vector2(175,45),func(): chest_panel.visible=false)
+	chest_panel.visible = false
+
+func _update_chest_status() -> void:
+	if not is_instance_valid(chest_status):
+		return
+	var total := 0
+	for kind in chest_items:
+		total += int(chest_items[kind])
+	chest_status.text = "Itens guardados: %d / 60" % total
+
+func _transfer_to_chest(kind: String, depositing: bool) -> void:
+	if not raft_chest:
+		return
+	var stock: Dictionary = items if depositing else chest_items
+	var target: Dictionary = chest_items if depositing else items
+	var total := 0
+	for k in chest_items:
+		total += int(chest_items[k])
+	if int(stock.get(kind,0)) < 1:
+		_notice("Não há " + kind + " disponível.")
+	elif depositing and total >= 60:
+		_notice("O baú está cheio.")
+	else:
+		stock[kind] = int(stock.get(kind,0)) - 1
+		target[kind] = int(target.get(kind,0)) + 1
+		_notice(("Guardado: " if depositing else "Retirado: ") + kind)
+	_update_chest_status()
+
 func _show_menu(show: bool) -> void:
 	if show and playing:
 		_save(true)
 	menu.visible = show
 	hud_panel.visible = not show
+	if show and is_instance_valid(chest_panel):
+		chest_panel.visible = false
 	playing = not show
 	if show:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -328,6 +378,9 @@ func _new_game() -> void:
 	if is_instance_valid(raft): raft.queue_free()
 	raft = null
 	raft_chest = false
+	chest_items = {"madeira":0,"pedra":0,"fibra":0,"comida":0,"agua":0}
+	if is_instance_valid(chest_panel):
+		chest_panel.visible = false
 	aboard = false
 	for entry in pickups:
 		if is_instance_valid(entry["node"]): entry["node"].queue_free()
@@ -370,6 +423,7 @@ func _continue_game() -> void:
 					raft.position = Vector3(float(boat_pos[0]),-1.0,float(boat_pos[2]))
 				if bool(d.get("chest",false)):
 					_install_chest()
+					chest_items = d.get("chest_contents",chest_items)
 				aboard = bool(d.get("aboard",false))
 				if aboard:
 					player.position = raft.position + Vector3(0,1.4,0)
@@ -508,10 +562,14 @@ func _chest() -> void:
 	if not is_instance_valid(raft):
 		_notice("Construa a jangada primeiro.")
 	elif raft_chest:
-		_notice("Baú já instalado.")
+		if player.position.distance_to(raft.position) > 9.0:
+			_notice("Aproxime-se da jangada para acessar o baú.")
+		else:
+			chest_panel.visible = not chest_panel.visible
+			_update_chest_status()
 	elif _pay(recipe("chest", {"madeira":2,"fibra":1})):
 		_install_chest()
-		_notice("Baú instalado!")
+		_notice("Baú instalado! Aproxime-se e toque BAÚ para guardar ou retirar itens.")
 	else:
 		_notice("Baú: precisa de " + cost_text(recipe("chest", {"madeira":2,"fibra":1})))
 
@@ -521,7 +579,7 @@ func _save(silent: bool = false) -> void:
 	var boat_pos := [0.0,-1.0,70.0]
 	if is_instance_valid(raft):
 		boat_pos = [raft.position.x,raft.position.y,raft.position.z]
-	var data := {"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"stats":[stats.x,stats.y,stats.z],"quality":quality,"first_person":first_person,"time":time_of_day}
+	var data := {"items":items,"tool":has_tool,"player":[player.position.x,player.position.y,player.position.z],"gathered":gathered,"huts":[],"raft":is_instance_valid(raft),"raft_position":boat_pos,"aboard":aboard,"chest":raft_chest,"chest_contents":chest_items,"stats":[stats.x,stats.y,stats.z],"quality":quality,"first_person":first_person,"time":time_of_day}
 	for h in huts:
 		data["huts"].append([h.position.x,h.position.y,h.position.z])
 	var f := FileAccess.open(SAVE,FileAccess.WRITE)
