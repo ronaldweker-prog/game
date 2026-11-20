@@ -11,6 +11,7 @@
   },
   "world": {
     "tree_count": 85,
+    "palm_count": 28,
     "pickup_count": 80,
     "day_cycle_speed": 0.025,
     "ocean_level": -1.2,
