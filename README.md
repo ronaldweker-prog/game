@@ -17,11 +17,14 @@ Protótipo experimental de sobrevivência 3D em Godot 4.4, preparado para Androi
 - [Prompt mestre unificado](docs/PROMPT_MESTRE_COMPLETO.txt).
 - [Prompt mestre antigo](docs/historico/PROMPT_MESTRE_ANTIGO.txt).
 - [Complemento antigo](docs/historico/COMPLEMENTO_HISTORIA_CRIATURAS_ECONOMIA.txt).
-- [Tarefas técnicas abertas](https://github.com/ronaldweker-prog/game/issues): 6 frentes de desenvolvimento para não perder mecânicas.
+- [Plano completo de etapas](docs/PLANO_COMPLETO_DE_ETAPAS.md): todas as frentes preservadas, com fases e critérios de qualidade.
+- [Tarefas técnicas abertas](https://github.com/ronaldweker-prog/game/issues): frentes de desenvolvimento para não perder mecânicas.
 
 ## Estado atual
 - Código-fonte do protótipo inicial: ilha 3D, ambiente, exploração, coleta, inventário inicial, ferramenta, abrigo, jangada, **baú com armazenamento real**, **joystick virtual para celular**, **fauna pacífica com estados**, roupas básicas configuráveis, câmeras e salvamento.
-- O GitHub já compilou e publicou APKs experimentais com sucesso. Testes de integração automatizados foram adicionados e passaram nas execuções verificadas.
+- **Versão Android 30 aprovada em CI:** [baixar o APK](https://github.com/ronaldweker-prog/game/releases/download/android-teste-30/O_RECOMECO.apk). Compilação, testes de lógica e verificação de arquivo APK passaram; testes reais de toque e aparência no celular ainda pendentes.
+- **Nova base visual procedural:** terreno com ruído por material, céu procedural, luz solar, ondas animadas, vegetação instanciada, rochas, capim, ruínas detalhadas e tema visual de botões. **Ainda não é fotorrealista**, pois carece de modelos profissionais, texturas PBR e animações completas.
+- Os testes de integração automatizados verificam coleta, abrigo, jangada, baú, câmera, aparência e salvamento.
 - Documento completo do projeto: `docs/PROMPT_MESTRE_COMPLETO.txt`.
 - **Compilação de APK e testes automatizados: confirmados em CI. Teste em dispositivo físico: ainda não realizado.**
 - As imagens conceituais hiper-realistas ainda não são a aparência real do protótipo.
